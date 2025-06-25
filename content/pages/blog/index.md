@@ -1,9 +1,50 @@
 ---
-title: Blog
+title: Zero Knowledge Proof
 slug: /blog
 numOfPostsPerPage: 8
 enableSearch: true
 topSections:
+  - type: GenericSection
+    title:
+      type: TitleBlock
+      text: Zero Knowledge Proof
+      color: text-dark
+      styles:
+        self:
+          textAlign: left
+    subtitle: From zero to finite fields
+    text: >
+      This blog explores themes in cryptography, mathematics, and formal
+      verification. Follow my journey as I learn Rust, Lean 4 and the fine art
+      of cryptography.
+    actions: []
+    media:
+      type: VideoBlock
+      title: Title of the video
+      url: /images/placeholder-video.mp4
+      autoplay: true
+      loop: true
+      muted: true
+      controls: false
+      aspectRatio: '16:9'
+      styles:
+        self:
+          padding:
+            - pt-2
+            - pb-2
+            - pl-2
+            - pr-2
+          borderColor: border-dark
+          borderStyle: solid
+          borderWidth: 1
+          borderRadius: large
+    colors: bg-light-fg-dark
+    styles:
+      self:
+        flexDirection: row
+        justifyContent: center
+      subtitle:
+        textAlign: left
   - title:
       text: Featured Post
       color: text-dark

@@ -4,15 +4,17 @@
         "altText": "Logo dark",
         "styles": {
             "self": {
-                "margin": ["mr-3"]
+                "margin": [
+                    "mr-3"
+                ]
             }
         },
         "type": "ImageBlock"
     },
     "primaryLinks": [
         {
-            "label": "Pricing",
-            "url": "/pricing",
+            "label": "About",
+            "url": "/about",
             "icon": "arrowRight",
             "iconPosition": "right",
             "style": "secondary",
@@ -28,37 +30,37 @@
             "type": "Link"
         },
         {
-            "label": "Careers",
-            "altText": "Careers page",
-            "url": "/careers",
+            "label": "Reading List",
+            "altText": "things read",
+            "url": "/readinglist",
             "icon": "arrowRight",
             "iconPosition": "right",
             "style": "secondary",
             "type": "Link"
         },
         {
-            "label": "Dropdown",
+            "label": "Projects",
             "altText": "Dropdown",
             "links": [
                 {
-                    "label": "Dropdown item",
-                    "url": "/",
+                    "label": "Lean Projects",
+                    "url": "/lean",
                     "icon": "arrowRight",
                     "iconPosition": "right",
                     "style": "secondary",
                     "type": "Link"
                 },
                 {
-                    "label": "Dropdown item",
-                    "url": "/",
+                    "label": "Rust Projects",
+                    "url": "/rust",
                     "icon": "arrowRight",
                     "iconPosition": "right",
                     "style": "secondary",
                     "type": "Link"
                 },
                 {
-                    "label": "Dropdown item",
-                    "url": "/",
+                    "label": "Cryptography Projects",
+                    "url": "/crypto",
                     "icon": "arrowRight",
                     "iconPosition": "right",
                     "style": "secondary",
@@ -69,25 +71,7 @@
             "type": "SubNav"
         }
     ],
-    "secondaryLinks": [
-        {
-            "label": "Sign up",
-            "altText": "Sign up",
-            "url": "https://app.netlify.com/signup",
-            "icon": "arrowRight",
-            "iconPosition": "right",
-            "style": "secondary",
-            "type": "Button"
-        },
-        {
-            "label": "Log in",
-            "url": "/",
-            "icon": "arrowRight",
-            "iconPosition": "right",
-            "style": "primary",
-            "type": "Button"
-        }
-    ],
+    "secondaryLinks": [],
     "variant": "logo-left-primary-nav-centered",
     "colors": "bg-light-fg-dark",
     "type": "Header"
