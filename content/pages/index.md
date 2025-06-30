@@ -32,7 +32,6 @@ sections:
       type: Badge
       styles:
         self:
-          fontStyle: italic
           textAlign: left
     elementId: ''
     colors: bg-light-fg-dark
