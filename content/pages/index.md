@@ -84,7 +84,7 @@ sections:
     type: FeaturedItemsSection
 seo:
   metaTitle: Home - ZKTheory
-  metaDescription: Explo
+  metaDescription: Exploring cryptography
   socialImage: /images/main-hero.jpg
   type: Seo
 type: PageLayout
