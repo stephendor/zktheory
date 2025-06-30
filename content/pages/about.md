@@ -7,7 +7,7 @@ sections:
       type: TitleBlock
       text: About Me
       color: text-dark
-    subtitle: Be in good company
+    subtitle: Aspiring cryptography and formal verification specialist
     text: >
       A service that provides advice and guidance to startups and small
       businesses.
