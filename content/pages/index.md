@@ -37,7 +37,7 @@ sections:
       elementId: ''
       type: ImageBlock
     badge:
-      label: Zero Knowledge Proof
+      label: ZKTheory
       color: text-primary
       type: Badge
     elementId: ''
