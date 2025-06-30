@@ -36,13 +36,6 @@
             "iconPosition": "right",
             "style": "secondary",
             "type": "Link"
-        },
-        {
-            "label": "Projects",
-            "altText": "Dropdown",
-            "links": [],
-            "labelStyle": "primary",
-            "type": "SubNav"
         }
     ],
     "secondaryLinks": [],
