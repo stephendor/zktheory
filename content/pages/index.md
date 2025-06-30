@@ -61,7 +61,7 @@ sections:
     type: FeaturedPostsSection
     hoverEffect: move-up
   - title:
-      text: List of features here
+      text: Explore further
       color: text-primary
       styles:
         self:
