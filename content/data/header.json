@@ -42,14 +42,6 @@
             "altText": "Dropdown",
             "links": [
                 {
-                    "label": "Lean Projects",
-                    "url": "/lean",
-                    "icon": "arrowRight",
-                    "iconPosition": "right",
-                    "style": "secondary",
-                    "type": "Link"
-                },
-                {
                     "label": "Rust Projects",
                     "url": "/rust",
                     "icon": "arrowRight",
