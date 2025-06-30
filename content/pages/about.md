@@ -31,7 +31,7 @@ sections:
         style: primary
     media:
       type: ImageBlock
-      url: /images/hero3.svg
+      url: /images/zktheoryheader.jpeg
       altText: Dope design preview
     badge:
       type: Badge
@@ -46,9 +46,9 @@ slug: /about
 isDraft: false
 seo:
   type: Seo
-  metaTitle: Landing Page
+  metaTitle: About me
   metaDescription: Write here your new page's description including most relevant keywords.
   addTitleSuffix: true
-  socialImage: /images/main-hero.jpg
+  socialImage: /images/zktheoryheader.jpeg
   metaTags: []
 ---
