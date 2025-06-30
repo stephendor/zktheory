@@ -10,7 +10,7 @@ sections:
       styles:
         self:
           textAlign: center
-    subtitle: Subtitle goes here
+    subtitle: Curated reading for the cryptocurious
     items:
       - type: FeaturedItem
         title: 500k
