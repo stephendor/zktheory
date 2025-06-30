@@ -2,7 +2,7 @@
 type: PageLayout
 title: About
 sections: []
-slug: about
+slug: /about
 isDraft: false
 seo:
   type: Seo
