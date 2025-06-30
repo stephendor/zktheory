@@ -39,7 +39,7 @@ sections:
         alignItems: center
         flexDirection: row-reverse
 slug: /about
-isDraft: false
+isDraft: true
 seo:
   type: Seo
   metaTitle: Landing Page
