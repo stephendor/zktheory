@@ -40,16 +40,7 @@
         {
             "label": "Projects",
             "altText": "Dropdown",
-            "links": [
-                {
-                    "label": "Cryptography Projects",
-                    "url": "/crypto",
-                    "icon": "arrowRight",
-                    "iconPosition": "right",
-                    "style": "secondary",
-                    "type": "Link"
-                }
-            ],
+            "links": [],
             "labelStyle": "secondary",
             "type": "SubNav"
         }
