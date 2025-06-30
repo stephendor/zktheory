@@ -30,7 +30,7 @@
         },
         {
             "label": "Library",
-            "altText": "things read",
+            "altText": "",
             "url": "/readinglist",
             "icon": "arrowRight",
             "iconPosition": "right",
