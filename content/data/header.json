@@ -31,7 +31,7 @@
         {
             "label": "Library",
             "altText": "",
-            "url": "/readinglist",
+            "url": "/library",
             "icon": "arrowRight",
             "iconPosition": "right",
             "style": "secondary",
