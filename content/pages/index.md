@@ -84,7 +84,7 @@ sections:
     type: FeaturedItemsSection
 seo:
   metaTitle: Home - ZKTheory
-  metaDescription: This demo site is built with Netlify Create.
+  metaDescription: Explo
   socialImage: /images/main-hero.jpg
   type: Seo
 type: PageLayout
