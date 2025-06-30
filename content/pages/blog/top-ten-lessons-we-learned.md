@@ -1,5 +1,5 @@
 ---
-title: Cryptopals with Rust
+title: First steps with Cryptopals and Rust
 slug: top-ten-lessons-we-learned
 date: '2025-01-02'
 excerpt: >-
