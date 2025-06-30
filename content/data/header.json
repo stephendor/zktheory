@@ -29,7 +29,7 @@
             "type": "Link"
         },
         {
-            "label": "Reading List",
+            "label": "Library",
             "altText": "things read",
             "url": "/readinglist",
             "icon": "arrowRight",
