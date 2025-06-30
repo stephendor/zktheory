@@ -42,14 +42,6 @@
             "altText": "Dropdown",
             "links": [
                 {
-                    "label": "Rust Projects",
-                    "url": "/rust",
-                    "icon": "arrowRight",
-                    "iconPosition": "right",
-                    "style": "secondary",
-                    "type": "Link"
-                },
-                {
                     "label": "Cryptography Projects",
                     "url": "/crypto",
                     "icon": "arrowRight",
