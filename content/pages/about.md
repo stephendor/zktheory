@@ -9,8 +9,12 @@ sections:
       color: text-dark
     subtitle: Aspiring cryptography and formal verification specialist
     text: >
-      A service that provides advice and guidance to startups and small
-      businesses.
+      I'm currently completing a degree in Mathematics, with a particular
+      fascination for abstract algebra and the elegance of mathematical proof.
+      This blog documents my journey exploring how these interests connect with
+      practical programming - from theorem proving in Lean 4 to cryptographic
+      implementations in Rust. I'm drawn to the intersection where mathematical
+      rigor meets real-world code.
     actions:
       - type: Button
         label: Get started
