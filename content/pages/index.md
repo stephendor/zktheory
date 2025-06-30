@@ -22,7 +22,7 @@ sections:
         elementId: ''
         type: Button
     media:
-      url: /images/abstract-feature1.svg
+      url: /images/amirhadi-manavi-0hUcJZZnYM4-unsplash.jpg
       altText: ''
       elementId: ''
       type: ImageBlock
