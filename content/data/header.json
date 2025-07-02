@@ -41,7 +41,7 @@
         {
             "type": "SubNav",
             "label": "Projects",
-            "altText": "Dropdown",
+            "altText": "",
             "links": [
                 {
                     "type": "Link",
