@@ -8,7 +8,8 @@
                 ]
             }
         },
-        "type": "ImageBlock"
+        "type": "ImageBlock",
+        "url": "/images/zk_blog_icon.svg"
     },
     "primaryLinks": [
         {
@@ -38,40 +39,50 @@
             "type": "Link"
         },
         {
+            "type": "SubNav",
             "label": "Projects",
-            "altText": "Dropdown",
+            "altText": "",
             "links": [
                 {
-                    "label": "Lean Projects",
-                    "url": "/lean",
+                    "type": "Link",
+                    "label": "Cybersecurity",
+                    "altText": "",
+                    "url": "/projects/cybersec",
+                    "showIcon": false,
                     "icon": "arrowRight",
                     "iconPosition": "right",
                     "style": "secondary",
-                    "type": "Link"
+                    "elementId": ""
                 },
                 {
-                    "label": "Rust Projects",
-                    "url": "/rust",
+                    "type": "Link",
+                    "label": "Rust",
+                    "altText": "",
+                    "url": "/projects/rust",
+                    "showIcon": false,
                     "icon": "arrowRight",
                     "iconPosition": "right",
                     "style": "secondary",
-                    "type": "Link"
+                    "elementId": ""
                 },
                 {
-                    "label": "Cryptography Projects",
-                    "url": "/crypto",
+                    "type": "Link",
+                    "label": "Lean",
+                    "altText": "",
+                    "url": "/projects/lean",
+                    "showIcon": false,
                     "icon": "arrowRight",
                     "iconPosition": "right",
                     "style": "secondary",
-                    "type": "Link"
+                    "elementId": ""
                 }
             ],
-            "labelStyle": "secondary",
-            "type": "SubNav"
+            "labelStyle": "secondary"
         }
     ],
     "secondaryLinks": [],
-    "variant": "logo-left-primary-nav-centered",
+    "variant": "logo-left-primary-nav-left",
     "colors": "bg-light-fg-dark",
-    "type": "Header"
+    "type": "Header",
+    "title": "Zero Knowledge Proof"
 }
