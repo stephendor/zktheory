@@ -58,7 +58,7 @@
                     "type": "Link",
                     "label": "Rust",
                     "altText": "",
-                    "url": "/",
+                    "url": "/projects/rust",
                     "showIcon": false,
                     "icon": "arrowRight",
                     "iconPosition": "right",
