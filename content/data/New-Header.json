@@ -1,0 +1,96 @@
+{
+    "type": "Header",
+    "logo": {
+        "type": "ImageBlock",
+        "url": "/images/logo-dark.svg",
+        "altText": "Logo dark",
+        "styles": {
+            "self": {
+                "margin": [
+                    "mr-3"
+                ]
+            }
+        }
+    },
+    "primaryLinks": [
+        {
+            "type": "Link",
+            "label": "Pricing",
+            "url": "/pricing",
+            "icon": "arrowRight",
+            "iconPosition": "right",
+            "style": "secondary"
+        },
+        {
+            "type": "Link",
+            "label": "Blog",
+            "altText": "Blog",
+            "url": "/blog",
+            "icon": "arrowRight",
+            "iconPosition": "right",
+            "style": "secondary"
+        },
+        {
+            "type": "Link",
+            "label": "Careers",
+            "altText": "Careers page",
+            "url": "/careers",
+            "icon": "arrowRight",
+            "iconPosition": "right",
+            "style": "secondary"
+        },
+        {
+            "type": "SubNav",
+            "label": "Dropdown",
+            "altText": "Dropdown",
+            "links": [
+                {
+                    "type": "Link",
+                    "label": "Dropdown item",
+                    "url": "/",
+                    "icon": "arrowRight",
+                    "iconPosition": "right",
+                    "style": "secondary"
+                },
+                {
+                    "type": "Link",
+                    "label": "Dropdown item",
+                    "url": "/",
+                    "icon": "arrowRight",
+                    "iconPosition": "right",
+                    "style": "secondary"
+                },
+                {
+                    "type": "Link",
+                    "label": "Dropdown item",
+                    "url": "/",
+                    "icon": "arrowRight",
+                    "iconPosition": "right",
+                    "style": "secondary"
+                }
+            ],
+            "labelStyle": "secondary"
+        }
+    ],
+    "secondaryLinks": [
+        {
+            "type": "Button",
+            "label": "Sign up",
+            "altText": "Sign up",
+            "url": "/",
+            "icon": "arrowRight",
+            "iconPosition": "right",
+            "style": "secondary"
+        },
+        {
+            "type": "Button",
+            "label": "Log in",
+            "url": "/",
+            "icon": "arrowRight",
+            "iconPosition": "right",
+            "style": "primary"
+        }
+    ],
+    "variant": "logo-left-primary-nav-centered",
+    "colors": "bg-light-fg-dark"
+}
