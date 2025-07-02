@@ -1,0 +1,61 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Clean gradient background -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f1f5f9;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Metallic gradient for symbol -->
+    <linearGradient id="metallicGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#e2e8f0;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#64748b;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#334155;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Metallic filter effect -->
+    <filter id="metallic" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur"/>
+      <feOffset in="blur" dx="1" dy="1" result="offset"/>
+      <feMerge>
+        <feMergeNode in="offset"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Simple gradient background -->
+  <rect width="200" height="200" rx="20" ry="20" fill="url(#bgGradient)"/>
+  
+  <!-- Subtle border for definition -->
+  <rect width="200" height="200" rx="20" ry="20" fill="none" stroke="#e2e8f0" stroke-width="1" opacity="0.5"/>
+  
+  <!-- Universal quantifier symbol with metallic effect -->
+  <text x="100" y="135" 
+        font-family="'Times New Roman', serif" 
+        font-size="120" 
+        font-weight="bold"
+        text-anchor="middle" 
+        fill="url(#metallicGradient)"
+        filter="url(#metallic)">∀</text>
+        
+  <!-- Bright metallic highlight -->
+  <text x="95" y="130" 
+        font-family="'Times New Roman', serif" 
+        font-size="120" 
+        font-weight="bold"
+        text-anchor="middle" 
+        fill="#f1f5f9" 
+        opacity="0.6">∀</text>
+        
+  <!-- Sharp edge highlight -->
+  <text x="96" y="131" 
+        font-family="'Times New Roman', serif" 
+        font-size="115" 
+        font-weight="normal"
+        text-anchor="middle" 
+        fill="#ffffff" 
+        opacity="0.4">∀</text>
+</svg>
