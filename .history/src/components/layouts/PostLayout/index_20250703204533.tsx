@@ -36,8 +36,8 @@ export default function PostLayout(props) {
                         </header>
                         {markdown_content && (
                             <Markdown
-                                options={markdownOptions}
-                                className="max-w-3xl mx-auto sb-markdown prose prose-lg prose-indigo"
+                                options={{ forceBlock: true }}
+                                className="max-w-3xl mx-auto sb-markdown"
                                 {...(enableAnnotations && { 'data-sb-field-path': 'markdown_content' })}
                             >
                                 {markdown_content}

@@ -10,56 +10,6 @@ export default function Document() {
                 {/* Algolia Netlify Integration */}
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@algolia/algoliasearch-netlify-frontend@1/dist/algoliasearchNetlify.css" />
 
-                {/* Custom Algolia Styles */}
-                <style>{`
-                  #header-search .aa-Form {
-                    border: 1px solid #d1d5db !important;
-                    border-radius: 8px !important;
-                    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
-                    background: white !important;
-                  }
-                  
-                  #header-search .aa-InputWrapper {
-                    padding: 0 !important;
-                  }
-                  
-                  #header-search .aa-Input {
-                    border: none !important;
-                    outline: none !important;
-                    font-size: 16px !important;
-                    width: 100% !important;
-                    padding: 12px 16px !important;
-                    color: #374151 !important;
-                    background: transparent !important;
-                  }
-                  
-                  #header-search .aa-Input::placeholder {
-                    color: #9ca3af !important;
-                  }
-                  
-                  #header-search .aa-Panel {
-                    border-radius: 8px !important;
-                    border: 1px solid #e5e7eb !important;
-                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
-                    background: white !important;
-                    margin-top: 4px !important;
-                    max-height: 400px !important;
-                    overflow-y: auto !important;
-                    z-index: 1000 !important;
-                  }
-                  
-                  #header-search .aa-Item {
-                    padding: 12px 16px !important;
-                    border-bottom: 1px solid #f3f4f6 !important;
-                    cursor: pointer !important;
-                  }
-                  
-                  #header-search .aa-Item:hover,
-                  #header-search .aa-Item[aria-selected="true"] {
-                    background-color: #f9fafb !important;
-                  }
-                `}</style>
-
                 {/* Other meta tags can go here */}
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />

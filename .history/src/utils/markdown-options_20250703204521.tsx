@@ -1,0 +1,155 @@
+import React from 'react';
+import CodeBlock from '../components/blocks/CodeBlock';
+import MathJax from '../components/blocks/MathJax';
+import Chart from '../components/blocks/Chart';
+import Mermaid from '../components/blocks/Mermaid';
+
+// Custom components for markdown rendering
+const CodeComponent = ({ children, className, ...props }: any) => {
+  // Extract language from className (e.g., "language-javascript")
+  const language = className?.replace('language-', '') || 'text';
+  
+  if (typeof children === 'string') {
+    return (
+      <CodeBlock 
+        language={language}
+        showLineNumbers={true}
+        {...props}
+      >
+        {children}
+      </CodeBlock>
+    );
+  }
+  
+  return <code className={className} {...props}>{children}</code>;
+};
+
+// Math component for inline and block math
+const MathComponent = ({ children, display, ...props }: any) => {
+  return <MathJax math={children} display={display} {...props} />;
+};
+
+// Chart component wrapper
+const ChartComponent = ({ type, data, options, title, description, ...props }: any) => {
+  try {
+    const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
+    const parsedOptions = typeof options === 'string' ? JSON.parse(options) : options;
+    
+    return (
+      <Chart
+        type={type}
+        data={parsedData}
+        options={parsedOptions}
+        title={title}
+        description={description}
+        {...props}
+      />
+    );
+  } catch (error) {
+    return (
+      <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+        <p className="text-red-800 text-sm">Error parsing chart data</p>
+      </div>
+    );
+  }
+};
+
+// Mermaid component wrapper  
+const MermaidComponent = ({ children, ...props }: any) => {
+  return <Mermaid chart={children} {...props} />;
+};
+
+// Enhanced markdown options with custom components
+export const markdownOptions = {
+  forceBlock: true,
+  overrides: {
+    // Code blocks
+    code: CodeComponent,
+    pre: {
+      component: ({ children, ...props }: any) => {
+        // Handle pre-wrapped code blocks
+        if (React.isValidElement(children) && children.type === CodeComponent) {
+          return children;
+        }
+        return <pre {...props}>{children}</pre>;
+      }
+    },
+    
+    // Math components
+    Math: MathComponent,
+    math: MathComponent,
+    
+    // Chart components
+    Chart: ChartComponent,
+    chart: ChartComponent,
+    
+    // Mermaid diagrams
+    Mermaid: MermaidComponent,
+    mermaid: MermaidComponent,
+    
+    // Enhanced blockquotes
+    blockquote: {
+      component: ({ children, ...props }: any) => (
+        <blockquote 
+          className="border-l-4 border-indigo-500 pl-4 py-2 my-4 bg-indigo-50 text-indigo-900 italic"
+          {...props}
+        >
+          {children}
+        </blockquote>
+      )
+    },
+    
+    // Enhanced tables
+    table: {
+      component: ({ children, ...props }: any) => (
+        <div className="overflow-x-auto my-6">
+          <table className="min-w-full divide-y divide-gray-200" {...props}>
+            {children}
+          </table>
+        </div>
+      )
+    },
+    
+    thead: {
+      component: ({ children, ...props }: any) => (
+        <thead className="bg-gray-50" {...props}>
+          {children}
+        </thead>
+      )
+    },
+    
+    th: {
+      component: ({ children, ...props }: any) => (
+        <th 
+          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          {...props}
+        >
+          {children}
+        </th>
+      )
+    },
+    
+    td: {
+      component: ({ children, ...props }: any) => (
+        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" {...props}>
+          {children}
+        </td>
+      )
+    },
+    
+    // Enhanced links
+    a: {
+      component: ({ children, href, ...props }: any) => (
+        <a 
+          href={href}
+          className="text-indigo-600 hover:text-indigo-800 underline"
+          target={href?.startsWith('http') ? '_blank' : undefined}
+          rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+          {...props}
+        >
+          {children}
+        </a>
+      )
+    }
+  }
+};

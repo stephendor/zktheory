@@ -1,0 +1,187 @@
+/* Enhanced Blog Components Styles */
+
+/* Code blocks */
+.sb-markdown pre {
+  @apply rounded-lg overflow-hidden my-6;
+}
+
+.sb-markdown code {
+  @apply text-sm font-mono;
+}
+
+.sb-markdown p code {
+  @apply bg-gray-100 px-2 py-1 rounded text-sm;
+}
+
+/* Math expressions */
+.sb-markdown .MathJax {
+  font-size: 1.1em !important;
+}
+
+.sb-markdown .MathJax_Display {
+  @apply my-6;
+}
+
+/* Tables */
+.sb-markdown table {
+  @apply w-full border-collapse border border-gray-300 my-6;
+}
+
+.sb-markdown th,
+.sb-markdown td {
+  @apply border border-gray-300 px-4 py-2;
+}
+
+.sb-markdown th {
+  @apply bg-gray-50 font-semibold;
+}
+
+/* Lists */
+.sb-markdown ul,
+.sb-markdown ol {
+  @apply my-4 pl-6;
+}
+
+.sb-markdown ul {
+  @apply list-disc;
+}
+
+.sb-markdown ol {
+  @apply list-decimal;
+}
+
+.sb-markdown li {
+  @apply my-2;
+}
+
+/* Headings */
+.sb-markdown h1 {
+  @apply text-3xl font-bold mt-8 mb-4 text-gray-900;
+}
+
+.sb-markdown h2 {
+  @apply text-2xl font-bold mt-6 mb-3 text-gray-900;
+}
+
+.sb-markdown h3 {
+  @apply text-xl font-semibold mt-4 mb-2 text-gray-900;
+}
+
+.sb-markdown h4 {
+  @apply text-lg font-medium mt-3 mb-2 text-gray-800;
+}
+
+/* Paragraphs */
+.sb-markdown p {
+  @apply my-4 leading-7 text-gray-700;
+}
+
+/* Images */
+.sb-markdown img {
+  @apply max-w-full h-auto rounded-lg shadow-sm my-6;
+}
+
+/* Horizontal rules */
+.sb-markdown hr {
+  @apply my-8 border-t border-gray-300;
+}
+
+/* Emphasis */
+.sb-markdown strong {
+  @apply font-semibold text-gray-900;
+}
+
+.sb-markdown em {
+  @apply italic;
+}
+
+/* Chart containers */
+.chart-container {
+  @apply my-6;
+}
+
+/* Mermaid diagrams */
+.mermaid-container {
+  @apply my-6 text-center;
+}
+
+.mermaid-chart svg {
+  @apply max-w-full h-auto mx-auto;
+}
+
+/* Custom callout boxes */
+.sb-markdown .callout {
+  @apply border-l-4 pl-4 py-2 my-4 rounded-r-lg;
+}
+
+.sb-markdown .callout.info {
+  @apply border-blue-500 bg-blue-50 text-blue-900;
+}
+
+.sb-markdown .callout.warning {
+  @apply border-yellow-500 bg-yellow-50 text-yellow-900;
+}
+
+.sb-markdown .callout.error {
+  @apply border-red-500 bg-red-50 text-red-900;
+}
+
+.sb-markdown .callout.success {
+  @apply border-green-500 bg-green-50 text-green-900;
+}
+
+/* Syntax highlighting adjustments */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  @apply text-gray-500;
+}
+
+.token.punctuation {
+  @apply text-gray-700;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  @apply text-red-600;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  @apply text-green-600;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  @apply text-yellow-600;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  @apply text-blue-600;
+}
+
+.token.function,
+.token.class-name {
+  @apply text-purple-600;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  @apply text-orange-600;
+}
