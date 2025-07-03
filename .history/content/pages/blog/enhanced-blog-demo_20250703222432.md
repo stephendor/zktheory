@@ -2,7 +2,7 @@
 type: PostLayout
 title: "Enhanced Blog Features Demo"
 slug: enhanced-blog-demo
-date: '2025-07-01'
+date: '2025-01-03'
 excerpt: Demonstration of enhanced blog features including code blocks, mathematical equations, charts, and diagrams
 featuredImage:
   type: ImageBlock
@@ -104,7 +104,7 @@ def train_model(X, y):
 
 ## Mathematical Equations
 
-Inline math: The quadratic formula is $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$.
+Inline math: The quadratic formula is $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$.
 
 Block equations:
 
@@ -115,11 +115,11 @@ $$
 Complex mathematical expressions:
 
 $$
-\frac{d}{dx}\left( \int_{a}^{x} f(t) dt\right) = f(x)
+\\frac{d}{dx}\\left( \\int_{a}^{x} f(t) dt\\right) = f(x)
 $$
 
 $$
-\sum_{n=1}^{\infty} \frac{1}{n^2} = \frac{\pi^2}{6}
+\\sum_{n=1}^{\\infty} \\frac{1}{n^2} = \\frac{\\pi^2}{6}
 $$
 
 ## Data Visualizations
@@ -173,7 +173,7 @@ $$
 
 ### System Architecture Diagram
 
-```mermaid
+<Mermaid>
 graph TD
     A[User] --> B[Load Balancer]
     B --> C[Web Server 1]
@@ -183,11 +183,11 @@ graph TD
     E --> F[Cache]
     C --> G[File Storage]
     D --> G
-```
+</Mermaid>
 
 ### Process Flow
 
-```mermaid
+<Mermaid>
 flowchart LR
     A[Start] --> B{Is user logged in?}
     B -->|Yes| C[Show Dashboard]
@@ -197,7 +197,7 @@ flowchart LR
     E -->|Invalid| F[Show Error]
     F --> D
     C --> G[End]
-```
+</Mermaid>
 
 ## Enhanced Formatting
 

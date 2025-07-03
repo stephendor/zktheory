@@ -2,7 +2,7 @@
 type: PostLayout
 title: "Enhanced Blog Features Demo"
 slug: enhanced-blog-demo
-date: '2025-07-01'
+date: '2025-01-03'
 excerpt: Demonstration of enhanced blog features including code blocks, mathematical equations, charts, and diagrams
 featuredImage:
   type: ImageBlock

@@ -40,7 +40,7 @@ export default function PostLayout(props) {
                                 className="max-w-3xl mx-auto sb-markdown prose prose-lg prose-indigo"
                                 {...(enableAnnotations && { 'data-sb-field-path': 'markdown_content' })}
                             >
-                                {preprocessMarkdown(markdown_content)}
+                                {markdown_content}
                             </Markdown>
                         )}
                     </div>

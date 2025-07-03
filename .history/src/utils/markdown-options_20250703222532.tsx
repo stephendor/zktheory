@@ -182,20 +182,3 @@ export const markdownOptions = {
     }
   }
 };
-
-// Preprocess markdown to handle math expressions
-export const preprocessMarkdown = (content: string): string => {
-  // Replace block math $$...$$ with components
-  content = content.replace(/\$\$([\s\S]*?)\$\$/g, (match, math) => {
-    const mathContent = math.trim();
-    return `<Math display={true}>${mathContent}</Math>`;
-  });
-  
-  // Replace inline math $...$ with components (but not if it's part of $$)
-  content = content.replace(/(?<!\$)\$([^$\n]+?)\$(?!\$)/g, (match, math) => {
-    const mathContent = math.trim();
-    return `<Math display={false}>${mathContent}</Math>`;
-  });
-  
-  return content;
-};
