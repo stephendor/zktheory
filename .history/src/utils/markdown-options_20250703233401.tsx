@@ -117,9 +117,12 @@ const ChartComponent = ({ chartId, data, type, options, title, description, ...p
 const MermaidComponent = ({ diagramId, chart, children, ...props }: any) => {
   let diagramData;
   
+  console.log('MermaidComponent received:', { diagramId, chart, children });
+  
   // Use diagramId to get data from store if available
   if (diagramId) {
     diagramData = getDiagramData(diagramId);
+    console.log('Retrieved diagram data from store:', diagramData);
   } else {
     // Fallback to old approach
     diagramData = chart || children;
@@ -134,11 +137,14 @@ const MermaidComponent = ({ diagramId, chart, children, ...props }: any) => {
     return (
       <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
         <p className="text-yellow-800 text-sm">No diagram data found</p>
+        <p className="text-xs text-yellow-600 mt-1">Diagram ID: {diagramId || 'none'}</p>
       </div>
     );
   }
   
-  // Create inline Mermaid component that works properly
+  console.log('Passing diagram data to Mermaid component:', diagramData?.substring(0, 50) + '...');
+  
+  // Create a simple React component for Mermaid that definitely works
   const SimpleMermaid = ({ chart }: { chart: string }) => {
     const [rendered, setRendered] = React.useState(false);
     const [error, setError] = React.useState<string | null>(null);
@@ -147,6 +153,8 @@ const MermaidComponent = ({ diagramId, chart, children, ...props }: any) => {
     React.useEffect(() => {
       const renderDiagram = async () => {
         try {
+          console.log('SimpleMermaid: Starting to render chart:', chart.substring(0, 50) + '...');
+          
           // Dynamic import to avoid SSR issues
           const mermaid = (await import('mermaid')).default;
           
@@ -161,8 +169,10 @@ const MermaidComponent = ({ diagramId, chart, children, ...props }: any) => {
             const { svg } = await mermaid.render(id, chart);
             containerRef.current.innerHTML = svg;
             setRendered(true);
+            console.log('SimpleMermaid: Successfully rendered');
           }
         } catch (err) {
+          console.error('SimpleMermaid error:', err);
           setError(String(err));
         }
       };
@@ -190,7 +200,20 @@ const MermaidComponent = ({ diagramId, chart, children, ...props }: any) => {
     );
   };
 
-  return <SimpleMermaid chart={diagramData} />;
+  return (
+    <div className="mermaid-debug-wrapper border-2 border-dashed border-blue-300 p-4 m-4">
+      <div className="text-sm text-blue-600 mb-2">
+        <strong>Debug Info:</strong> Diagram ID: {diagramId || 'none'}, Data Length: {diagramData?.length || 0}
+      </div>
+      <details className="mb-4">
+        <summary className="text-xs text-gray-500 cursor-pointer">Show Raw Diagram Code</summary>
+        <pre className="text-xs bg-gray-100 p-2 mt-2 overflow-auto max-h-32">
+          {diagramData}
+        </pre>
+      </details>
+      <SimpleMermaid chart={diagramData} />
+    </div>
+  );
 };
 
 // Enhanced markdown options with custom components
@@ -306,6 +329,7 @@ export const preprocessMarkdown = (content: string): string => {
       chartDataStore.set(chartId, parsed);
       return `<Chart chartId="${chartId}" />`;
     } catch (error) {
+      console.error('Chart parsing error:', error);
       return `<div class="p-4 bg-red-50 border border-red-200 rounded-lg"><p class="text-red-800 text-sm">Error parsing chart data: ${error.message}</p></div>`;
     }
   });

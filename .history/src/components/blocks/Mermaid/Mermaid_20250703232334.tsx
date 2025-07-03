@@ -12,11 +12,15 @@ export default function Mermaid({ chart, className = '', id }: MermaidProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('Mermaid useEffect triggered with chart:', chart?.substring(0, 50) + '...');
+    
     const loadMermaid = async () => {
       try {
+        console.log('Mermaid: Loading mermaid library...');
         // Dynamic import to avoid SSR issues
         const mermaid = (await import('mermaid')).default;
         
+        console.log('Mermaid: Successfully imported, initializing...');
         mermaid.initialize({
           startOnLoad: false,
           theme: 'default',
@@ -28,13 +32,18 @@ export default function Mermaid({ chart, className = '', id }: MermaidProps) {
           const uniqueId = id || `mermaid-${Math.random().toString(36).substr(2, 9)}`;
           elementRef.current.id = uniqueId;
           
+          console.log('Mermaid: Attempting render with ID:', uniqueId);
+          console.log('Mermaid: Full chart content:', chart);
+          
           try {
             const { svg } = await mermaid.render(uniqueId, chart);
             if (elementRef.current) {
               elementRef.current.innerHTML = svg;
               setIsLoaded(true);
+              console.log('Mermaid: Successfully rendered diagram');
             }
           } catch (renderError) {
+            console.error('Mermaid rendering error:', renderError);
             setError(`Rendering error: ${renderError}`);
             if (elementRef.current) {
               elementRef.current.innerHTML = `
@@ -45,8 +54,15 @@ export default function Mermaid({ chart, className = '', id }: MermaidProps) {
               `;
             }
           }
+        } else {
+          console.warn('Mermaid: Missing elementRef or chart data', {
+            hasElementRef: !!elementRef.current,
+            hasChart: !!chart,
+            chartLength: chart?.length
+          });
         }
       } catch (loadError) {
+        console.error('Failed to load Mermaid:', loadError);
         setError(`Failed to load Mermaid: ${loadError}`);
         if (elementRef.current) {
           elementRef.current.innerHTML = `
@@ -59,7 +75,10 @@ export default function Mermaid({ chart, className = '', id }: MermaidProps) {
     };
 
     if (chart) {
+      console.log('Mermaid: Chart data available, loading...');
       loadMermaid();
+    } else {
+      console.warn('Mermaid: No chart data provided');
     }
   }, [chart, id]);
 

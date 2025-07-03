@@ -91,16 +91,6 @@ export default function MathJax({ math, display = false, className = '' }: MathJ
     return () => clearTimeout(timeoutId);
   }, [math, display, isLoaded, isClient]);
 
-  // Don't render on server side to prevent hydration mismatches
-  if (!isClient) {
-    return (
-      <div className={`${display ? 'block text-center my-4 p-2' : 'inline'} ${className}`}>
-        {/* Placeholder for server-side rendering */}
-        <span style={{ visibility: 'hidden' }}>Loading math...</span>
-      </div>
-    );
-  }
-
   // Don't add extra $ symbols if they're already present
   const formattedMath = (() => {
     // Ensure math is a string and handle edge cases

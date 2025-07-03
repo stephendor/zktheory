@@ -138,59 +138,7 @@ const MermaidComponent = ({ diagramId, chart, children, ...props }: any) => {
     );
   }
   
-  // Create inline Mermaid component that works properly
-  const SimpleMermaid = ({ chart }: { chart: string }) => {
-    const [rendered, setRendered] = React.useState(false);
-    const [error, setError] = React.useState<string | null>(null);
-    const containerRef = React.useRef<HTMLDivElement>(null);
-
-    React.useEffect(() => {
-      const renderDiagram = async () => {
-        try {
-          // Dynamic import to avoid SSR issues
-          const mermaid = (await import('mermaid')).default;
-          
-          mermaid.initialize({
-            startOnLoad: false,
-            theme: 'default',
-            securityLevel: 'loose'
-          });
-
-          if (containerRef.current) {
-            const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
-            const { svg } = await mermaid.render(id, chart);
-            containerRef.current.innerHTML = svg;
-            setRendered(true);
-          }
-        } catch (err) {
-          setError(String(err));
-        }
-      };
-
-      if (chart) {
-        renderDiagram();
-      }
-    }, [chart]);
-
-    if (error) {
-      return (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-800 text-sm">Mermaid Error: {error}</p>
-        </div>
-      );
-    }
-
-    return (
-      <div className="mermaid-container text-center my-4">
-        {!rendered && (
-          <div className="text-gray-500 text-sm">Loading diagram...</div>
-        )}
-        <div ref={containerRef} />
-      </div>
-    );
-  };
-
-  return <SimpleMermaid chart={diagramData} />;
+  return <Mermaid chart={diagramData} {...props} />;
 };
 
 // Enhanced markdown options with custom components

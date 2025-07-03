@@ -15,18 +15,10 @@ declare global {
 export default function MathJax({ math, display = false, className = '' }: MathJaxProps) {
   const mathRef = useRef<HTMLDivElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isClient, setIsClient] = useState(false);
-
-  // Check if we're on the client side
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   useEffect(() => {
-    if (!isClient) return; // Don't run on server side
-
     // Load MathJax if not already loaded
-    if (typeof window !== 'undefined' && !window.MathJax) {
+    if (!window.MathJax) {
       // Configure MathJax before loading
       window.MathJax = {
         tex: {
@@ -43,10 +35,9 @@ export default function MathJax({ math, display = false, className = '' }: MathJ
         startup: {
           ready: () => {
             console.log('MathJax is loaded and ready');
-            if (window.MathJax?.startup?.defaultReady) {
-              window.MathJax.startup.defaultReady();
-            }
+            window.MathJax.startup.defaultReady();
             setIsLoaded(true);
+            renderMath();
           }
         }
       };
@@ -54,52 +45,28 @@ export default function MathJax({ math, display = false, className = '' }: MathJ
       const script = document.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
       script.async = true;
-      script.onload = () => {
-        // Additional safety check
-        setTimeout(() => {
-          if (window.MathJax && !isLoaded) {
-            setIsLoaded(true);
-          }
-        }, 100);
-      };
       document.head.appendChild(script);
-    } else if (typeof window !== 'undefined' && window.MathJax) {
+    } else {
       setIsLoaded(true);
+      renderMath();
     }
-  }, [isClient, isLoaded]);
+
+    function renderMath() {
+      if (window.MathJax && window.MathJax.typesetPromise && mathRef.current) {
+        window.MathJax.typesetPromise([mathRef.current]).catch((err: any) => {
+          console.error('MathJax rendering error:', err);
+        });
+      }
+    }
+  }, [math]);
 
   useEffect(() => {
-    if (!isClient || !isLoaded) return;
-
-    const renderMath = async () => {
-      if (
-        typeof window !== 'undefined' &&
-        window.MathJax &&
-        window.MathJax.typesetPromise &&
-        mathRef.current
-      ) {
-        try {
-          await window.MathJax.typesetPromise([mathRef.current]);
-        } catch (err) {
-          console.error('MathJax rendering error:', err);
-        }
-      }
-    };
-
-    // Small delay to ensure DOM is ready
-    const timeoutId = setTimeout(renderMath, 50);
-    return () => clearTimeout(timeoutId);
-  }, [math, display, isLoaded, isClient]);
-
-  // Don't render on server side to prevent hydration mismatches
-  if (!isClient) {
-    return (
-      <div className={`${display ? 'block text-center my-4 p-2' : 'inline'} ${className}`}>
-        {/* Placeholder for server-side rendering */}
-        <span style={{ visibility: 'hidden' }}>Loading math...</span>
-      </div>
-    );
-  }
+    if (isLoaded && window.MathJax && mathRef.current) {
+      window.MathJax.typesetPromise([mathRef.current]).catch((err: any) => {
+        console.error('MathJax rendering error:', err);
+      });
+    }
+  }, [math, display, isLoaded]);
 
   // Don't add extra $ symbols if they're already present
   const formattedMath = (() => {

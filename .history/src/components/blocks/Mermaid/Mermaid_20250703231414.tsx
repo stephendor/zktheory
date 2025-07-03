@@ -35,6 +35,7 @@ export default function Mermaid({ chart, className = '', id }: MermaidProps) {
               setIsLoaded(true);
             }
           } catch (renderError) {
+            console.error('Mermaid rendering error:', renderError);
             setError(`Rendering error: ${renderError}`);
             if (elementRef.current) {
               elementRef.current.innerHTML = `
@@ -47,6 +48,7 @@ export default function Mermaid({ chart, className = '', id }: MermaidProps) {
           }
         }
       } catch (loadError) {
+        console.error('Failed to load Mermaid:', loadError);
         setError(`Failed to load Mermaid: ${loadError}`);
         if (elementRef.current) {
           elementRef.current.innerHTML = `
@@ -83,6 +85,11 @@ export default function Mermaid({ chart, className = '', id }: MermaidProps) {
       </div>
     );
   }
+      }
+    };
+
+    loadMermaid();
+  }, [chart, id]);
 
   return (
     <div className={`mermaid-container ${className}`}>

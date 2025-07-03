@@ -57,7 +57,7 @@ const CodeComponent = ({ children, className, ...props }: any) => {
 const MathComponent = ({ children, display, ...props }: any) => {
   // Extract text content from children
   const mathText = typeof children === 'string' ? children : 
-                   React.isValidElement(children) ? (children.props as any)?.children || '' :
+                   React.isValidElement(children) ? children.props?.children || '' :
                    Array.isArray(children) ? children.join('') : 
                    String(children || '');
   
@@ -65,132 +65,33 @@ const MathComponent = ({ children, display, ...props }: any) => {
 };
 
 // Chart component wrapper
-const ChartComponent = ({ chartId, data, type, options, title, description, ...props }: any) => {
+const ChartComponent = ({ type, data, options, title, description, ...props }: any) => {
   try {
-    let chartConfig;
-    
-    // Use chartId to get data from store if available
-    if (chartId) {
-      chartConfig = getChartData(chartId);
-    } else if (data) {
-      // Fallback to old approach
-      if (typeof data === 'string' && data.includes('%')) {
-        const decodedData = decodeURIComponent(data);
-        chartConfig = JSON.parse(decodedData);
-      } else if (typeof data === 'string') {
-        chartConfig = JSON.parse(data);
-      } else {
-        chartConfig = {
-          type: type || 'line',
-          data: typeof data === 'string' ? JSON.parse(data) : data,
-          options: typeof options === 'string' ? JSON.parse(options) : options,
-          title,
-          description
-        };
-      }
-    }
-    
-    if (!chartConfig) {
-      throw new Error('No chart configuration found');
-    }
+    const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
+    const parsedOptions = typeof options === 'string' ? JSON.parse(options) : options;
     
     return (
       <Chart
-        type={chartConfig.type}
-        data={chartConfig.data}
-        options={chartConfig.options}
-        title={chartConfig.title}
-        description={chartConfig.description}
+        type={type}
+        data={parsedData}
+        options={parsedOptions}
+        title={title}
+        description={description}
         {...props}
       />
     );
   } catch (error) {
     return (
       <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-        <p className="text-red-800 text-sm">Error rendering chart: {error.message}</p>
+        <p className="text-red-800 text-sm">Error parsing chart data</p>
       </div>
     );
   }
 };
 
 // Mermaid component wrapper  
-const MermaidComponent = ({ diagramId, chart, children, ...props }: any) => {
-  let diagramData;
-  
-  // Use diagramId to get data from store if available
-  if (diagramId) {
-    diagramData = getDiagramData(diagramId);
-  } else {
-    // Fallback to old approach
-    diagramData = chart || children;
-    
-    // Handle encoded data from preprocessMarkdown
-    if (typeof diagramData === 'string' && diagramData.includes('%')) {
-      diagramData = decodeURIComponent(diagramData);
-    }
-  }
-  
-  if (!diagramData) {
-    return (
-      <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-        <p className="text-yellow-800 text-sm">No diagram data found</p>
-      </div>
-    );
-  }
-  
-  // Create inline Mermaid component that works properly
-  const SimpleMermaid = ({ chart }: { chart: string }) => {
-    const [rendered, setRendered] = React.useState(false);
-    const [error, setError] = React.useState<string | null>(null);
-    const containerRef = React.useRef<HTMLDivElement>(null);
-
-    React.useEffect(() => {
-      const renderDiagram = async () => {
-        try {
-          // Dynamic import to avoid SSR issues
-          const mermaid = (await import('mermaid')).default;
-          
-          mermaid.initialize({
-            startOnLoad: false,
-            theme: 'default',
-            securityLevel: 'loose'
-          });
-
-          if (containerRef.current) {
-            const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
-            const { svg } = await mermaid.render(id, chart);
-            containerRef.current.innerHTML = svg;
-            setRendered(true);
-          }
-        } catch (err) {
-          setError(String(err));
-        }
-      };
-
-      if (chart) {
-        renderDiagram();
-      }
-    }, [chart]);
-
-    if (error) {
-      return (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-800 text-sm">Mermaid Error: {error}</p>
-        </div>
-      );
-    }
-
-    return (
-      <div className="mermaid-container text-center my-4">
-        {!rendered && (
-          <div className="text-gray-500 text-sm">Loading diagram...</div>
-        )}
-        <div ref={containerRef} />
-      </div>
-    );
-  };
-
-  return <SimpleMermaid chart={diagramData} />;
+const MermaidComponent = ({ children, ...props }: any) => {
+  return <Mermaid chart={children} {...props} />;
 };
 
 // Enhanced markdown options with custom components
@@ -288,35 +189,8 @@ export const markdownOptions = {
   }
 };
 
-// Store chart and diagram data globally to avoid encoding issues
-const chartDataStore = new Map<string, any>();
-const diagramDataStore = new Map<string, string>();
-
-// Preprocess markdown to handle math expressions, charts, and diagrams
+// Preprocess markdown to handle math expressions
 export const preprocessMarkdown = (content: string): string => {
-  // Clear previous data
-  chartDataStore.clear();
-  diagramDataStore.clear();
-  
-  // Replace chart code blocks with Chart components (handle different line endings)
-  content = content.replace(/```chart\r?\n([\s\S]*?)\r?\n```/g, (match, chartData) => {
-    try {
-      const parsed = JSON.parse(chartData.trim());
-      const chartId = `chart_${Math.random().toString(36).substr(2, 9)}`;
-      chartDataStore.set(chartId, parsed);
-      return `<Chart chartId="${chartId}" />`;
-    } catch (error) {
-      return `<div class="p-4 bg-red-50 border border-red-200 rounded-lg"><p class="text-red-800 text-sm">Error parsing chart data: ${error.message}</p></div>`;
-    }
-  });
-  
-  // Replace mermaid code blocks with Mermaid components (handle different line endings)
-  content = content.replace(/```mermaid\r?\n([\s\S]*?)\r?\n```/g, (match, diagramData) => {
-    const diagramId = `mermaid_${Math.random().toString(36).substr(2, 9)}`;
-    diagramDataStore.set(diagramId, diagramData.trim());
-    return `<Mermaid diagramId="${diagramId}" />`;
-  });
-  
   // Replace block math $$...$$ with components
   content = content.replace(/\$\$([\s\S]*?)\$\$/g, (match, math) => {
     const mathContent = math.trim();
@@ -331,7 +205,3 @@ export const preprocessMarkdown = (content: string): string => {
   
   return content;
 };
-
-// Export functions to access stored data
-export const getChartData = (chartId: string) => chartDataStore.get(chartId);
-export const getDiagramData = (diagramId: string) => diagramDataStore.get(diagramId);

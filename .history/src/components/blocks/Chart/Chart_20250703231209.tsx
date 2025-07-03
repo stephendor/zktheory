@@ -26,7 +26,6 @@ export default function Chart({
 }: ChartProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [isChartJsLoaded, setIsChartJsLoaded] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -35,8 +34,6 @@ export default function Chart({
     const loadChartJS = async () => {
       try {
         const ChartJS = await import('chart.js');
-        
-        // Register all necessary components
         ChartJS.Chart.register(
           ChartJS.CategoryScale,
           ChartJS.LinearScale,
@@ -46,17 +43,11 @@ export default function Chart({
           ChartJS.Title,
           ChartJS.Tooltip,
           ChartJS.Legend,
-          ChartJS.ArcElement,
-          ChartJS.Filler
+          ChartJS.ArcElement
         );
-        
-        // Small delay to ensure registration is complete
-        setTimeout(() => {
-          setIsChartJsLoaded(true);
-        }, 100);
+        setIsChartJsLoaded(true);
       } catch (error) {
         console.error('Error loading Chart.js:', error);
-        setError('Failed to load Chart.js');
       }
     };
     
@@ -79,27 +70,10 @@ export default function Chart({
   };
 
   const renderChart = () => {
-    if (error) {
-      return (
-        <div className="flex items-center justify-center h-full bg-red-50 rounded border border-red-200">
-          <p className="text-red-600">{error}</p>
-        </div>
-      );
-    }
-
     if (!isMounted || !isChartJsLoaded) {
       return (
         <div className="flex items-center justify-center h-full bg-gray-100 rounded">
           <p className="text-gray-500">Loading chart...</p>
-        </div>
-      );
-    }
-
-    // Validate data
-    if (!data || !data.datasets || !Array.isArray(data.datasets)) {
-      return (
-        <div className="flex items-center justify-center h-full bg-yellow-50 rounded border border-yellow-200">
-          <p className="text-yellow-600">Invalid chart data</p>
         </div>
       );
     }
@@ -122,7 +96,6 @@ export default function Chart({
           );
       }
     } catch (error) {
-      console.error('Chart rendering error:', error);
       return (
         <div className="flex items-center justify-center h-full bg-red-50 rounded border border-red-200">
           <p className="text-red-600">Error rendering chart</p>

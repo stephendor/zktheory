@@ -46,6 +46,8 @@
             "iconPosition": "right",
             "style": "secondary",
             "type": "Link"
+        },
+            "labelStyle": "secondary"
         }
     ],
     "secondaryLinks": [],
