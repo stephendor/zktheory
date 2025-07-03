@@ -1,7 +1,6 @@
 {
     "logo": {
         "altText": "Logo dark",
-        "className": "w-8 h-8",
         "styles": {
             "self": {
                 "margin": [
@@ -33,19 +32,52 @@
         {
             "label": "Library",
             "altText": "",
-            "url": "/library",
+            "url": "\\library",
             "icon": "arrowRight",
             "iconPosition": "right",
             "style": "secondary",
             "type": "Link"
         },
         {
+            "type": "SubNav",
             "label": "Projects",
-            "url": "/projects",
-            "icon": "arrowRight",
-            "iconPosition": "right",
-            "style": "secondary",
-            "type": "Link"
+            "altText": "",
+            "links": [
+                {
+                    "type": "Link",
+                    "label": "Cybersecurity",
+                    "altText": "",
+                    "url": "/projects/cybersec",
+                    "showIcon": false,
+                    "icon": "arrowRight",
+                    "iconPosition": "right",
+                    "style": "secondary",
+                    "elementId": ""
+                },
+                {
+                    "type": "Link",
+                    "label": "Rust",
+                    "altText": "",
+                    "url": "/projects/rust",
+                    "showIcon": false,
+                    "icon": "arrowRight",
+                    "iconPosition": "right",
+                    "style": "secondary",
+                    "elementId": ""
+                },
+                {
+                    "type": "Link",
+                    "label": "Lean",
+                    "altText": "",
+                    "url": "/projects/lean",
+                    "showIcon": false,
+                    "icon": "arrowRight",
+                    "iconPosition": "right",
+                    "style": "secondary",
+                    "elementId": ""
+                }
+            ],
+            "labelStyle": "secondary"
         }
     ],
     "secondaryLinks": [],

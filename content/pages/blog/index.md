@@ -1,127 +1,16 @@
 ---
 title: Blog
 slug: /blog
-numOfPostsPerPage: 10
+numOfPostsPerPage: 0
 enableSearch: true
 topSections:
-  - type: FeaturedItemsSection
-    title:
-      type: TitleBlock
-      text: Blog Categories
-      color: text-primary
-      styles:
-        self:
-          textAlign: center
-    subtitle: 'Explore posts by category'
-    items:
-      - type: FeaturedItem
-        title: Weekly Progress Updates
-        tagline: Regular Updates
-        subtitle: Journey & Learning Progress
-        text: |
-          Weekly updates on my cybersecurity learning journey, certification progress, and skill development milestones.
-        image:
-          type: ImageBlock
-          url: /images/abstract-feature1.svg
-          altText: Weekly Progress
-          styles:
-            self:
-              borderRadius: x-large
-        actions:
-          - type: Button
-            label: View Updates
-            url: /blog/category/progress
-            icon: arrowRight
-            iconPosition: right
-            style: secondary
-        colors: bg-light-fg-dark
-        styles:
-          self:
-            padding:
-              - pt-6
-              - pl-6
-              - pb-6
-              - pr-6
-            borderRadius: x-large
-            flexDirection: col
-      - type: FeaturedItem
-        title: Technical Writeups
-        tagline: Deep Dives
-        subtitle: Tutorials & Technical Analysis
-        text: |
-          In-depth technical posts covering cybersecurity concepts, tools, methodologies, and hands-on tutorials.
-        image:
-          type: ImageBlock
-          url: /images/abstract-feature2.svg
-          altText: Technical Content
-          styles:
-            self:
-              borderRadius: x-large
-        actions:
-          - type: Button
-            label: Read Writeups
-            url: /blog/category/technical
-            icon: arrowRight
-            iconPosition: right
-            style: secondary
-        colors: bg-light-fg-dark
-        styles:
-          self:
-            padding:
-              - pt-6
-              - pl-6
-              - pb-6
-              - pr-6
-            borderRadius: x-large
-            flexDirection: col
-      - type: FeaturedItem
-        title: Lessons Learned
-        tagline: Insights & Reflections
-        subtitle: Key Takeaways & Advice
-        text: |
-          Reflections on challenges faced, mistakes made, and valuable lessons learned throughout my cybersecurity journey.
-        image:
-          type: ImageBlock
-          url: /images/abstract-feature3.svg
-          altText: Lessons Learned
-          styles:
-            self:
-              borderRadius: x-large
-        actions:
-          - type: Button
-            label: Read Insights
-            url: /blog/category/lessons
-            icon: arrowRight
-            iconPosition: right
-            style: secondary
-        colors: bg-light-fg-dark
-        styles:
-          self:
-            padding:
-              - pt-6
-              - pl-6
-              - pb-6
-              - pr-6
-            borderRadius: x-large
-            flexDirection: col
-    actions: []
-    variant: three-col-grid
-    colors: bg-neutral-fg-dark
-    styles:
-      self:
-        padding:
-          - pt-16
-          - pl-8
-          - pb-8
-          - pr-8
-        justifyContent: center
-      subtitle:
-        textAlign: center
   - title:
-      text: Latest Posts
+      text: Featured Post
       color: text-dark
       type: TitleBlock
-    subtitle: Recent blog posts and updates
+    subtitle: This is the subtitle
+    posts:
+      - content/pages/blog/top-ten-lessons-we-learned.md
     showThumbnail: true
     showExcerpt: true
     showDate: true
@@ -131,7 +20,7 @@ topSections:
     styles:
       self:
         padding:
-          - pt-8
+          - pt-28
           - pb-0
           - pl-4
           - pr-4
@@ -142,11 +31,33 @@ styles:
   title:
     textAlign: center
 seo:
-  metaTitle: Blog - Cybersecurity Journey & Technical Insights
+  metaTitle: Blog - Demo site
   metaDescription: >-
-    Follow my cybersecurity learning journey with weekly updates, technical writeups, and lessons learned from hands-on experience.
-  socialImage: /images/main-hero.jpg
+    This is the blog of the demo site where we post about technology, product,
+    and design.
+  socialImage: /images/img-placeholder.svg
   type: Seo
 type: PostFeedLayout
-bottomSections: []
+bottomSections:
+  - type: RecentPostsSection
+    title:
+      type: TitleBlock
+      text: Recent posts
+      color: text-dark
+      styles:
+        self:
+          textAlign: center
+    recentCount: 3
+    showThumbnail: true
+    showExcerpt: true
+    showDate: true
+    showAuthor: true
+    actions: []
+    elementId: ''
+    variant: three-col-grid
+    colors: bg-light-fg-dark
+    hoverEffect: thin-underline
+    styles:
+      self:
+        justifyContent: center
 ---
