@@ -1,0 +1,57 @@
+{
+    "logo": {
+        "altText": "Logo dark",
+        "styles": {
+            "self": {
+                "margin": [
+                    "mr-3"
+                ],
+                "width": "w-8",
+                "height": "h-8"
+            }
+        },
+        "type": "ImageBlock",
+        "url": "/images/zk_blog_icon.svg"
+    },
+    "primaryLinks": [
+        {
+            "label": "About",
+            "url": "/about",
+            "icon": "arrowRight",
+            "iconPosition": "right",
+            "style": "secondary",
+            "type": "Link"
+        },
+        {
+            "label": "Blog",
+            "altText": "Blog",
+            "url": "/blog",
+            "icon": "arrowRight",
+            "iconPosition": "right",
+            "style": "secondary",
+            "type": "Link"
+        },
+        {
+            "label": "Library",
+            "altText": "",
+            "url": "/library",
+            "icon": "arrowRight",
+            "iconPosition": "right",
+            "style": "secondary",
+            "type": "Link"
+        },
+        {
+            "label": "Projects",
+            "url": "/projects",
+            "icon": "arrowRight",
+            "iconPosition": "right",
+            "style": "secondary",
+            "type": "Link"
+        }
+    ],
+    "secondaryLinks": [],
+    "variant": "logo-left-primary-nav-left",
+    "colors": "bg-light-fg-dark",
+    "type": "Header",
+    "title": "Zero Knowledge Proof"
+}

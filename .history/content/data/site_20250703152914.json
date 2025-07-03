@@ -1,0 +1,9 @@
+{
+    "favicon": "/images/favicon.svg",
+    "footer": "content/data/footer.json",
+    "titleSuffix": "zktheory",
+    "defaultSocialImage": "/images/main-hero.jpg",
+    "type": "Config",
+    "header": "content/data/header.json",
+    "enableAnnotations": false
+}

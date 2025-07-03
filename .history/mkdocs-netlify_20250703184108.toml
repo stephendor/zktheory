@@ -1,0 +1,21 @@
+# Netlify configuration for MkDocs
+[build]
+  command = "python -m pip install --upgrade pip && pip install -r requirements.txt && mkdocs build"
+  publish = "site"
+
+[build.environment]
+  PYTHON_VERSION = "3.9"
+
+# Redirects for clean URLs
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
