@@ -38,7 +38,7 @@ export default function Document() {
                   apiKey: '2dd8d5abf2372ef29252d8eff33155d9',
                   siteId: '14010c38-351d-436e-878a-6364014e43d9',
                   branch: 'main',
-                  selector: 'div#header-search',
+                  selector: 'div#search',
                 });
                 console.log('Algolia search initialized successfully');
               } catch (error) {
