@@ -1,0 +1,30 @@
+# Netlify configuration for GitBook
+[build]
+  # Install GitBook CLI and build the book
+  command = "npm install -g gitbook-cli && gitbook install && gitbook build"
+  # The output directory where GitBook generates the static files
+  publish = "_book"
+
+[build.environment]
+  # Use Node.js version 16 for compatibility with GitBook
+  NODE_VERSION = "16"
+
+# Handle SPA routing - redirect all requests to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Optional: Handle specific GitBook assets
+[[redirects]]
+  from = "/gitbook/*"
+  to = "/gitbook/:splat"
+  status = 200
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
