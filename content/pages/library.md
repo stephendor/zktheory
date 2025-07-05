@@ -13,21 +13,23 @@ sections:
     subtitle: Curated reading for the cryptocurious
     items:
       - type: FeaturedItem
-        title: 500k
-        subtitle: Numbers Done
+        title:
+        subtitle: Linux Basics for Hackers
         text: >-
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-          accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae.
-          explicabo.
+          An introduction to using Kali Linux for hacking.
         image:
           type: ImageBlock
-          url: /images/icon1.svg
-          altText: Lightning bolt symbol on red background
+          url: /images/LinuxBasics2e_frontcover.webp
+          altText: Linux Basics for Hackers book cover
           elementId: ''
           styles:
             self:
               borderRadius: x-large
-        actions: []
+        actions:
+          - type: Button
+            label: Learn More
+            url: 'https://nostarch.com/linux-basics-hackers-2nd-edition'
+            style: primary
         colors: bg-neutralAlt-fg-dark
         styles:
           self:
@@ -41,18 +43,20 @@ sections:
             justifyContent: center
             textAlign: left
       - type: FeaturedItem
-        title: 20x
-        subtitle: The Job Stuff
+        title:
+        subtitle: Black Hat Rust
         text: >-
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-          accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae.
-          explicabo.
+          Applied offensive security with the Rust programming language
         image:
           type: ImageBlock
-          url: /images/icon2.svg
-          altText: Featured icon two
+          url: /images/black_hat_rust_cover.svg
+          altText: Black Hat Rust book cover
           elementId: ''
-        actions: []
+        actions:
+          - type: Button
+            label: Learn More
+            url: 'https://kerkour.com/black-hat-rust'
+            style: primary
         colors: bg-neutralAlt-fg-dark
         styles:
           self:
@@ -66,18 +70,20 @@ sections:
             textAlign: left
             justifyContent: center
       - type: FeaturedItem
-        title: 200%
-        subtitle: Faster
+        title:
+        subtitle: Serious Cryptography
         text: >-
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-          accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae.
-          explicabo.
+          An introduction to modern cryptography that breaks down fundamental mathematical concepts without shying away from meaty discussions of how they work.
         image:
           type: ImageBlock
-          url: /images/icon3.svg
-          altText: Featured icon three
+          url: /images/SeriousCryptography2e_frontcover.webp
+          altText: Serious Cryptography book cover
           elementId: ''
-        actions: []
+        actions:
+          - type: Button
+            label: Learn More
+            url: 'https://nostarch.com/serious-cryptography-2nd-edition'
+            style: primary
         colors: bg-neutralAlt-fg-dark
         styles:
           self:
