@@ -118,7 +118,7 @@ sections:
       subtitle:
         textAlign: center
   - type: DividerSection
-    colors: bg-neutral-fg-dark
+    colors: bg-neutral-fg-light
 
   - type: FeaturedItemsSection
     title:
