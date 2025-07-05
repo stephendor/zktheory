@@ -5,7 +5,7 @@ sections:
   - type: FeaturedItemsSection
     title:
       type: TitleBlock
-      text: Recent and Recommended
+      text: Recent and Recommended Reading
       color: text-dark
       styles:
         self:
@@ -96,7 +96,7 @@ sections:
             flexDirection: row
     actions:
       - type: Button
-        label: Get started
+        label: Home
         altText: ''
         url: /
         showIcon: false
@@ -104,13 +104,6 @@ sections:
         iconPosition: right
         style: primary
         elementId: ''
-    badge:
-      type: Badge
-      label: This is a badge
-      color: text-primary
-      styles:
-        self:
-          textAlign: center
     elementId: ''
     variant: three-col-grid
     colors: bg-neutral-fg-dark
@@ -124,11 +117,91 @@ sections:
         justifyContent: center
       subtitle:
         textAlign: center
+  - type: DividerSection
+    colors: bg-neutral-fg-dark
+
+  - type: FeaturedItemsSection
+    title:
+      type: TitleBlock
+      text:
+      color: text-dark
+      styles:
+        self:
+          textAlign: center
+    subtitle:
+
+    items:
+      - type: FeaturedItem
+        title:
+        subtitle: Papers
+        text: ''
+        image:
+          type: ImageBlock
+          url: ''
+          altText: ''
+          elementId: ''
+        actions: []
+        colors: bg-neutralAlt-fg-dark
+        styles:
+          self:
+            padding:
+              - pt-8
+              - pl-8
+              - pb-8
+              - pr-8
+            borderRadius: x-large
+            flexDirection: row
+            textAlign: left
+            justifyContent: center
+      - type: FeaturedItem
+        title:
+        subtitle: Blogs
+        text: ''
+        image:
+          type: ImageBlock
+          url: ''
+          altText: ''
+          elementId: ''
+        actions: []
+        colors: bg-neutralAlt-fg-dark
+        styles:
+          self:
+            padding:
+              - pt-8
+              - pl-8
+              - pb-8
+              - pr-8
+            borderRadius: x-large
+            flexDirection: row
+            textAlign: left
+            justifyContent: center
+      - type: FeaturedItem
+        title:
+        subtitle: Courses
+        text: ''
+        image:
+          type: ImageBlock
+          url: ''
+          altText: ''
+          elementId: ''
+        actions: []
+        colors: bg-neutralAlt-fg-dark
+        styles:
+          self:
+            padding:
+              - pt-8
+              - pl-8
+              - pb-8
+              - pr-8
+            borderRadius: x-large
+            flexDirection: row
+            textAlign: left
+            justifyContent: center
 slug: /library
 isDraft: false
 seo:
   type: Seo
-  metaTitle: Landing Page
+  metaTitle: Recommended Reading
   metaDescription: Write here your new page's description including most relevant keywords.
   addTitleSuffix: true
   socialImage: /images/main-hero.jpg

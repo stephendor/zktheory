@@ -31,10 +31,9 @@ styles:
   title:
     textAlign: center
 seo:
-  metaTitle: Blog - Demo site
+  metaTitle: Blog - a proof of zero knowledge
   metaDescription: >-
-    This is the blog of the demo site where we post about technology, product,
-    and design.
+    This is a blog about cybersecurity, cryptography, hacking and proof.
   socialImage: /images/img-placeholder.svg
   type: Seo
 type: PostFeedLayout

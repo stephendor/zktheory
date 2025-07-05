@@ -7,10 +7,9 @@ sections:
       text: ''
       color: text-dark
       type: TitleBlock
-    subtitle: 'Exploring Rust, Lean 4 and Cryptography'
+    subtitle: 'From zero to finite fields'
     text: >
-      Deep dives into systems programming, theorem proving, and cryptographic
-      fundamentals.
+      A journey into cybersecurity and cryptography
     actions:
       - label: Get started
         altText: ''
@@ -27,7 +26,7 @@ sections:
       elementId: ''
       type: ImageBlock
     badge:
-      label: ZKTheory
+      label: ZK Theory
       color: text-primary
       type: Badge
       styles:
