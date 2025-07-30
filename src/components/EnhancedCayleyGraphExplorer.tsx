@@ -29,13 +29,16 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
 
   // Generate graph when group or generators change
   useEffect(() => {
-    if (currentGroup && selectedGenerators.length > 0) {
+    if (currentGroup) {
       console.log('Generating Cayley graph for:', currentGroup.name);
       console.log('Generators:', selectedGenerators);
       
+      // Special case for trivial group C1 which has no generators
+      const generatorsToUse = currentGroup.generators.length === 0 ? [] : selectedGenerators;
+      
       const graph = CayleyGraphGenerator.generateGraph(
         currentGroup, 
-        selectedGenerators, 
+        generatorsToUse, 
         '2d'
       );
       
@@ -126,11 +129,6 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
   }, [drawGraph]);
 
   const availableGroups = GroupTheoryLibrary.getAllGroups();
-  
-  // Debug: Log available groups to console
-  console.log('Available groups:', availableGroups.map(g => `${g.name} (${g.displayName})`));
-  console.log('Total groups available:', availableGroups.length);
-  console.log('First few groups:', availableGroups.slice(0, 5).map(g => g.name));
 
   return (
     <div className="w-full bg-white rounded-lg shadow-lg overflow-hidden">

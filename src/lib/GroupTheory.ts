@@ -3,6 +3,8 @@
  * Implements finite groups up to order 20 without external dependencies
  */
 
+import { StandardLayoutGenerator } from './StandardLayouts';
+
 export interface GroupElement {
   id: string;
   label: string;
@@ -207,7 +209,7 @@ export class CayleyGraphGenerator {
     const edges: CayleyGraphEdge[] = [];
     
     // Create vertices
-    const positions = this.generateLayout(group.elements.length, layout);
+    const positions = this.generateLayout(group, layout);
     for (let i = 0; i < group.elements.length; i++) {
       const element = group.elements[i];
       vertices.push({
@@ -262,22 +264,50 @@ export class CayleyGraphGenerator {
     };
   }
 
-  private static generateLayout(numElements: number, layout: '2d' | '3d'): Array<{x: number, y: number, z?: number}> {
+  private static generateLayout(
+    group: Group, 
+    layout: '2d' | '3d'
+  ): Array<{x: number, y: number, z?: number}> {
     const positions: Array<{x: number, y: number, z?: number}> = [];
     
     if (layout === '2d') {
-      // Spring-force layout simulation
+      // Try to get standard layout first
+      const standardLayout = StandardLayoutGenerator.getStandardLayout(group.name, group.order);
+      
+      if (standardLayout) {
+        console.log(`🎯 Using standard layout for ${group.name}:`, standardLayout.description);
+        console.log('Standard positions:', standardLayout.positions);
+        
+        // Map element IDs to standard positions
+        for (const element of group.elements) {
+          const standardPos = standardLayout.positions[element.id] || 
+                            standardLayout.positions[element.label] ||
+                            { x: 0.5, y: 0.5 }; // Fallback to center
+          
+          console.log(`📍 Element ${element.id}/${element.label} -> (${standardPos.x}, ${standardPos.y})`);
+          
+          positions.push({
+            x: standardPos.x * 600, // Scale to canvas size
+            y: standardPos.y * 400,
+          });
+        }
+        
+        return positions;
+      }
+      
+      // Fallback to algorithmic layout
+      console.log(`⚠️  No standard layout found for ${group.name}, using algorithmic layout`);
       const width = 600;
       const height = 400;
       const centerX = width / 2;
       const centerY = height / 2;
       
       // Use circular layout for better edge visibility
-      if (numElements <= 8) {
+      if (group.elements.length <= 8) {
         // For small groups, use circular layout
         const radius = Math.min(width, height) * 0.3;
-        for (let i = 0; i < numElements; i++) {
-          const angle = (2 * Math.PI * i) / numElements;
+        for (let i = 0; i < group.elements.length; i++) {
+          const angle = (2 * Math.PI * i) / group.elements.length;
           positions.push({
             x: centerX + radius * Math.cos(angle),
             y: centerY + radius * Math.sin(angle)
@@ -285,14 +315,14 @@ export class CayleyGraphGenerator {
         }
       } else {
         // For larger groups, use grid layout
-        const cols = Math.ceil(Math.sqrt(numElements));
-        const rows = Math.ceil(numElements / cols);
+        const cols = Math.ceil(Math.sqrt(group.elements.length));
+        const rows = Math.ceil(group.elements.length / cols);
         const cellWidth = width * 0.8 / cols;
         const cellHeight = height * 0.8 / rows;
         const startX = centerX - (cols - 1) * cellWidth / 2;
         const startY = centerY - (rows - 1) * cellHeight / 2;
         
-        for (let i = 0; i < numElements; i++) {
+        for (let i = 0; i < group.elements.length; i++) {
           const row = Math.floor(i / cols);
           const col = i % cols;
           positions.push({
@@ -303,9 +333,9 @@ export class CayleyGraphGenerator {
       }
     } else {
       // 3D layout
-      for (let i = 0; i < numElements; i++) {
-        const theta = (2 * Math.PI * i) / numElements;
-        const phi = Math.acos(1 - 2 * (i / numElements));
+      for (let i = 0; i < group.elements.length; i++) {
+        const theta = (2 * Math.PI * i) / group.elements.length;
+        const phi = Math.acos(1 - 2 * (i / group.elements.length));
         const radius = 200;
         
         positions.push({
