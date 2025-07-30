@@ -320,6 +320,46 @@ export class CayleyGraphGenerator {
           z: layout === '3d' ? (isRotation ? 0 : 50) : undefined
         });
       }
+    } else if (group.name === 'V4' || group.name === 'K4') {
+      // Klein Four Group - square layout
+      console.log(`⬜ Using Klein Four layout`);
+      const squareSize = 120;
+      const corners = [
+        { x: centerX - squareSize/2, y: centerY - squareSize/2 },
+        { x: centerX + squareSize/2, y: centerY - squareSize/2 },
+        { x: centerX + squareSize/2, y: centerY + squareSize/2 },
+        { x: centerX - squareSize/2, y: centerY + squareSize/2 }
+      ];
+      
+      for (let i = 0; i < Math.min(4, group.elements.length); i++) {
+        positions.push({
+          x: corners[i].x,
+          y: corners[i].y,
+          z: layout === '3d' ? 0 : undefined
+        });
+      }
+    } else if (group.name === 'S3') {
+      // Symmetric group S3 - triangular layout
+      console.log(`🔺 Using S3 triangular layout`);
+      const radius = 150;
+      const trianglePositions = [
+        { angle: -Math.PI/2 }, // top
+        { angle: Math.PI/6 },   // bottom right
+        { angle: 5*Math.PI/6 }, // bottom left
+        { angle: 0 },           // center-right
+        { angle: 2*Math.PI/3 }, // center-left
+        { angle: 4*Math.PI/3 }  // center-bottom
+      ];
+      
+      for (let i = 0; i < group.elements.length; i++) {
+        const pos = trianglePositions[i % trianglePositions.length];
+        const r = i < 3 ? radius : radius * 0.6; // Outer triangle and inner positions
+        positions.push({
+          x: centerX + r * Math.cos(pos.angle),
+          y: centerY + r * Math.sin(pos.angle),
+          z: layout === '3d' ? 0 : undefined
+        });
+      }
     } else {
       // Grid layout for larger or non-abelian groups
       const cols = Math.ceil(Math.sqrt(group.elements.length));
