@@ -4,6 +4,7 @@
  */
 
 import { StandardLayoutGenerator } from './StandardLayouts';
+import { AdvancedLayoutEngine } from './AdvancedLayoutEngine';
 
 export interface GroupElement {
   id: string;
@@ -232,12 +233,22 @@ export class CayleyGraphGenerator {
     }));
 
     console.log('Creating edges for generators:', generators);
+    console.log('Available operations keys:', Array.from(group.operations.keys()));
     let edgeCount = 0;
 
     for (const vertex of vertices) {
       for (let i = 0; i < generators.length; i++) {
         const generator = generators[i];
-        const target = group.operations.get(vertex.id)?.get(generator);
+        console.log(`Looking for operation: ${vertex.id} * ${generator}`);
+        
+        const vertexOps = group.operations.get(vertex.id);
+        if (!vertexOps) {
+          console.log(`❌ No operations found for vertex ${vertex.id}`);
+          continue;
+        }
+        
+        const target = vertexOps.get(generator);
+        console.log(`   Result: ${vertex.id} * ${generator} = ${target}`);
         
         if (target) {
           edges.push({
@@ -248,9 +259,9 @@ export class CayleyGraphGenerator {
             width: 2
           });
           edgeCount++;
-          console.log(`Edge ${edgeCount}: ${vertex.id} --${generator}--> ${target}`);
+          console.log(`✅ Edge ${edgeCount}: ${vertex.id} --${generator}--> ${target}`);
         } else {
-          console.warn(`No target found for ${vertex.id} * ${generator}`);
+          console.log(`❌ No target found for ${vertex.id} * ${generator}`);
         }
       }
     }
@@ -270,82 +281,65 @@ export class CayleyGraphGenerator {
   ): Array<{x: number, y: number, z?: number}> {
     const positions: Array<{x: number, y: number, z?: number}> = [];
     
-    if (layout === '2d') {
-      // Try to get standard layout first
-      const standardLayout = StandardLayoutGenerator.getStandardLayout(group.name, group.order);
+    console.log(`🎯 Generating optimized layout for ${group.name} (${group.elements.length} elements)`);
+    
+    const centerX = 400;
+    const centerY = 300;
+    
+    // Choose layout strategy based on group structure
+    if (group.isAbelian && group.elements.length <= 12) {
+      // Circular layout for small abelian groups
+      const radius = Math.min(250, 100 + group.elements.length * 15);
+      console.log(`🔄 Using circular layout with radius ${radius}`);
       
-      if (standardLayout) {
-        console.log(`🎯 Using standard layout for ${group.name}:`, standardLayout.description);
-        console.log('Standard positions:', standardLayout.positions);
-        
-        // Map element IDs to standard positions
-        for (const element of group.elements) {
-          const standardPos = standardLayout.positions[element.id] || 
-                            standardLayout.positions[element.label] ||
-                            { x: 0.5, y: 0.5 }; // Fallback to center
-          
-          console.log(`📍 Element ${element.id}/${element.label} -> (${standardPos.x}, ${standardPos.y})`);
-          
-          positions.push({
-            x: standardPos.x * 600, // Scale to canvas size
-            y: standardPos.y * 400,
-          });
-        }
-        
-        return positions;
-      }
-      
-      // Fallback to algorithmic layout
-      console.log(`⚠️  No standard layout found for ${group.name}, using algorithmic layout`);
-      const width = 600;
-      const height = 400;
-      const centerX = width / 2;
-      const centerY = height / 2;
-      
-      // Use circular layout for better edge visibility
-      if (group.elements.length <= 8) {
-        // For small groups, use circular layout
-        const radius = Math.min(width, height) * 0.3;
-        for (let i = 0; i < group.elements.length; i++) {
-          const angle = (2 * Math.PI * i) / group.elements.length;
-          positions.push({
-            x: centerX + radius * Math.cos(angle),
-            y: centerY + radius * Math.sin(angle)
-          });
-        }
-      } else {
-        // For larger groups, use grid layout
-        const cols = Math.ceil(Math.sqrt(group.elements.length));
-        const rows = Math.ceil(group.elements.length / cols);
-        const cellWidth = width * 0.8 / cols;
-        const cellHeight = height * 0.8 / rows;
-        const startX = centerX - (cols - 1) * cellWidth / 2;
-        const startY = centerY - (rows - 1) * cellHeight / 2;
-        
-        for (let i = 0; i < group.elements.length; i++) {
-          const row = Math.floor(i / cols);
-          const col = i % cols;
-          positions.push({
-            x: startX + col * cellWidth,
-            y: startY + row * cellHeight
-          });
-        }
-      }
-    } else {
-      // 3D layout
       for (let i = 0; i < group.elements.length; i++) {
-        const theta = (2 * Math.PI * i) / group.elements.length;
-        const phi = Math.acos(1 - 2 * (i / group.elements.length));
-        const radius = 200;
+        const angle = (2 * Math.PI * i) / group.elements.length;
+        positions.push({
+          x: centerX + radius * Math.cos(angle),
+          y: centerY + radius * Math.sin(angle),
+          z: layout === '3d' ? 0 : undefined
+        });
+      }
+    } else if (group.name.startsWith('D')) {
+      // Special layout for dihedral groups - inner circle for rotations, outer for reflections
+      const innerRadius = 120;
+      const outerRadius = 200;
+      console.log(`� Using dihedral layout (inner: ${innerRadius}, outer: ${outerRadius})`);
+      
+      const n = Math.floor(group.elements.length / 2); // D_n has 2n elements
+      for (let i = 0; i < group.elements.length; i++) {
+        const element = group.elements[i];
+        const isRotation = element.id.startsWith('r');
+        const radius = isRotation ? innerRadius : outerRadius;
+        const index = isRotation ? parseInt(element.id.slice(1)) : parseInt(element.id.slice(1));
+        const angle = (2 * Math.PI * index) / n;
         
         positions.push({
-          x: radius * Math.sin(phi) * Math.cos(theta) + 300,
-          y: radius * Math.sin(phi) * Math.sin(theta) + 200,
-          z: radius * Math.cos(phi)
+          x: centerX + radius * Math.cos(angle),
+          y: centerY + radius * Math.sin(angle),
+          z: layout === '3d' ? (isRotation ? 0 : 50) : undefined
+        });
+      }
+    } else {
+      // Grid layout for larger or non-abelian groups
+      const cols = Math.ceil(Math.sqrt(group.elements.length));
+      const rows = Math.ceil(group.elements.length / cols);
+      const spacingX = 80;
+      const spacingY = 80;
+      console.log(`📐 Using grid layout (${cols}x${rows})`);
+      
+      for (let i = 0; i < group.elements.length; i++) {
+        const row = Math.floor(i / cols);
+        const col = i % cols;
+        positions.push({
+          x: centerX - (cols - 1) * spacingX / 2 + col * spacingX,
+          y: centerY - (rows - 1) * spacingY / 2 + row * spacingY,
+          z: layout === '3d' ? 0 : undefined
         });
       }
     }
     
+    console.log(`📍 Generated ${positions.length} positions`);
     return positions;
   }
 

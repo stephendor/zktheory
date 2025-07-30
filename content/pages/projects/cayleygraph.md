@@ -115,16 +115,17 @@ sections:
       - [Interactive Group Theory with GAP](https://www.gap-system.org/)
 
       ### Under the Hood:
-      This tool is built using:
-      - **SageMath**: For group theory computations and graph generation
-      - **IPython Widgets**: For interactive user interface elements
-      - **Jupyter Notebooks**: For the computational environment
-      - **Python**: As the underlying programming language
+      This modern implementation is built using:
+      - **TypeScript**: For type-safe mathematical computations and robust development
+      - **React Three Fiber**: For high-performance 3D visualization and interaction
+      - **Next.js 15**: For modern web application framework with excellent performance
+      - **Advanced Layout Algorithms**: Implementing Group Explorer's proven strategies with modern optimizations
 
       The source code demonstrates:
-      - Interactive mathematical visualization
-      - Group theory computation
-      - Educational software design
+      - Modern web-based mathematical visualization
+      - Real-time 3D group theory computation
+      - Responsive and accessible educational interface design
+      - Professional-grade software architecture
     colors: bg-light-fg-dark
     styles:
       self:

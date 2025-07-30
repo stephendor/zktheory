@@ -134,9 +134,17 @@ export class GroupDatabase {
 
     // Create elements
     for (let i = 0; i < n; i++) {
+      const toSuperscript = (num: number): string => {
+        const superscriptMap: { [key: string]: string } = {
+          '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
+          '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'
+        };
+        return num.toString().split('').map(digit => superscriptMap[digit] || digit).join('');
+      };
+      
       elements.push({
         id: `g${i}`,
-        label: i === 0 ? 'e' : `g^${i}`,
+        label: i === 0 ? 'e' : (i === 1 ? 'g' : `g${toSuperscript(i)}`),
         order: n / this.gcd(i, n),
         inverse: `g${(n - i) % n}`,
         conjugacyClass: 0 // All elements in their own class for abelian groups
