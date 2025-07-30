@@ -287,9 +287,6 @@ export class CayleyGraphGenerator {
     const centerY = 300;
     
     // Choose layout strategy based on group structure
-<<<<<<< HEAD
-    if (group.isAbelian && group.elements.length <= 8) {
-=======
     if (group.name.includes('xC') || group.name.includes('×') || group.name.startsWith('(C2)') || group.name === 'C2xC2xC2') {
       // Direct product and elementary abelian groups - check first before general abelian
       if (group.name.startsWith('(C2)') || group.name === 'C2xC2xC2') {
@@ -372,7 +369,6 @@ export class CayleyGraphGenerator {
         }
       }
     } else if (group.isAbelian && group.elements.length <= 8) {
->>>>>>> 1694638 (Adds subgroup visualization to Cayley graph explorer)
       // Circular layout for small abelian groups
       const radius = Math.min(250, 100 + group.elements.length * 15);
       console.log(`🔄 Using circular layout with radius ${radius}`);
@@ -385,17 +381,6 @@ export class CayleyGraphGenerator {
           z: layout === '3d' ? 0 : undefined
         });
       }
-<<<<<<< HEAD
-    } else if (group.isAbelian && group.elements.length > 8) {
-      // Spiral layout for larger abelian groups to avoid overcrowding
-      console.log(`🌀 Using spiral layout for large abelian group`);
-      const baseRadius = 80;
-      const spiralSpacing = 25;
-      
-      for (let i = 0; i < group.elements.length; i++) {
-        const angle = (2 * Math.PI * i * 2.5) / group.elements.length; // More turns for spacing
-        const radius = baseRadius + (i * spiralSpacing) / group.elements.length;
-=======
     } else if (group.isAbelian && group.elements.length > 8 && group.elements.length <= 16) {
       // Enhanced spacing layout for medium abelian groups
       console.log(`🌀 Using enhanced spacing layout for medium abelian group`);
@@ -425,7 +410,6 @@ export class CayleyGraphGenerator {
         const radius = baseRadius + ring * ringSpacing;
         const angle = (2 * Math.PI * positionInRing) / elementsPerRing;
         
->>>>>>> 1694638 (Adds subgroup visualization to Cayley graph explorer)
         positions.push({
           x: centerX + radius * Math.cos(angle),
           y: centerY + radius * Math.sin(angle),
@@ -553,125 +537,65 @@ export class CayleyGraphGenerator {
           z: layout === '3d' ? 0 : undefined
         });
       }
-<<<<<<< HEAD
-    } else if (group.name.includes('xC') || group.name.includes('×')) {
-      // Direct product groups - rectangular grid layout
-      console.log(`📐 Using direct product grid layout`);
-      const sqrtOrder = Math.sqrt(group.elements.length);
-      const cols = Math.ceil(sqrtOrder);
-      const rows = Math.ceil(group.elements.length / cols);
-      const spacingX = Math.min(100, 500 / cols);
-      const spacingY = Math.min(80, 400 / rows);
-      
-      for (let i = 0; i < group.elements.length; i++) {
-        const row = Math.floor(i / cols);
-        const col = i % cols;
-        positions.push({
-          x: centerX - (cols - 1) * spacingX / 2 + col * spacingX,
-          y: centerY - (rows - 1) * spacingY / 2 + row * spacingY,
-          z: layout === '3d' ? 0 : undefined
-        });
-      }
-    } else if (group.name.startsWith('(C2)') || group.name === 'C2xC2xC2') {
-      // Elementary abelian groups - symmetric layout
-      console.log(`⚡ Using elementary abelian layout`);
-      if (group.elements.length === 8) {
-        // Cube vertices layout for (C2)^3
-        const cubeSize = 120;
-        const cubePositions = [
-          { x: -cubeSize/2, y: -cubeSize/2 }, // 000
-          { x: cubeSize/2, y: -cubeSize/2 },  // 001
-          { x: -cubeSize/2, y: cubeSize/2 },  // 010
-          { x: cubeSize/2, y: cubeSize/2 },   // 011
-          { x: -cubeSize/2, y: -cubeSize/4 }, // 100
-          { x: cubeSize/2, y: -cubeSize/4 },  // 101
-          { x: -cubeSize/2, y: cubeSize/4 },  // 110
-          { x: cubeSize/2, y: cubeSize/4 }    // 111
-        ];
-        
-        for (let i = 0; i < Math.min(8, group.elements.length); i++) {
-          positions.push({
-            x: centerX + cubePositions[i].x,
-            y: centerY + cubePositions[i].y,
-            z: layout === '3d' ? 0 : undefined
-          });
-        }
-      } else {
-        // Default grid for other elementary abelian groups
-        const cols = Math.ceil(Math.sqrt(group.elements.length));
-        const rows = Math.ceil(group.elements.length / cols);
-        const spacingX = 80;
-        const spacingY = 80;
-        
-        for (let i = 0; i < group.elements.length; i++) {
-          const row = Math.floor(i / cols);
-          const col = i % cols;
-          positions.push({
-            x: centerX - (cols - 1) * spacingX / 2 + col * spacingX,
-            y: centerY - (rows - 1) * spacingY / 2 + row * spacingY,
-            z: layout === '3d' ? 0 : undefined
-          });
-=======
     } else if (group.name === 'A4' || group.name === 'T') {
-      // Alternating Group A4 (Tetrahedral Group) - true tetrahedral structure
-      console.log(`🔺 Using A4 true tetrahedral layout`);
+      // Alternating Group A4 - Using canonical tetrahedral structure
+      console.log(`🔺 A4 layout - canonical tetrahedral structure from mathematical literature`);
       
-      // A4 tetrahedral layout: arrange 12 elements as vertices of a truncated tetrahedron
-      // This matches Group Explorer's tetrahedral structure where generators form the edges
+      // A4 canonical structure: 
+      // - Identity: e
+      // - 8 three-cycles: (123), (132), (124), (142), (134), (143), (234), (243)  
+      // - 3 double transpositions: (12)(34), (13)(24), (14)(23)
       
-      // Tetrahedral vertex positions (4 vertices of tetrahedron)
-      const tetraRadius = 120;
-      const tetraVertices = [
-        { x: centerX, y: centerY - tetraRadius },                           // Top vertex
-        { x: centerX - tetraRadius * Math.cos(Math.PI/6), y: centerY + tetraRadius/2 },  // Bottom left
-        { x: centerX + tetraRadius * Math.cos(Math.PI/6), y: centerY + tetraRadius/2 },  // Bottom right
-        { x: centerX, y: centerY + tetraRadius/4 }                          // Center vertex
+      // Standard tetrahedral arrangement - 4 triangular faces
+      // Each face is a triangle of 3 elements
+      const tetrahedralFaces = [
+        ['e', '12)(34', '13)(24'],      // Face 1: identity + 2 double transpositions
+        ['123', '142', '134'],          // Face 2: 3-cycles involving vertex 1
+        ['132', '124', '143'],          // Face 3: inverse 3-cycles  
+        ['234', '243', '14)(23']        // Face 4: 3-cycles + remaining double transposition
       ];
       
-      // Each tetrahedral vertex will have 3 group elements around it
-      // This creates the "truncated tetrahedron" effect
-      const elementsPerVertex = 3;
-      const vertexRadius = 35; // Radius around each tetrahedral vertex
+      console.log(`Tetrahedral faces:`, tetrahedralFaces);
       
+      // Initialize positions array
       for (let i = 0; i < group.elements.length; i++) {
-        const element = group.elements[i];
+        positions.push({ x: centerX, y: centerY, z: layout === '3d' ? 0 : undefined });
+      }
+      
+      // Arrange the 4 tetrahedral faces in a tetrahedral pattern
+      // Face positions: top, bottom-left, bottom-right, back
+      const facePositions = [
+        { centerX: centerX, centerY: centerY - 120 },           // Face 1: top
+        { centerX: centerX - 100, centerY: centerY + 60 },      // Face 2: bottom-left  
+        { centerX: centerX + 100, centerY: centerY + 60 },      // Face 3: bottom-right
+        { centerX: centerX, centerY: centerY + 120 }            // Face 4: bottom
+      ];
+      
+      const faceRadius = 50;
+      
+      // Place each tetrahedral face as a triangle
+      for (let faceIndex = 0; faceIndex < tetrahedralFaces.length; faceIndex++) {
+        const face = tetrahedralFaces[faceIndex];
+        const faceCenter = facePositions[faceIndex];
         
-        if (element.id === 'e') {
-          // Identity at the center of the structure
-          positions.push({
-            x: centerX,
-            y: centerY,
-            z: layout === '3d' ? 0 : undefined
-          });
-        } else {
-          // Distribute other elements around tetrahedral vertices
-          const elementIndex = i - 1; // Subtract 1 for identity
-          const vertexIndex = Math.floor(elementIndex / elementsPerVertex);
-          const positionInVertex = elementIndex % elementsPerVertex;
-          
-          if (vertexIndex < tetraVertices.length) {
-            // Position around tetrahedral vertex
-            const vertex = tetraVertices[vertexIndex];
-            const angle = (2 * Math.PI * positionInVertex) / elementsPerVertex;
-            
-            positions.push({
-              x: vertex.x + vertexRadius * Math.cos(angle),
-              y: vertex.y + vertexRadius * Math.sin(angle),
+        // Triangle vertices for this face
+        const triangleVertices = [
+          { x: faceCenter.centerX, y: faceCenter.centerY - faceRadius },                           // top vertex
+          { x: faceCenter.centerX + faceRadius * Math.cos(Math.PI/6), y: faceCenter.centerY + faceRadius/2 }, // bottom-right vertex
+          { x: faceCenter.centerX - faceRadius * Math.cos(Math.PI/6), y: faceCenter.centerY + faceRadius/2 }  // bottom-left vertex
+        ];
+        
+        // Place elements in this face
+        for (let i = 0; i < face.length && i < 3; i++) {
+          const elementId = face[i];
+          const elementIndex = group.elements.findIndex(e => e.id === elementId);
+          if (elementIndex !== -1) {
+            positions[elementIndex] = {
+              x: triangleVertices[i].x,
+              y: triangleVertices[i].y,
               z: layout === '3d' ? 0 : undefined
-            });
-          } else {
-            // Extra elements in outer positions
-            const extraIndex = elementIndex - (tetraVertices.length * elementsPerVertex);
-            const outerRadius = 200;
-            const angle = (2 * Math.PI * extraIndex) / (group.elements.length - 1 - tetraVertices.length * elementsPerVertex);
-            
-            positions.push({
-              x: centerX + outerRadius * Math.cos(angle),
-              y: centerY + outerRadius * Math.sin(angle),
-              z: layout === '3d' ? 0 : undefined
-            });
+            };
           }
->>>>>>> 1694638 (Adds subgroup visualization to Cayley graph explorer)
         }
       }
     } else {

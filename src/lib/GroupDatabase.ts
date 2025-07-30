@@ -380,33 +380,65 @@ export class GroupDatabase {
   }
 
   private static createAlternatingGroup4(): Group {
-    // A4 implementation with 12 elements
+    // A4 - proper implementation using permutation composition
     const elements: GroupElement[] = [
       { id: 'e', label: 'e', order: 1, inverse: 'e', conjugacyClass: 0 },
-      // 3-cycles
-      { id: 'a1', label: '(1 2 3)', order: 3, inverse: 'a2', conjugacyClass: 1 },
-      { id: 'a2', label: '(1 3 2)', order: 3, inverse: 'a1', conjugacyClass: 1 },
-      { id: 'a3', label: '(1 2 4)', order: 3, inverse: 'a4', conjugacyClass: 1 },
-      { id: 'a4', label: '(1 4 2)', order: 3, inverse: 'a3', conjugacyClass: 1 },
-      { id: 'a5', label: '(1 3 4)', order: 3, inverse: 'a6', conjugacyClass: 1 },
-      { id: 'a6', label: '(1 4 3)', order: 3, inverse: 'a5', conjugacyClass: 1 },
-      { id: 'a7', label: '(2 3 4)', order: 3, inverse: 'a8', conjugacyClass: 1 },
-      { id: 'a8', label: '(2 4 3)', order: 3, inverse: 'a7', conjugacyClass: 1 },
-      // Products of disjoint 2-cycles
-      { id: 'b1', label: '(1 2)(3 4)', order: 2, inverse: 'b1', conjugacyClass: 2 },
-      { id: 'b2', label: '(1 3)(2 4)', order: 2, inverse: 'b2', conjugacyClass: 2 },
-      { id: 'b3', label: '(1 4)(2 3)', order: 2, inverse: 'b3', conjugacyClass: 2 }
+      // 3-cycles - 8 elements
+      { id: '123', label: '(1 2 3)', order: 3, inverse: '132', conjugacyClass: 1 },
+      { id: '132', label: '(1 3 2)', order: 3, inverse: '123', conjugacyClass: 1 },
+      { id: '124', label: '(1 2 4)', order: 3, inverse: '142', conjugacyClass: 1 },
+      { id: '142', label: '(1 4 2)', order: 3, inverse: '124', conjugacyClass: 1 },
+      { id: '134', label: '(1 3 4)', order: 3, inverse: '143', conjugacyClass: 1 },
+      { id: '143', label: '(1 4 3)', order: 3, inverse: '134', conjugacyClass: 1 },
+      { id: '234', label: '(2 3 4)', order: 3, inverse: '243', conjugacyClass: 1 },
+      { id: '243', label: '(2 4 3)', order: 3, inverse: '234', conjugacyClass: 1 },
+      // Double transpositions - 3 elements  
+      { id: '12)(34', label: '(1 2)(3 4)', order: 2, inverse: '12)(34', conjugacyClass: 2 },
+      { id: '13)(24', label: '(1 3)(2 4)', order: 2, inverse: '13)(24', conjugacyClass: 2 },
+      { id: '14)(23', label: '(1 4)(2 3)', order: 2, inverse: '14)(23', conjugacyClass: 2 }
     ];
 
-    // Complete A4 multiplication table
+    // Generate multiplication table using proper permutation composition
     const operations = new Map<string, Map<string, string>>();
     
-    // Initialize the operations map
+    // Define permutations as arrays [p(1), p(2), p(3), p(4)]
+    const permutations: { [key: string]: number[] } = {
+      'e': [1, 2, 3, 4],
+      '123': [2, 3, 1, 4],     // (1 2 3): 1->2, 2->3, 3->1, 4->4
+      '132': [3, 1, 2, 4],     // (1 3 2): 1->3, 2->1, 3->2, 4->4
+      '124': [2, 4, 3, 1],     // (1 2 4): 1->2, 2->4, 3->3, 4->1
+      '142': [4, 1, 3, 2],     // (1 4 2): 1->4, 2->1, 3->3, 4->2
+      '134': [3, 2, 4, 1],     // (1 3 4): 1->3, 2->2, 3->4, 4->1
+      '143': [4, 2, 1, 3],     // (1 4 3): 1->4, 2->2, 3->1, 4->3
+      '234': [1, 3, 4, 2],     // (2 3 4): 1->1, 2->3, 3->4, 4->2
+      '243': [1, 4, 2, 3],     // (2 4 3): 1->1, 2->4, 3->2, 4->3
+      '12)(34': [2, 1, 4, 3],  // (1 2)(3 4): 1->2, 2->1, 3->4, 4->3
+      '13)(24': [3, 4, 1, 2],  // (1 3)(2 4): 1->3, 2->4, 3->1, 4->2
+      '14)(23': [4, 3, 2, 1]   // (1 4)(2 3): 1->4, 2->3, 3->2, 4->1
+    };
+
+    // Function to compose two permutations
+    const compose = (p1: number[], p2: number[]): number[] => {
+      return [p1[p2[0] - 1], p1[p2[1] - 1], p1[p2[2] - 1], p1[p2[3] - 1]];
+    };
+
+    // Function to find permutation by result array
+    const findPermutation = (result: number[]): string => {
+      for (const [key, perm] of Object.entries(permutations)) {
+        if (perm.every((val, idx) => val === result[idx])) {
+          return key;
+        }
+      }
+      return 'e';
+    };
+
+    // Build multiplication table
     elements.forEach(elem1 => {
       const row = new Map<string, string>();
       elements.forEach(elem2 => {
-        // Compute elem1 * elem2 for A4
-        row.set(elem2.id, this.multiplyA4Elements(elem1.id, elem2.id));
+        const result = compose(permutations[elem1.id], permutations[elem2.id]);
+        const resultId = findPermutation(result);
+        row.set(elem2.id, resultId);
       });
       operations.set(elem1.id, row);
     });
@@ -417,38 +449,13 @@ export class GroupDatabase {
       order: 12,
       elements,
       operations,
-<<<<<<< HEAD
-      generators: ['a1', 'a3', 'a5', 'a7'], // Multiple 3-cycles available as generators
-=======
-      generators: ['a1', 'a3'], // Two 3-cycles generate A4: (1 2 3) and (1 2 4)
->>>>>>> 1694638 (Adds subgroup visualization to Cayley graph explorer)
-      relations: ['(123)^3 = e', '(124)^3 = e', '[(123), (124)] ≠ e'],
+      generators: ['123', '124'], // (1 2 3) and (1 2 4) generate A4
+      relations: ['(123)^3 = e', '(124)^3 = e'],
       isAbelian: false,
       center: ['e'],
-      conjugacyClasses: [['e'], ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8'], ['b1', 'b2', 'b3']],
+      conjugacyClasses: [['e'], ['123', '132', '124', '142', '134', '143', '234', '243'], ['12)(34', '13)(24', '14)(23']],
       subgroups: []
     };
-  }
-
-  private static multiplyA4Elements(elem1: string, elem2: string): string {
-    // A4 multiplication table - this is a simplified version
-    // In practice, you'd implement proper permutation composition
-    const multiplicationTable: { [key: string]: { [key: string]: string } } = {
-      'e': { 'e': 'e', 'a1': 'a1', 'a2': 'a2', 'a3': 'a3', 'a4': 'a4', 'a5': 'a5', 'a6': 'a6', 'a7': 'a7', 'a8': 'a8', 'b1': 'b1', 'b2': 'b2', 'b3': 'b3' },
-      'a1': { 'e': 'a1', 'a1': 'a2', 'a2': 'e', 'a3': 'b2', 'a4': 'a5', 'a5': 'b3', 'a6': 'a4', 'a7': 'b1', 'a8': 'a6', 'b1': 'a8', 'b2': 'a4', 'b3': 'a6' },
-      'a2': { 'e': 'a2', 'a1': 'e', 'a2': 'a1', 'a3': 'a6', 'a4': 'b3', 'a5': 'a3', 'a6': 'b2', 'a7': 'a5', 'a8': 'b1', 'b1': 'a7', 'b2': 'a6', 'b3': 'a4' },
-      'a3': { 'e': 'a3', 'a1': 'b3', 'a2': 'a5', 'a3': 'a4', 'a4': 'e', 'a5': 'a2', 'a6': 'a1', 'a7': 'b2', 'a8': 'a7', 'b1': 'a8', 'b2': 'a7', 'b3': 'a1' },
-      'a4': { 'e': 'a4', 'a1': 'a6', 'a2': 'b2', 'a3': 'e', 'a4': 'a3', 'a5': 'a1', 'a6': 'a2', 'a7': 'a8', 'a8': 'b3', 'b1': 'a7', 'b2': 'a2', 'b3': 'a8' },
-      'a5': { 'e': 'a5', 'a1': 'b1', 'a2': 'a3', 'a3': 'a1', 'a4': 'a2', 'a5': 'a6', 'a6': 'e', 'a7': 'a4', 'a8': 'b2', 'b1': 'a1', 'b2': 'a8', 'b3': 'a7' },
-      'a6': { 'e': 'a6', 'a1': 'a3', 'a2': 'b1', 'a3': 'a2', 'a4': 'a1', 'a5': 'e', 'a6': 'a5', 'a7': 'b3', 'a8': 'a4', 'b1': 'a2', 'b2': 'a4', 'b3': 'a8' },
-      'a7': { 'e': 'a7', 'a1': 'b2', 'a2': 'a6', 'a3': 'b1', 'a4': 'a8', 'a5': 'a3', 'a6': 'b3', 'a7': 'a8', 'a8': 'e', 'b1': 'a3', 'b2': 'a1', 'b3': 'a6' },
-      'a8': { 'e': 'a8', 'a1': 'a5', 'a2': 'b3', 'a3': 'a7', 'a4': 'b1', 'a5': 'a4', 'a6': 'a3', 'a7': 'e', 'a8': 'a7', 'b1': 'a4', 'b2': 'a6', 'b3': 'a2' },
-      'b1': { 'e': 'b1', 'a1': 'a7', 'a2': 'a8', 'a3': 'a5', 'a4': 'a6', 'a5': 'a3', 'a6': 'a4', 'a7': 'a1', 'a8': 'a2', 'b1': 'e', 'b2': 'b3', 'b3': 'b2' },
-      'b2': { 'e': 'b2', 'a1': 'a3', 'a2': 'a4', 'a3': 'a1', 'a4': 'a2', 'a5': 'a7', 'a6': 'a8', 'a7': 'a5', 'a8': 'a6', 'b1': 'b3', 'b2': 'e', 'b3': 'b1' },
-      'b3': { 'e': 'b3', 'a1': 'a5', 'a2': 'a6', 'a3': 'a7', 'a4': 'a8', 'a5': 'a1', 'a6': 'a2', 'a7': 'a3', 'a8': 'a4', 'b1': 'b2', 'b2': 'b1', 'b3': 'e' }
-    };
-
-    return multiplicationTable[elem1]?.[elem2] || 'e';
   }
 
   private static createDirectProduct(n1: number, n2: number): Group {

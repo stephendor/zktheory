@@ -9,8 +9,7 @@ import Section from '../Section';
 import TitleBlock from '../../blocks/TitleBlock';
 import { Action, Badge } from '../../atoms';
 
-// Import the Cayley Graph component and Notebook Embed
-import CayleyGraphExplorer from '../../CayleyGraph/CayleyGraphExplorer';
+// Import the Enhanced Cayley Graph component and Notebook Embed
 import EnhancedCayleyGraphExplorer from '../../EnhancedCayleyGraphExplorer';
 import { StaticNotebookViewer } from '../../NotebookEmbed';
 
@@ -74,13 +73,6 @@ export default function GenericSection(props) {
                             </p>
                         )}
                         
-                        {/* Render Cayley Graph Explorer if this is the special section */}
-                        {isCayleyGraphSection && (
-                            <div className="mt-8">
-                                <CayleyGraphExplorer className="w-full" />
-                            </div>
-                        )}
-                        
                         {/* Render Notebook Embed if this is the notebook section */}
                         {isNotebookSection && (
                             <div className="mt-8">
@@ -102,9 +94,6 @@ export default function GenericSection(props) {
                                         // Add component overrides for embedded components
                                         EnhancedCayleyGraphExplorer: {
                                             component: () => <EnhancedCayleyGraphExplorer />
-                                        },
-                                        CayleyGraphExplorer: {
-                                            component: () => <CayleyGraphExplorer className="w-full" />
                                         },
                                         StaticNotebookViewer: {
                                             component: (props) => (
