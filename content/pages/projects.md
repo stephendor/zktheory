@@ -122,6 +122,12 @@ sections:
             icon: arrowRight
             iconPosition: right
             style: secondary
+          - type: Button
+            label: View Notebook
+            url: /projects/cayley-notebook
+            icon: book
+            iconPosition: right
+            style: outline
         colors: bg-light-fg-dark
         styles:
           self:

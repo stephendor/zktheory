@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cayley Graph Debug</title>
+</head>
+<body>
+    <div id="debug-output"></div>
+    <script>
+        // We'll see the debug output from the console here
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const output = document.getElementById('debug-output');
+            output.innerHTML += args.join(' ') + '<br>';
+        };
+    </script>
+</body>
+</html>

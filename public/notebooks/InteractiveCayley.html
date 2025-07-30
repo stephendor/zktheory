@@ -1,0 +1,516 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jupyter Notebook</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .notebook-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .notebook-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .notebook-title {
+            font-size: 2rem;
+            margin: 0 0 10px 0;
+            font-weight: 600;
+        }
+        .kernel-info {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        .cell {
+            border-bottom: 1px solid #e9ecef;
+            padding: 20px;
+        }
+        .cell:last-child {
+            border-bottom: none;
+        }
+        .cell-type {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .cell-type.code {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        .cell-type.markdown {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+        .cell-content {
+            margin: 0;
+        }
+        .code-input {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+        .code-output {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 10px;
+            font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+            color: #343a40;
+            margin-top: 0;
+        }
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        .markdown-content code {
+            background-color: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+        }
+        .markdown-content pre {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        .execution-count {
+            color: #6c757d;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+        .interactive-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #856404;
+        }
+        .download-links {
+            background-color: #e9ecef;
+            padding: 15px;
+            text-align: center;
+            border-top: 1px solid #dee2e6;
+        }
+        .download-links a {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .download-links a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="notebook-container">
+        <div class="notebook-header">
+            <h1 class="notebook-title">Jupyter Notebook</h1>
+            <div class="kernel-info">Kernel: SageMath 10.6</div>
+        </div>
+        
+        <div class="interactive-warning">
+            <strong>📝 Note:</strong> This is a static view of the Jupyter notebook. 
+            For full interactivity, <a href="#download-section">download and run the notebook locally</a> 
+            with SageMath or use the <a href="/projects/cayleygraph">web-based interactive tool</a>.
+        </div>
+
+        <div class="cell">
+            <div class="cell-type code">code</div>
+            <div class="execution-count">In [6]:</div>
+            <pre class="code-input">from sage.all import *
+from ipywidgets import interact, interactive, fixed, interact_manual, Layout
+from IPython.display import display, HTML, clear_output
+import ipywidgets as widgets
+
+# --- Core Function: Generates and plots the Cayley graph ---
+
+def generate_cayley_graph_and_get_plot_data(group_name, group_param, generators_str):
+    &quot;&quot;&quot;
+    Generates the Cayley graph for a given finite group and its generators,
+    and returns the graph object, group object, and vertex labels for plotting.
+
+    Args:
+        group_name (str): The name of the group to create (e.g., &quot;SymmetricGroup&quot;, &quot;DihedralGroup&quot;).
+        group_param: An integer for the group&#039;s order (e.g., n for D_n or S_n).
+        generators_str (str): A string representing generators (e.g., &quot;(1,2), (1,2,3)&quot;).
+                              For DihedralGroup, this string will be ignored as default generators are used.
+
+    Returns:
+        tuple: (cayley_graph, G, vertex_labels_dict) if successful, None otherwise.
+    &quot;&quot;&quot;
+    try:
+        G = None
+        s_generators = []
+        parsed_generators = []
+        if generators_str:
+            try:
+                gen_list_str = f&quot;[{generators_str}]&quot;
+                parsed_generators = eval(gen_list_str) # This is where eval() is used.
+                if not isinstance(parsed_generators, list) or not all(isinstance(g, tuple) for g in parsed_generators):
+                    raise ValueError(&quot;Generators must be a comma-separated list of tuples.&quot;)
+            except Exception as e:
+                print(f&quot;Error parsing generators: {e}. Please use format like (1,2), (1,2,3)&quot;)
+                return None, None, None
+
+        # Determine group type
+        if group_name == &quot;DihedralGroup&quot;:
+            if not isinstance(group_param, int):
+                print(&quot;Error: For DihedralGroup, the &#039;group_param&#039; must be an integer &#039;n&#039;.&quot;)
+                return None, None, None
+            n = group_param
+            G = DihedralGroup(n)
+            s_generators = [G.gen(0), G.gen(1)] 
+            print(f&quot;Dihedral Group D_{n} created with default generators {s_generators}.&quot;)
+
+        elif group_name == &quot;SymmetricGroup&quot;:
+            if not isinstance(group_param, int):
+                print(&quot;Error: For SymmetricGroup, the &#039;group_param&#039; must be an integer &#039;n&#039;.&quot;)
+                return None, None, None
+            if not parsed_generators:
+                print(&quot;Error: For SymmetricGroup, please provide generators.&quot;)
+                return None, None, None
+
+            G = SymmetricGroup(group_param)
+            print(f&quot;Symmetric Group S_{group_param} created.&quot;)
+            s_generators = [Permutation(g) for g in parsed_generators]
+            print(f&quot;Provided generators: {s_generators}.&quot;)
+
+        elif group_name == &quot;AlternatingGroup&quot;:
+            if not isinstance(group_param, int):
+                print(&quot;Error: For AlternatingGroup, the &#039;group_param&#039; must be an integer &#039;n&#039;.&quot;)
+                return None, None, None
+            if not parsed_generators:
+                print(&quot;Error: For AlternatingGroup, please provide generators.&quot;)
+                return None, None, None
+            
+            G = AlternatingGroup(group_param)
+            print(f&quot;Alternating Group A_{group_param} created.&quot;)
+            s_generators = [Permutation(g) for g in parsed_generators]
+            print(f&quot;Provided generators: {s_generators}.&quot;)
+
+        else:
+            print(f&quot;Error: Group &#039;{group_name}&#039; not supported yet.&quot;)
+            return None, None, None
+
+        # Check if generators are valid 
+        valid_generators = []
+        for gen_s in s_generators:
+            if gen_s in G:
+                valid_generators.append(gen_s)
+            else:
+                print(f&quot;Warning: Generator {gen_s} is not a valid element of {G}. Skipping.&quot;)
+        
+        if not valid_generators:
+            print(&quot;No valid generators provided or found. Cannot compute Cayley graph.&quot;)
+            return None, None, None
+
+        # Compute the Cayley graph
+        cayley_graph = G.cayley_graph(generators=valid_generators)
+        
+        print(f&quot;Cayley Graph for {G} with generators {valid_generators} computed.&quot;)
+        print(f&quot;Number of vertices: {cayley_graph.order()}&quot;)
+        print(f&quot;Number of edges: {cayley_graph.size()}&quot;)
+
+        # Create vertex labels dictionary
+        vertex_labels_dict = {element: str(element) for element in list(G)}
+        
+        return cayley_graph, G, vertex_labels_dict
+
+    except Exception as e:
+        print(f&quot;An error occurred: {e}&quot;)
+        return None, None, None
+
+# --- Interactive UI Elements ---
+
+# Global variables to store the current graph and group for highlighting
+current_cayley_graph = None
+current_group = None
+current_vertex_labels = {}
+current_plot_object = None
+
+# Output widget to display the graph and messages
+output_area = widgets.Output(layout=Layout(border=&#039;1px solid black&#039;, margin=&#039;10px 0&#039;))
+
+# Dropdown for group selection
+group_selector = widgets.Dropdown(
+    options=[&#039;SymmetricGroup&#039;, &#039;DihedralGroup&#039;, &#039;AlternatingGroup&#039;],
+    value=&#039;SymmetricGroup&#039;,
+    description=&#039;Group Type:&#039;,
+    style={&#039;description_width&#039;: &#039;initial&#039;}
+)
+
+# Integer input for group parameter (n)
+group_param_input = widgets.IntText(
+    value=3,
+    description=&#039;Group Parameter (n):&#039;,
+    min=2,
+    style={&#039;description_width&#039;: &#039;initial&#039;}
+)
+
+# Text area for generators
+generators_input = widgets.Textarea(
+    value=&#039;(1,2), (1,2,3)&#039;,
+    description=&#039;Generators (e.g., (1,2), (1,2,3)):&#039;,
+    layout=Layout(width=&#039;auto&#039;, height=&#039;80px&#039;),
+    style={&#039;description_width&#039;: &#039;initial&#039;}
+)
+
+# Button to generate graph
+generate_button = widgets.Button(description=&#039;Generate Cayley Graph&#039;, button_style=&#039;primary&#039;)
+
+# Dropdown for subgroup selection (will be populated dynamically)
+subgroup_selector = widgets.Dropdown(
+    options=[],
+    description=&#039;Highlight Subgroup:&#039;,
+    disabled=True,
+    style={&#039;description_width&#039;: &#039;initial&#039;}
+)
+
+# Radio buttons for coset type
+coset_type_selector = widgets.RadioButtons(
+    options=[&#039;None&#039;, &#039;Left Cosets&#039;, &#039;Right Cosets&#039;],
+    value=&#039;None&#039;,
+    description=&#039;Coset Type:&#039;,
+    disabled=True,
+    style={&#039;description_width&#039;: &#039;initial&#039;}
+)
+
+# Button to highlight center
+center_button = widgets.Button(description=&#039;Highlight Center&#039;, disabled=True)
+
+# Button to clear all highlights
+clear_highlight_button = widgets.Button(description=&#039;Clear Highlights&#039;, disabled=True)
+
+# --- Event Handlers ---
+
+def on_generate_button_clicked(b):
+    &quot;&quot;&quot;
+    Handles the click event for the &#039;Generate Cayley Graph&#039; button.
+    Generates the graph and updates global variables.
+    &quot;&quot;&quot;
+    global current_cayley_graph, current_group, current_vertex_labels, current_plot_object
+
+    with output_area:
+        clear_output(wait=True)
+        print(&quot;Generating graph...&quot;)
+        
+        cayley_graph, G, vertex_labels_dict = generate_cayley_graph_and_get_plot_data(
+            group_selector.value,
+            group_param_input.value,
+            generators_input.value
+        )
+        
+        if cayley_graph is not None:
+            current_cayley_graph = cayley_graph
+            current_group = G
+            current_vertex_labels = vertex_labels_dict
+
+            # Initial plot without highlights - REMOVED spin=True parameter
+            current_plot_object = current_cayley_graph.plot(
+                layout=&#039;spring&#039;,
+                vertex_size=10,
+                vertex_labels=current_vertex_labels,
+                graph_border=True,
+                # Default vertex colors (all black) - correct format for SageMath
+                vertex_colors={&#039;black&#039;: list(current_cayley_graph.vertices())}
+            )
+            current_plot_object.show()  # Removed viewer=&#039;tachyon&#039; as it may not be available
+            print(&quot;Graph generated. Use highlighting options below.&quot;)
+
+            # Enable highlighting controls
+            subgroup_selector.disabled = False
+            coset_type_selector.disabled = False
+            center_button.disabled = False
+            clear_highlight_button.disabled = False
+
+            # Populate subgroup selector
+            populate_subgroup_selector()
+        else:
+            current_cayley_graph = None
+            current_group = None
+            current_vertex_labels = {}
+            current_plot_object = None
+            subgroup_selector.disabled = True
+            coset_type_selector.disabled = True
+            center_button.disabled = True
+            clear_highlight_button.disabled = True
+
+generate_button.on_click(on_generate_button_clicked)
+
+def populate_subgroup_selector():
+    &quot;&quot;&quot;Populates the subgroup dropdown with cyclic subgroups.&quot;&quot;&quot;
+    if current_group:
+        # Get all elements of the group
+        group_elements = list(current_group)
+        # Create options for cyclic subgroups
+        subgroup_options = [(&#039;None&#039;, &#039;None&#039;)] # Default option
+        for element in group_elements:
+            # Generate cyclic subgroup for each element
+            cyclic_subgroup = current_group.subgroup([element])
+            # Use a tuple (display_name, value) for dropdown options
+            # The value can be the actual subgroup object or its elements
+            subgroup_options.append((f&quot;&lt;{element}&gt;&quot;, cyclic_subgroup))
+        
+        subgroup_selector.options = subgroup_options
+        subgroup_selector.value = &#039;None&#039; # Reset to None
+
+def update_plot_with_highlights():
+    &quot;&quot;&quot;Updates the current plot with selected highlighting options.&quot;&quot;&quot;
+    if current_cayley_graph is None or current_group is None:
+        return
+
+    # Get all vertices from the graph (these are the group elements themselves)
+    all_vertices = list(current_cayley_graph.vertices())
+    
+    # Start with default colors (all black)
+    vertex_colors_map = {v: &#039;black&#039; for v in all_vertices}
+    
+    # Get the selected subgroup
+    selected_subgroup = subgroup_selector.value
+    if selected_subgroup != &#039;None&#039;:
+        # Highlight subgroup elements in red
+        for element in selected_subgroup:
+            # The vertex is the group element itself in Cayley graphs
+            if element in vertex_colors_map:
+                vertex_colors_map[element] = &#039;red&#039;
+
+        # Handle coset highlighting
+        if coset_type_selector.value != &#039;None&#039;:
+            if coset_type_selector.value == &#039;Left Cosets&#039;:
+                cosets = current_group.left_cosets(selected_subgroup)
+            else: # Right Cosets
+                cosets = current_group.right_cosets(selected_subgroup)
+            
+            # Assign different colors to different cosets
+            # Use a fixed set of colors or generate them
+            colors = [&#039;blue&#039;, &#039;green&#039;, &#039;purple&#039;, &#039;orange&#039;, &#039;cyan&#039;, &#039;magenta&#039;, &#039;brown&#039;, &#039;pink&#039;]
+            for i, coset in enumerate(cosets):
+                color_index = i % len(colors)
+                for element in coset:
+                    if element in vertex_colors_map:
+                        vertex_colors_map[element] = colors[color_index]
+    
+    # Highlight center elements in yellow (overrides other colors if applicable)
+    if center_button.button_style == &#039;success&#039; and current_group: # Check if center button is &quot;active&quot;
+        center_elements = current_group.center()
+        for element in center_elements:
+            if element in vertex_colors_map:
+                vertex_colors_map[element] = &#039;yellow&#039;
+
+    # Convert vertex_colors_map to the format expected by SageMath
+    # SageMath expects {color: [list_of_vertices]} not {vertex: color}
+    sage_vertex_colors = {}
+    for vertex, color in vertex_colors_map.items():
+        if color not in sage_vertex_colors:
+            sage_vertex_colors[color] = []
+        sage_vertex_colors[color].append(vertex)
+
+    with output_area:
+        clear_output(wait=True)
+        if current_cayley_graph:
+            # Re-plot with updated colors - REMOVED spin=True parameter
+            current_plot_object = current_cayley_graph.plot(
+                layout=&#039;spring&#039;,
+                vertex_size=10,
+                vertex_labels=current_vertex_labels,
+                graph_border=True,
+                vertex_colors=sage_vertex_colors # Apply the new colors in correct format
+            )
+            current_plot_object.show()  # Removed viewer=&#039;tachyon&#039;
+            print(&quot;Graph updated with highlights.&quot;)
+        else:
+            print(&quot;No graph to update. Generate a graph first.&quot;)
+
+def on_subgroup_selector_changed(change):
+    &quot;&quot;&quot;Handles subgroup selection change.&quot;&quot;&quot;
+    update_plot_with_highlights()
+
+def on_coset_type_selector_changed(change):
+    &quot;&quot;&quot;Handles coset type selection change.&quot;&quot;&quot;
+    update_plot_with_highlights()
+
+def on_center_button_clicked(b):
+    &quot;&quot;&quot;Toggles highlighting of the group center.&quot;&quot;&quot;
+    if center_button.button_style == &#039;success&#039;:
+        center_button.button_style = &#039;&#039; # Deactivate
+        center_button.description = &#039;Highlight Center&#039;
+    else:
+        center_button.button_style = &#039;success&#039; # Activate
+        center_button.description = &#039;Center Active&#039;
+    update_plot_with_highlights()
+
+def on_clear_highlight_button_clicked(b):
+    &quot;&quot;&quot;Clears all highlighting and resets controls.&quot;&quot;&quot;
+    subgroup_selector.value = &#039;None&#039;
+    coset_type_selector.value = &#039;None&#039;
+    center_button.button_style = &#039;&#039;
+    center_button.description = &#039;Highlight Center&#039;
+    update_plot_with_highlights() # This will re-plot with default colors
+
+# Attach event handlers
+subgroup_selector.observe(on_subgroup_selector_changed, names=&#039;value&#039;)
+coset_type_selector.observe(on_coset_type_selector_changed, names=&#039;value&#039;)
+center_button.on_click(on_center_button_clicked)
+clear_highlight_button.on_click(on_clear_highlight_button_clicked)
+
+# --- Layout of the UI ---
+ui_elements = widgets.VBox([
+    widgets.HBox([group_selector, group_param_input]),
+    generators_input,
+    generate_button,
+    output_area, # Output area for the graph and messages
+    widgets.HBox([subgroup_selector, coset_type_selector]),
+    widgets.HBox([center_button, clear_highlight_button])
+])
+
+display(ui_elements)</pre>
+            <pre class="code-output">VBox(children=(HBox(children=(Dropdown(description=&#039;Group Type:&#039;, options=(&#039;SymmetricGroup&#039;, &#039;DihedralGroup&#039;, &#039;AlternatingGroup&#039;), style=DescriptionStyle(description_width=&#039;initial&#039;), value=&#039;SymmetricGroup&#039;), IntText(value=3, description=&#039;Group Parameter (n):&#039;, style=DescriptionStyle(description_width=&#039;initial&#039;)))), Textarea(value=&#039;(1,2), (1,2,3)&#039;, description=&#039;Generators (e.g., (1,2), (1,2,3)):&#039;, layout=Layout(height=&#039;80px&#039;, width=&#039;auto&#039;), style=TextStyle(description_width=&#039;initial&#039;)), Button(button_style=&#039;primary&#039;, description=&#039;Generate Cayley Graph&#039;, style=ButtonStyle()), Output(layout=Layout(border_bottom=&#039;1px solid black&#039;, border_left=&#039;1px solid black&#039;, border_right=&#039;1px solid black&#039;, border_top=&#039;1px solid black&#039;, margin=&#039;10px 0&#039;)), HBox(children=(Dropdown(description=&#039;Highlight Subgroup:&#039;, disabled=True, options=(), style=DescriptionStyle(description_width=&#039;initial&#039;), value=None), RadioButtons(description=&#039;Coset Type:&#039;, disabled=True, options=(&#039;None&#039;, &#039;Left Cosets&#039;, &#039;Right Cosets&#039;), style=DescriptionStyle(description_width=&#039;initial&#039;), value=&#039;None&#039;))), HBox(children=(Button(description=&#039;Highlight Center&#039;, disabled=True, style=ButtonStyle()), Button(description=&#039;Clear Highlights&#039;, disabled=True, style=ButtonStyle())))))</pre>
+        </div>
+        <div class="cell">
+            <div class="cell-type code">code</div>
+            <pre class="code-input"></pre>
+        </div>
+        <div class="download-links" id="download-section">
+            <strong>📥 Download Options:</strong><br><br>
+            <a href="/InteractiveCayley.ipynb" download>Download Notebook (.ipynb)</a>
+            <a href="/setup_cayley_explorer.sh" download>Download Setup Script</a>
+            <a href="https://github.com/stephendor/zktheory" target="_blank">View Source Code</a>
+        </div>
+    </div>
+</body>
+</html>

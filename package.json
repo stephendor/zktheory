@@ -5,7 +5,9 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "index-content": "node scripts/index-content.js"
+        "index-content": "node scripts/index-content.js",
+        "convert-notebook": "node scripts/convert-notebook.js InteractiveCayley.ipynb public/notebooks/InteractiveCayley.html",
+        "build-notebooks": "npm run convert-notebook && cp InteractiveCayley.ipynb public/ && cp setup_cayley_explorer.sh public/"
     },
     "dependencies": {
         "@algolia/autocomplete-js": "^1.17.1",

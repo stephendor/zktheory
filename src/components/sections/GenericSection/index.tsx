@@ -9,8 +9,10 @@ import Section from '../Section';
 import TitleBlock from '../../blocks/TitleBlock';
 import { Action, Badge } from '../../atoms';
 
-// Import the Cayley Graph component
+// Import the Cayley Graph component and Notebook Embed
 import CayleyGraphExplorer from '../../CayleyGraph/CayleyGraphExplorer';
+import EnhancedCayleyGraphExplorer from '../../EnhancedCayleyGraphExplorer';
+import { StaticNotebookViewer } from '../../NotebookEmbed';
 
 export default function GenericSection(props) {
     const { elementId, colors, backgroundImage, badge, title, subtitle, text, actions = [], media, styles = {}, enableAnnotations } = props;
@@ -20,8 +22,9 @@ export default function GenericSection(props) {
     const hasMedia = !!(media && (media?.url || (media?.fields ?? []).length > 0));
     const hasXDirection = flexDirection === 'row' || flexDirection === 'row-reverse';
 
-    // Check if this is the Cayley graph tool section
+    // Check if this is the Cayley graph tool section or notebook viewer
     const isCayleyGraphSection = elementId === 'cayley-graph-tool';
+    const isNotebookSection = elementId === 'notebook-viewer';
 
     return (
         <Section
@@ -48,8 +51,8 @@ export default function GenericSection(props) {
                 {hasTextContent && (
                     <div
                         className={classNames('w-full', 'max-w-sectionBody', {
-                            'lg:max-w-[27.5rem]': hasMedia && hasXDirection && !isCayleyGraphSection,
-                            'max-w-none': isCayleyGraphSection
+                            'lg:max-w-[27.5rem]': hasMedia && hasXDirection && !isCayleyGraphSection && !isNotebookSection,
+                            'max-w-none': isCayleyGraphSection || isNotebookSection
                         })}
                     >
                         {badge && <Badge {...badge} {...(enableAnnotations && { 'data-sb-field-path': '.badge' })} />}
@@ -78,26 +81,58 @@ export default function GenericSection(props) {
                             </div>
                         )}
                         
+                        {/* Render Notebook Embed if this is the notebook section */}
+                        {isNotebookSection && (
+                            <div className="mt-8">
+                                <StaticNotebookViewer 
+                                    htmlPath="/notebooks/InteractiveCayley.html"
+                                    title="Interactive Cayley Graph Explorer"
+                                    height="800px"
+                                    className="w-full"
+                                />
+                            </div>
+                        )}
+                        
                         {text && (
                             <Markdown
                                 options={{ 
                                     forceBlock: true, 
                                     forceWrapper: true,
-                                    overrides: isCayleyGraphSection ? {
-                                        // Replace the placeholder div with nothing since we render the component above
-                                        div: {
-                                            component: ({ children, ...props }) => {
-                                                if (props.id === 'cayley-graph-explorer-container') {
-                                                    return null; // Don't render the placeholder div
+                                    overrides: {
+                                        // Add component overrides for embedded components
+                                        EnhancedCayleyGraphExplorer: {
+                                            component: () => <EnhancedCayleyGraphExplorer />
+                                        },
+                                        CayleyGraphExplorer: {
+                                            component: () => <CayleyGraphExplorer className="w-full" />
+                                        },
+                                        StaticNotebookViewer: {
+                                            component: (props) => (
+                                                <StaticNotebookViewer 
+                                                    htmlPath="/notebooks/InteractiveCayley.html"
+                                                    title="Interactive Cayley Graph Explorer"
+                                                    height="800px"
+                                                    className="w-full"
+                                                    {...props}
+                                                />
+                                            )
+                                        },
+                                        ...(isCayleyGraphSection || isNotebookSection ? {
+                                            // Replace the placeholder div with nothing since we render the component above
+                                            div: {
+                                                component: ({ children, ...props }) => {
+                                                    if (props.id === 'cayley-graph-explorer-container' || props.id === 'notebook-embed-container') {
+                                                        return null; // Don't render the placeholder div
+                                                    }
+                                                    return <div {...props}>{children}</div>;
                                                 }
-                                                return <div {...props}>{children}</div>;
                                             }
-                                        }
-                                    } : {}
+                                        } : {})
+                                    }
                                 }}
                                 className={classNames('sb-markdown', 'sm:text-lg', styles?.text ? mapStyles(styles?.text) : undefined, {
-                                    'mt-6': (badge?.label || title?.text || subtitle) && !isCayleyGraphSection,
-                                    'mt-8': isCayleyGraphSection
+                                    'mt-6': (badge?.label || title?.text || subtitle) && !isCayleyGraphSection && !isNotebookSection,
+                                    'mt-8': isCayleyGraphSection || isNotebookSection
                                 })}
                                 {...(enableAnnotations && { 'data-sb-field-path': '.text' })}
                             >

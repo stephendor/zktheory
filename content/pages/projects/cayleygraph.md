@@ -40,6 +40,13 @@ sections:
         showIcon: true
         icon: arrowRight
         iconPosition: right
+      - type: Button
+        label: View Full Jupyter Notebook
+        url: '/projects/cayley-notebook'
+        style: secondary
+        showIcon: true
+        icon: book
+        iconPosition: right
     colors: bg-light-fg-dark
     styles:
       self:
@@ -100,6 +107,7 @@ sections:
       **Recommended Reading:**
       - *Visual Group Theory* by Nathan Carter
       - *Algebra: Notes from the Underground* by Paolo Aluffi
+      - - *Contemporary Abstract Algebra* by Joseph Gallian
 
       **Online Resources:**
       - [Group Explorer 3.0](https://nathancarter.github.io/group-explorer/GroupExplorer.html) (The inspiration for this project)
