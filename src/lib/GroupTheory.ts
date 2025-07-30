@@ -287,7 +287,92 @@ export class CayleyGraphGenerator {
     const centerY = 300;
     
     // Choose layout strategy based on group structure
+<<<<<<< HEAD
     if (group.isAbelian && group.elements.length <= 8) {
+=======
+    if (group.name.includes('xC') || group.name.includes('×') || group.name.startsWith('(C2)') || group.name === 'C2xC2xC2') {
+      // Direct product and elementary abelian groups - check first before general abelian
+      if (group.name.startsWith('(C2)') || group.name === 'C2xC2xC2') {
+        // Elementary abelian groups - symmetric layout
+        console.log(`⚡ Using elementary abelian layout`);
+        if (group.elements.length === 8) {
+          // Cube vertices layout for (C2)^3
+          const cubeSize = 120;
+          const cubePositions = [
+            { x: -cubeSize/2, y: -cubeSize/2 }, // 000
+            { x: cubeSize/2, y: -cubeSize/2 },  // 001
+            { x: -cubeSize/2, y: cubeSize/2 },  // 010
+            { x: cubeSize/2, y: cubeSize/2 },   // 011
+            { x: -cubeSize/2, y: -cubeSize/4 }, // 100
+            { x: cubeSize/2, y: -cubeSize/4 },  // 101
+            { x: -cubeSize/2, y: cubeSize/4 },  // 110
+            { x: cubeSize/2, y: cubeSize/4 }    // 111
+          ];
+          
+          for (let i = 0; i < Math.min(8, group.elements.length); i++) {
+            positions.push({
+              x: centerX + cubePositions[i].x,
+              y: centerY + cubePositions[i].y,
+              z: layout === '3d' ? 0 : undefined
+            });
+          }
+        } else {
+          // Default grid for other elementary abelian groups
+          const cols = Math.ceil(Math.sqrt(group.elements.length));
+          const rows = Math.ceil(group.elements.length / cols);
+          const spacingX = 90;
+          const spacingY = 80;
+          
+          for (let i = 0; i < group.elements.length; i++) {
+            const row = Math.floor(i / cols);
+            const col = i % cols;
+            positions.push({
+              x: centerX - (cols - 1) * spacingX / 2 + col * spacingX,
+              y: centerY - (rows - 1) * spacingY / 2 + row * spacingY,
+              z: layout === '3d' ? 0 : undefined
+            });
+          }
+        }
+      } else {
+        // Direct product groups - rectangular grid layout
+        console.log(`📐 Using direct product grid layout for ${group.name}`);
+        
+        // Extract the component orders for better grid arrangement
+        let cols, rows;
+        if (group.name === 'C2xC4') {
+          cols = 2; rows = 4;
+        } else if (group.name === 'C3xC3') {
+          cols = 3; rows = 3;
+        } else if (group.name === 'C2xC6') {
+          cols = 2; rows = 6;
+        } else if (group.name === 'C4xC4') {
+          cols = 4; rows = 4;
+        } else if (group.name === 'C4xC5') {
+          cols = 4; rows = 5;
+        } else if (group.name === 'C2xC10') {
+          cols = 2; rows = 10;
+        } else {
+          // Default square-ish arrangement
+          const sqrtOrder = Math.sqrt(group.elements.length);
+          cols = Math.ceil(sqrtOrder);
+          rows = Math.ceil(group.elements.length / cols);
+        }
+        
+        const spacingX = Math.min(120, 600 / cols);
+        const spacingY = Math.min(100, 500 / rows);
+        
+        for (let i = 0; i < group.elements.length; i++) {
+          const row = Math.floor(i / cols);
+          const col = i % cols;
+          positions.push({
+            x: centerX - (cols - 1) * spacingX / 2 + col * spacingX,
+            y: centerY - (rows - 1) * spacingY / 2 + row * spacingY,
+            z: layout === '3d' ? 0 : undefined
+          });
+        }
+      }
+    } else if (group.isAbelian && group.elements.length <= 8) {
+>>>>>>> 1694638 (Adds subgroup visualization to Cayley graph explorer)
       // Circular layout for small abelian groups
       const radius = Math.min(250, 100 + group.elements.length * 15);
       console.log(`🔄 Using circular layout with radius ${radius}`);
@@ -300,6 +385,7 @@ export class CayleyGraphGenerator {
           z: layout === '3d' ? 0 : undefined
         });
       }
+<<<<<<< HEAD
     } else if (group.isAbelian && group.elements.length > 8) {
       // Spiral layout for larger abelian groups to avoid overcrowding
       console.log(`🌀 Using spiral layout for large abelian group`);
@@ -309,6 +395,37 @@ export class CayleyGraphGenerator {
       for (let i = 0; i < group.elements.length; i++) {
         const angle = (2 * Math.PI * i * 2.5) / group.elements.length; // More turns for spacing
         const radius = baseRadius + (i * spiralSpacing) / group.elements.length;
+=======
+    } else if (group.isAbelian && group.elements.length > 8 && group.elements.length <= 16) {
+      // Enhanced spacing layout for medium abelian groups
+      console.log(`🌀 Using enhanced spacing layout for medium abelian group`);
+      const baseRadius = 150; // Increased from 140 for more starting space
+      const radiusIncrement = 30; // Increased from 25 for better separation
+      const angleIncrement = (2 * Math.PI) / 5; // Reduced from 6 to 5 elements per turn for more space
+      
+      for (let i = 0; i < group.elements.length; i++) {
+        const angle = i * angleIncrement;
+        const radius = baseRadius + Math.floor(i / 5) * radiusIncrement; // Every 5 elements instead of 6
+        positions.push({
+          x: centerX + radius * Math.cos(angle),
+          y: centerY + radius * Math.sin(angle),
+          z: layout === '3d' ? 0 : undefined
+        });
+      }
+    } else if (group.isAbelian && group.elements.length > 16) {
+      // Concentric circles layout for very large abelian groups
+      console.log(`⭕ Using concentric circles layout for large abelian group`);
+      const elementsPerRing = 8;
+      const baseRadius = 100;
+      const ringSpacing = 60;
+      
+      for (let i = 0; i < group.elements.length; i++) {
+        const ring = Math.floor(i / elementsPerRing);
+        const positionInRing = i % elementsPerRing;
+        const radius = baseRadius + ring * ringSpacing;
+        const angle = (2 * Math.PI * positionInRing) / elementsPerRing;
+        
+>>>>>>> 1694638 (Adds subgroup visualization to Cayley graph explorer)
         positions.push({
           x: centerX + radius * Math.cos(angle),
           y: centerY + radius * Math.sin(angle),
@@ -436,6 +553,7 @@ export class CayleyGraphGenerator {
           z: layout === '3d' ? 0 : undefined
         });
       }
+<<<<<<< HEAD
     } else if (group.name.includes('xC') || group.name.includes('×')) {
       // Direct product groups - rectangular grid layout
       console.log(`📐 Using direct product grid layout`);
@@ -493,6 +611,67 @@ export class CayleyGraphGenerator {
             y: centerY - (rows - 1) * spacingY / 2 + row * spacingY,
             z: layout === '3d' ? 0 : undefined
           });
+=======
+    } else if (group.name === 'A4' || group.name === 'T') {
+      // Alternating Group A4 (Tetrahedral Group) - true tetrahedral structure
+      console.log(`🔺 Using A4 true tetrahedral layout`);
+      
+      // A4 tetrahedral layout: arrange 12 elements as vertices of a truncated tetrahedron
+      // This matches Group Explorer's tetrahedral structure where generators form the edges
+      
+      // Tetrahedral vertex positions (4 vertices of tetrahedron)
+      const tetraRadius = 120;
+      const tetraVertices = [
+        { x: centerX, y: centerY - tetraRadius },                           // Top vertex
+        { x: centerX - tetraRadius * Math.cos(Math.PI/6), y: centerY + tetraRadius/2 },  // Bottom left
+        { x: centerX + tetraRadius * Math.cos(Math.PI/6), y: centerY + tetraRadius/2 },  // Bottom right
+        { x: centerX, y: centerY + tetraRadius/4 }                          // Center vertex
+      ];
+      
+      // Each tetrahedral vertex will have 3 group elements around it
+      // This creates the "truncated tetrahedron" effect
+      const elementsPerVertex = 3;
+      const vertexRadius = 35; // Radius around each tetrahedral vertex
+      
+      for (let i = 0; i < group.elements.length; i++) {
+        const element = group.elements[i];
+        
+        if (element.id === 'e') {
+          // Identity at the center of the structure
+          positions.push({
+            x: centerX,
+            y: centerY,
+            z: layout === '3d' ? 0 : undefined
+          });
+        } else {
+          // Distribute other elements around tetrahedral vertices
+          const elementIndex = i - 1; // Subtract 1 for identity
+          const vertexIndex = Math.floor(elementIndex / elementsPerVertex);
+          const positionInVertex = elementIndex % elementsPerVertex;
+          
+          if (vertexIndex < tetraVertices.length) {
+            // Position around tetrahedral vertex
+            const vertex = tetraVertices[vertexIndex];
+            const angle = (2 * Math.PI * positionInVertex) / elementsPerVertex;
+            
+            positions.push({
+              x: vertex.x + vertexRadius * Math.cos(angle),
+              y: vertex.y + vertexRadius * Math.sin(angle),
+              z: layout === '3d' ? 0 : undefined
+            });
+          } else {
+            // Extra elements in outer positions
+            const extraIndex = elementIndex - (tetraVertices.length * elementsPerVertex);
+            const outerRadius = 200;
+            const angle = (2 * Math.PI * extraIndex) / (group.elements.length - 1 - tetraVertices.length * elementsPerVertex);
+            
+            positions.push({
+              x: centerX + outerRadius * Math.cos(angle),
+              y: centerY + outerRadius * Math.sin(angle),
+              z: layout === '3d' ? 0 : undefined
+            });
+          }
+>>>>>>> 1694638 (Adds subgroup visualization to Cayley graph explorer)
         }
       }
     } else {

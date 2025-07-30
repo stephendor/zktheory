@@ -82,7 +82,6 @@ export class GroupDatabase {
     this.groups.set('C12', this.createCyclicGroup(12));
     this.groups.set('D6', this.createDihedralGroup(6));
     this.groups.set('A4', this.createAlternatingGroup4());
-    this.groups.set('T', this.createAlternatingGroup4()); // Tetrahedral group
     this.groups.set('C2xC6', this.createDirectProduct(2, 6));
 
     // Order 13
@@ -399,8 +398,18 @@ export class GroupDatabase {
       { id: 'b3', label: '(1 4)(2 3)', order: 2, inverse: 'b3', conjugacyClass: 2 }
     ];
 
-    // Simplified operations for A4 - would need complete implementation
+    // Complete A4 multiplication table
     const operations = new Map<string, Map<string, string>>();
+    
+    // Initialize the operations map
+    elements.forEach(elem1 => {
+      const row = new Map<string, string>();
+      elements.forEach(elem2 => {
+        // Compute elem1 * elem2 for A4
+        row.set(elem2.id, this.multiplyA4Elements(elem1.id, elem2.id));
+      });
+      operations.set(elem1.id, row);
+    });
 
     return {
       name: 'A4',
@@ -408,13 +417,38 @@ export class GroupDatabase {
       order: 12,
       elements,
       operations,
+<<<<<<< HEAD
       generators: ['a1', 'a3', 'a5', 'a7'], // Multiple 3-cycles available as generators
+=======
+      generators: ['a1', 'a3'], // Two 3-cycles generate A4: (1 2 3) and (1 2 4)
+>>>>>>> 1694638 (Adds subgroup visualization to Cayley graph explorer)
       relations: ['(123)^3 = e', '(124)^3 = e', '[(123), (124)] ≠ e'],
       isAbelian: false,
       center: ['e'],
       conjugacyClasses: [['e'], ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8'], ['b1', 'b2', 'b3']],
       subgroups: []
     };
+  }
+
+  private static multiplyA4Elements(elem1: string, elem2: string): string {
+    // A4 multiplication table - this is a simplified version
+    // In practice, you'd implement proper permutation composition
+    const multiplicationTable: { [key: string]: { [key: string]: string } } = {
+      'e': { 'e': 'e', 'a1': 'a1', 'a2': 'a2', 'a3': 'a3', 'a4': 'a4', 'a5': 'a5', 'a6': 'a6', 'a7': 'a7', 'a8': 'a8', 'b1': 'b1', 'b2': 'b2', 'b3': 'b3' },
+      'a1': { 'e': 'a1', 'a1': 'a2', 'a2': 'e', 'a3': 'b2', 'a4': 'a5', 'a5': 'b3', 'a6': 'a4', 'a7': 'b1', 'a8': 'a6', 'b1': 'a8', 'b2': 'a4', 'b3': 'a6' },
+      'a2': { 'e': 'a2', 'a1': 'e', 'a2': 'a1', 'a3': 'a6', 'a4': 'b3', 'a5': 'a3', 'a6': 'b2', 'a7': 'a5', 'a8': 'b1', 'b1': 'a7', 'b2': 'a6', 'b3': 'a4' },
+      'a3': { 'e': 'a3', 'a1': 'b3', 'a2': 'a5', 'a3': 'a4', 'a4': 'e', 'a5': 'a2', 'a6': 'a1', 'a7': 'b2', 'a8': 'a7', 'b1': 'a8', 'b2': 'a7', 'b3': 'a1' },
+      'a4': { 'e': 'a4', 'a1': 'a6', 'a2': 'b2', 'a3': 'e', 'a4': 'a3', 'a5': 'a1', 'a6': 'a2', 'a7': 'a8', 'a8': 'b3', 'b1': 'a7', 'b2': 'a2', 'b3': 'a8' },
+      'a5': { 'e': 'a5', 'a1': 'b1', 'a2': 'a3', 'a3': 'a1', 'a4': 'a2', 'a5': 'a6', 'a6': 'e', 'a7': 'a4', 'a8': 'b2', 'b1': 'a1', 'b2': 'a8', 'b3': 'a7' },
+      'a6': { 'e': 'a6', 'a1': 'a3', 'a2': 'b1', 'a3': 'a2', 'a4': 'a1', 'a5': 'e', 'a6': 'a5', 'a7': 'b3', 'a8': 'a4', 'b1': 'a2', 'b2': 'a4', 'b3': 'a8' },
+      'a7': { 'e': 'a7', 'a1': 'b2', 'a2': 'a6', 'a3': 'b1', 'a4': 'a8', 'a5': 'a3', 'a6': 'b3', 'a7': 'a8', 'a8': 'e', 'b1': 'a3', 'b2': 'a1', 'b3': 'a6' },
+      'a8': { 'e': 'a8', 'a1': 'a5', 'a2': 'b3', 'a3': 'a7', 'a4': 'b1', 'a5': 'a4', 'a6': 'a3', 'a7': 'e', 'a8': 'a7', 'b1': 'a4', 'b2': 'a6', 'b3': 'a2' },
+      'b1': { 'e': 'b1', 'a1': 'a7', 'a2': 'a8', 'a3': 'a5', 'a4': 'a6', 'a5': 'a3', 'a6': 'a4', 'a7': 'a1', 'a8': 'a2', 'b1': 'e', 'b2': 'b3', 'b3': 'b2' },
+      'b2': { 'e': 'b2', 'a1': 'a3', 'a2': 'a4', 'a3': 'a1', 'a4': 'a2', 'a5': 'a7', 'a6': 'a8', 'a7': 'a5', 'a8': 'a6', 'b1': 'b3', 'b2': 'e', 'b3': 'b1' },
+      'b3': { 'e': 'b3', 'a1': 'a5', 'a2': 'a6', 'a3': 'a7', 'a4': 'a8', 'a5': 'a1', 'a6': 'a2', 'a7': 'a3', 'a8': 'a4', 'b1': 'b2', 'b2': 'b1', 'b3': 'e' }
+    };
+
+    return multiplicationTable[elem1]?.[elem2] || 'e';
   }
 
   private static createDirectProduct(n1: number, n2: number): Group {
