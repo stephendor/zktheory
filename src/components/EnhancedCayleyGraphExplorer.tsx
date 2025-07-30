@@ -26,6 +26,7 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null);
   const [currentGraph, setCurrentGraph] = useState<CayleyGraph | null>(null);
   const [selectedGenerators, setSelectedGenerators] = useState<string[]>([]);
+  const [selectedSubgroup, setSelectedSubgroup] = useState<string>('full'); // 'full' or subgroup index
   const [showLabels, setShowLabels] = useState<boolean>(true);
   const [showArrows, setShowArrows] = useState<boolean>(true);
   const [visualizationMode, setVisualizationMode] = useState<'2d' | '3d'>('2d');
@@ -46,6 +47,10 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
     
     if (group) {
       setCurrentGroup(group);
+      
+      // Reset subgroup selection when group changes
+      setSelectedSubgroup('full');
+      
       // Auto-select first generator for non-trivial groups
       if (group.generators.length > 0) {
         setSelectedGenerators([group.generators[0]]);
@@ -55,14 +60,38 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
     }
   }, [selectedGroup]);
 
-  // Generate graph when group or generators change
+  // Generate graph when group, generators, or subgroup change
   useEffect(() => {
     if (currentGroup) {
       console.log('📊 SMART LAYOUT ENGINE - Generating Cayley graph for:', currentGroup.name);
       console.log('🔧 Using generators:', selectedGenerators);
-      console.log('🎯 Group order:', currentGroup.order, 'isAbelian:', currentGroup.isAbelian);
-      console.log('🧮 Group operations map size:', currentGroup.operations.size);
-      console.log('🔍 Sample operations:', Array.from(currentGroup.operations.entries()).slice(0, 3));
+      console.log('📂 Selected subgroup:', selectedSubgroup);
+      
+      // Determine which group/subgroup to visualize
+      let groupToVisualize = currentGroup;
+      let elementsToShow = currentGroup.elements;
+      
+      if (selectedSubgroup !== 'full' && currentGroup.subgroups) {
+        const subgroupIndex = parseInt(selectedSubgroup);
+        const subgroup = currentGroup.subgroups[subgroupIndex];
+        if (subgroup) {
+          console.log('🎯 Visualizing subgroup:', subgroup.name, 'with elements:', subgroup.elements);
+          elementsToShow = currentGroup.elements.filter(e => subgroup.elements.includes(e.id));
+          
+          // Create a filtered group for the subgroup
+          groupToVisualize = {
+            ...currentGroup,
+            name: subgroup.name,
+            displayName: subgroup.name,
+            order: subgroup.elements.length,
+            elements: elementsToShow
+          };
+        }
+      }
+      
+      console.log('🎯 Group order:', groupToVisualize.order, 'isAbelian:', groupToVisualize.isAbelian);
+      console.log('🧮 Group operations map size:', groupToVisualize.operations.size);
+      console.log('🔍 Sample operations:', Array.from(groupToVisualize.operations.entries()).slice(0, 3));
       
       // TEST: Verify operations work for specific examples
       if (currentGroup.name === 'C3') {
@@ -78,18 +107,18 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
       console.log('⚙️ Generators to use:', generatorsToUse);
       
       const graph = CayleyGraphGenerator.generateGraph(
-        currentGroup, 
+        groupToVisualize, 
         generatorsToUse, 
         '2d'
       );
       
-      console.log('✅ Graph generated with', graph.edges.length, 'edges (Expected:', currentGroup.order * selectedGenerators.length, ')');
-      console.log('📍 Vertices:', graph.vertices.length, 'Elements:', currentGroup.elements.length);
+      console.log('✅ Graph generated with', graph.edges.length, 'edges (Expected:', groupToVisualize.order * selectedGenerators.length, ')');
+      console.log('📍 Vertices:', graph.vertices.length, 'Elements:', groupToVisualize.elements.length);
       console.log('🔗 First 5 edges:', graph.edges.slice(0, 5));
-      setLayoutInfo(`Smart Layout: ${currentGroup.name} (${graph.edges.length} edges)`);
+      setLayoutInfo(`Smart Layout: ${groupToVisualize.name} (${graph.edges.length} edges)`);
       setCurrentGraph(graph);
     }
-  }, [currentGroup, selectedGenerators]);
+  }, [currentGroup, selectedGenerators, selectedSubgroup]);
 
   // Drawing function for 2D canvas
   const drawGraph = useCallback(() => {
@@ -223,6 +252,7 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
               className="w-full p-2 border border-gray-300 rounded-md"
               value={selectedGroup} 
               onChange={(e) => setSelectedGroup(e.target.value)}
+              title="Select a group to visualize"
             >
               {availableGroups.map(group => (
                 <option key={group.name} value={group.name}>
@@ -258,6 +288,28 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
                   </label>
                 ))}
               </div>
+            </div>
+          )}
+
+          {currentGroup && currentGroup.subgroups && currentGroup.subgroups.length > 1 && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Show Subgroup
+              </label>
+              <select
+                className="w-full p-2 border border-gray-300 rounded-md"
+                value={selectedSubgroup}
+                onChange={(e) => setSelectedSubgroup(e.target.value)}
+                title="Select subgroup to visualize"
+              >
+                <option value="full">Full Group ({currentGroup.displayName})</option>
+                {currentGroup.subgroups.map((subgroup, index) => (
+                  <option key={index} value={index.toString()}>
+                    {subgroup.name} (Order {subgroup.elements.length})
+                    {subgroup.isNormal ? ' - Normal' : ''}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
 

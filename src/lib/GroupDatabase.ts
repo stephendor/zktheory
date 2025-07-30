@@ -162,6 +162,14 @@ export class GroupDatabase {
 
     // Find subgroups
     const subgroups = this.findCyclicSubgroups(n);
+    
+    // Find all possible generators (elements that generate the full group)
+    const allGenerators = [];
+    for (let i = 1; i < n; i++) {
+      if (this.gcd(i, n) === 1) { // φ(n) - Euler's totient function
+        allGenerators.push(`g${i}`);
+      }
+    }
 
     return {
       name: `C${n}`,
@@ -169,7 +177,7 @@ export class GroupDatabase {
       order: n,
       elements,
       operations,
-      generators: n > 1 ? ['g1'] : [],
+      generators: n > 1 ? (allGenerators.length > 0 ? allGenerators : ['g1']) : [],
       relations: n > 1 ? [`g^${n} = e`] : [],
       isAbelian: true,
       center: elements.map(e => e.id),
@@ -258,8 +266,8 @@ export class GroupDatabase {
       order: 6,
       elements,
       operations,
-      generators: ['a', 'd'],
-      relations: ['a^2 = e', 'd^3 = e', '(ad)^2 = e'],
+      generators: ['a', 'b', 'c', 'd'], // Multiple generators: all transpositions and a 3-cycle
+      relations: ['a^2 = e', 'b^2 = e', 'c^2 = e', 'd^3 = e', '(ab)^3 = e', '(ac)^3 = e', '(bc)^3 = e'],
       isAbelian: false,
       center: ['e'],
       conjugacyClasses: [['e'], ['a', 'b', 'c'], ['d', 'f']],
@@ -279,7 +287,7 @@ export class GroupDatabase {
       { id: 'e', label: 'e', order: 1, inverse: 'e', conjugacyClass: 0 },
       { id: 'a', label: 'a', order: 2, inverse: 'a', conjugacyClass: 1 },
       { id: 'b', label: 'b', order: 2, inverse: 'b', conjugacyClass: 2 },
-      { id: 'c', label: 'ab', order: 2, inverse: 'c', conjugacyClass: 3 }
+      { id: 'c', label: 'c', order: 2, inverse: 'c', conjugacyClass: 3 }
     ];
 
     const operations = new Map<string, Map<string, string>>();
@@ -304,8 +312,8 @@ export class GroupDatabase {
       order: 4,
       elements,
       operations,
-      generators: ['a', 'b'],
-      relations: ['a^2 = e', 'b^2 = e', 'ab = ba'],
+      generators: ['a', 'b', 'c'], // All three non-identity elements are generators
+      relations: ['a^2 = e', 'b^2 = e', 'c^2 = e', 'ab = c', 'ac = b', 'bc = a'],
       isAbelian: true,
       center: ['e', 'a', 'b', 'c'],
       conjugacyClasses: [['e'], ['a'], ['b'], ['c']],
@@ -357,8 +365,8 @@ export class GroupDatabase {
       order: 8,
       elements,
       operations,
-      generators: ['i', 'j'],
-      relations: ['i^4 = 1', 'j^4 = 1', 'i^2 = j^2', 'iji^(-1) = j^(-1)'],
+      generators: ['i', 'j', 'k'], // Multiple generators available
+      relations: ['i^4 = 1', 'j^4 = 1', 'k^4 = 1', 'i^2 = j^2 = k^2 = ijk = -1'],
       isAbelian: false,
       center: ['1', '-1'],
       conjugacyClasses: [['1'], ['-1'], ['i', '-i'], ['j', '-j'], ['k', '-k']],
@@ -400,8 +408,8 @@ export class GroupDatabase {
       order: 12,
       elements,
       operations,
-      generators: ['a1', 'a3'],
-      relations: [],
+      generators: ['a1', 'a3', 'a5', 'a7'], // Multiple 3-cycles available as generators
+      relations: ['(123)^3 = e', '(124)^3 = e', '[(123), (124)] ≠ e'],
       isAbelian: false,
       center: ['e'],
       conjugacyClasses: [['e'], ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8'], ['b1', 'b2', 'b3']],

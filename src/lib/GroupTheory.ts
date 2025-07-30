@@ -287,7 +287,7 @@ export class CayleyGraphGenerator {
     const centerY = 300;
     
     // Choose layout strategy based on group structure
-    if (group.isAbelian && group.elements.length <= 12) {
+    if (group.isAbelian && group.elements.length <= 8) {
       // Circular layout for small abelian groups
       const radius = Math.min(250, 100 + group.elements.length * 15);
       console.log(`🔄 Using circular layout with radius ${radius}`);
@@ -300,65 +300,200 @@ export class CayleyGraphGenerator {
           z: layout === '3d' ? 0 : undefined
         });
       }
-    } else if (group.name.startsWith('D')) {
-      // Special layout for dihedral groups - inner circle for rotations, outer for reflections
-      const innerRadius = 120;
-      const outerRadius = 200;
-      console.log(`� Using dihedral layout (inner: ${innerRadius}, outer: ${outerRadius})`);
+    } else if (group.isAbelian && group.elements.length > 8) {
+      // Spiral layout for larger abelian groups to avoid overcrowding
+      console.log(`🌀 Using spiral layout for large abelian group`);
+      const baseRadius = 80;
+      const spiralSpacing = 25;
       
-      const n = Math.floor(group.elements.length / 2); // D_n has 2n elements
       for (let i = 0; i < group.elements.length; i++) {
-        const element = group.elements[i];
-        const isRotation = element.id.startsWith('r');
-        const radius = isRotation ? innerRadius : outerRadius;
-        const index = isRotation ? parseInt(element.id.slice(1)) : parseInt(element.id.slice(1));
-        const angle = (2 * Math.PI * index) / n;
-        
+        const angle = (2 * Math.PI * i * 2.5) / group.elements.length; // More turns for spacing
+        const radius = baseRadius + (i * spiralSpacing) / group.elements.length;
         positions.push({
           x: centerX + radius * Math.cos(angle),
           y: centerY + radius * Math.sin(angle),
-          z: layout === '3d' ? (isRotation ? 0 : 50) : undefined
+          z: layout === '3d' ? 0 : undefined
         });
       }
+    } else if (group.name.startsWith('D')) {
+      // Special layout for dihedral groups - adaptive based on size
+      const n = Math.floor(group.elements.length / 2); // D_n has 2n elements
+      let innerRadius, outerRadius;
+      
+      if (n <= 6) {
+        // Small dihedral groups - tight dual circle
+        innerRadius = 100;
+        outerRadius = 180;
+        console.log(`🔺 Using small dihedral layout (n=${n}, inner: ${innerRadius}, outer: ${outerRadius})`);
+      } else {
+        // Large dihedral groups - more spacing needed
+        innerRadius = 120;
+        outerRadius = 220;
+        console.log(`🔺 Using large dihedral layout (n=${n}, inner: ${innerRadius}, outer: ${outerRadius})`);
+      }
+      
+      const rotations: number[] = [];
+      const reflections: number[] = [];
+      
+      // Separate rotations and reflections
+      for (let i = 0; i < group.elements.length; i++) {
+        const element = group.elements[i];
+        if (element.id.startsWith('r')) {
+          rotations.push(i);
+        } else {
+          reflections.push(i);
+        }
+      }
+      
+      // Position rotations on inner circle
+      for (let i = 0; i < rotations.length; i++) {
+        const angle = (2 * Math.PI * i) / rotations.length;
+        positions[rotations[i]] = {
+          x: centerX + innerRadius * Math.cos(angle),
+          y: centerY + innerRadius * Math.sin(angle),
+          z: layout === '3d' ? 0 : undefined
+        };
+      }
+      
+      // Position reflections on outer circle - aligned with polygon vertices when possible
+      for (let i = 0; i < reflections.length; i++) {
+        const angle = (2 * Math.PI * i) / reflections.length;
+        positions[reflections[i]] = {
+          x: centerX + outerRadius * Math.cos(angle),
+          y: centerY + outerRadius * Math.sin(angle),
+          z: layout === '3d' ? 50 : undefined
+        };
+      }
     } else if (group.name === 'V4' || group.name === 'K4') {
-      // Klein Four Group - square layout
-      console.log(`⬜ Using Klein Four layout`);
-      const squareSize = 120;
-      const corners = [
-        { x: centerX - squareSize/2, y: centerY - squareSize/2 },
-        { x: centerX + squareSize/2, y: centerY - squareSize/2 },
-        { x: centerX + squareSize/2, y: centerY + squareSize/2 },
-        { x: centerX - squareSize/2, y: centerY + squareSize/2 }
+      // Klein Four Group - rectangular layout (Group Explorer style)
+      console.log(`⬜ Using Klein Four rectangular layout`);
+      const spacingX = 140;
+      const spacingY = 100;
+      
+      // Standard V4 layout: e at center, a,b,ab around it
+      const positions_v4 = [
+        { x: centerX, y: centerY - spacingY/2 },           // e (identity) at top center
+        { x: centerX - spacingX/2, y: centerY + spacingY/2 }, // a (left)
+        { x: centerX + spacingX/2, y: centerY + spacingY/2 }, // b (right)
+        { x: centerX, y: centerY + spacingY }               // ab (bottom)
       ];
       
       for (let i = 0; i < Math.min(4, group.elements.length); i++) {
         positions.push({
-          x: corners[i].x,
-          y: corners[i].y,
+          x: positions_v4[i].x,
+          y: positions_v4[i].y,
           z: layout === '3d' ? 0 : undefined
         });
       }
     } else if (group.name === 'S3') {
-      // Symmetric group S3 - triangular layout
-      console.log(`🔺 Using S3 triangular layout`);
-      const radius = 150;
-      const trianglePositions = [
-        { angle: -Math.PI/2 }, // top
-        { angle: Math.PI/6 },   // bottom right
-        { angle: 5*Math.PI/6 }, // bottom left
-        { angle: 0 },           // center-right
-        { angle: 2*Math.PI/3 }, // center-left
-        { angle: 4*Math.PI/3 }  // center-bottom
+      // Symmetric group S3 - Group Explorer style layout
+      console.log(`🔺 Using S3 Group Explorer layout`);
+      
+      // S3 standard layout: identity at center, transpositions around it, 3-cycles at outer positions
+      const radius1 = 100; // Inner circle for transpositions
+      const radius2 = 160; // Outer circle for 3-cycles
+      
+      // Elements: e, (1 2), (1 3), (2 3), (1 2 3), (1 3 2)
+      // Layout: e in center, transpositions in inner triangle, 3-cycles in outer positions
+      const s3_positions = [
+        { x: centerX, y: centerY },                                    // e (identity) at center
+        { x: centerX, y: centerY - radius1 },                         // (1 2) - top
+        { x: centerX - radius1 * Math.cos(Math.PI/6), y: centerY + radius1/2 }, // (1 3) - bottom left
+        { x: centerX + radius1 * Math.cos(Math.PI/6), y: centerY + radius1/2 }, // (2 3) - bottom right
+        { x: centerX - radius2 * Math.cos(Math.PI/6), y: centerY - radius2/2 }, // (1 2 3) - outer left
+        { x: centerX + radius2 * Math.cos(Math.PI/6), y: centerY - radius2/2 }  // (1 3 2) - outer right
       ];
       
       for (let i = 0; i < group.elements.length; i++) {
-        const pos = trianglePositions[i % trianglePositions.length];
-        const r = i < 3 ? radius : radius * 0.6; // Outer triangle and inner positions
         positions.push({
-          x: centerX + r * Math.cos(pos.angle),
-          y: centerY + r * Math.sin(pos.angle),
+          x: s3_positions[i].x,
+          y: s3_positions[i].y,
           z: layout === '3d' ? 0 : undefined
         });
+      }
+    } else if (group.name === 'Q8') {
+      // Quaternion group - 3D cube-like layout
+      console.log(`🧊 Using Quaternion group cube layout`);
+      
+      // Q8 elements: 1, -1, i, -i, j, -j, k, -k
+      // Arrange as vertices of a cube with ±1 at center, i,j,k pairs at opposite corners
+      const spacing = 120;
+      const q8_positions = [
+        { x: centerX, y: centerY },                                    // 1 (identity) at center
+        { x: centerX, y: centerY + 30 },                              // -1 slightly offset from center
+        { x: centerX - spacing, y: centerY - spacing },               // i - top left
+        { x: centerX + spacing, y: centerY + spacing },               // -i - bottom right
+        { x: centerX + spacing, y: centerY - spacing },               // j - top right
+        { x: centerX - spacing, y: centerY + spacing },               // -j - bottom left
+        { x: centerX, y: centerY - spacing },                         // k - top center
+        { x: centerX, y: centerY + spacing }                          // -k - bottom center
+      ];
+      
+      for (let i = 0; i < group.elements.length; i++) {
+        positions.push({
+          x: q8_positions[i].x,
+          y: q8_positions[i].y,
+          z: layout === '3d' ? 0 : undefined
+        });
+      }
+    } else if (group.name.includes('xC') || group.name.includes('×')) {
+      // Direct product groups - rectangular grid layout
+      console.log(`📐 Using direct product grid layout`);
+      const sqrtOrder = Math.sqrt(group.elements.length);
+      const cols = Math.ceil(sqrtOrder);
+      const rows = Math.ceil(group.elements.length / cols);
+      const spacingX = Math.min(100, 500 / cols);
+      const spacingY = Math.min(80, 400 / rows);
+      
+      for (let i = 0; i < group.elements.length; i++) {
+        const row = Math.floor(i / cols);
+        const col = i % cols;
+        positions.push({
+          x: centerX - (cols - 1) * spacingX / 2 + col * spacingX,
+          y: centerY - (rows - 1) * spacingY / 2 + row * spacingY,
+          z: layout === '3d' ? 0 : undefined
+        });
+      }
+    } else if (group.name.startsWith('(C2)') || group.name === 'C2xC2xC2') {
+      // Elementary abelian groups - symmetric layout
+      console.log(`⚡ Using elementary abelian layout`);
+      if (group.elements.length === 8) {
+        // Cube vertices layout for (C2)^3
+        const cubeSize = 120;
+        const cubePositions = [
+          { x: -cubeSize/2, y: -cubeSize/2 }, // 000
+          { x: cubeSize/2, y: -cubeSize/2 },  // 001
+          { x: -cubeSize/2, y: cubeSize/2 },  // 010
+          { x: cubeSize/2, y: cubeSize/2 },   // 011
+          { x: -cubeSize/2, y: -cubeSize/4 }, // 100
+          { x: cubeSize/2, y: -cubeSize/4 },  // 101
+          { x: -cubeSize/2, y: cubeSize/4 },  // 110
+          { x: cubeSize/2, y: cubeSize/4 }    // 111
+        ];
+        
+        for (let i = 0; i < Math.min(8, group.elements.length); i++) {
+          positions.push({
+            x: centerX + cubePositions[i].x,
+            y: centerY + cubePositions[i].y,
+            z: layout === '3d' ? 0 : undefined
+          });
+        }
+      } else {
+        // Default grid for other elementary abelian groups
+        const cols = Math.ceil(Math.sqrt(group.elements.length));
+        const rows = Math.ceil(group.elements.length / cols);
+        const spacingX = 80;
+        const spacingY = 80;
+        
+        for (let i = 0; i < group.elements.length; i++) {
+          const row = Math.floor(i / cols);
+          const col = i % cols;
+          positions.push({
+            x: centerX - (cols - 1) * spacingX / 2 + col * spacingX,
+            y: centerY - (rows - 1) * spacingY / 2 + row * spacingY,
+            z: layout === '3d' ? 0 : undefined
+          });
+        }
       }
     } else {
       // Grid layout for larger or non-abelian groups
