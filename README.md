@@ -1,8 +1,61 @@
-# Content Ops Starter
+# ZKTheory - Cybersecurity & Cryptography Hub
 
-![Content Ops Starter](https://assets.stackbit.com/docs/content-ops-starter-thumb.png)
+![ZKTheory](https://assets.stackbit.com/docs/content-ops-starter-thumb.png)
 
-Netlify starter that's made for customization with a flexible content model, component library, [visual editing](https://docs.netlify.com/visual-editor/overview/) and [Git Content Source](https://docs.netlify.com/create/content-sources/git/).
+A comprehensive platform for exploring cybersecurity, cryptography, and mathematical foundations. Built with Next.js and enhanced with interactive educational tools.
+
+**🌐 Live Site:** [https://zktheory.netlify.app/](https://zktheory.netlify.app/)
+
+## 🎯 Features
+
+### Educational Tools
+
+- **Interactive Cayley Graph Explorer**: Visualize group theory concepts with dynamic Cayley graphs
+- **Cryptography Resources**: Tutorials and documentation on cryptographic concepts
+- **Mathematical Foundations**: From zero knowledge to finite fields
+
+### Content Areas
+
+- **Blog**: Latest insights in cybersecurity and cryptography
+- **Projects**: Interactive tools and educational resources
+- **HTB Certification Journey**: Hack The Box learning path documentation
+- **Research**: Security analysis and vulnerability research
+
+### Technical Features
+
+- Visual content editing with Netlify CMS
+- Algolia-powered search functionality
+- Responsive design with Tailwind CSS
+- Mathematical rendering with KaTeX
+- Interactive visualizations with React components
+
+## 🔬 Interactive Cayley Graph Explorer
+
+A specialized educational tool for visualizing finite group structures through Cayley graphs.
+
+### Features
+
+- Support for Symmetric Groups (Sₙ), Dihedral Groups (Dₙ), and Alternating Groups (Aₙ)
+- Interactive subgroup and coset highlighting
+- Real-time graph generation and manipulation
+- Educational explanations and examples
+
+### Usage
+
+- **Web Interface**: Visit `/projects/cayleygraph` for the React-based interactive tool
+- **Full Version**: Use the Jupyter notebook `InteractiveCayley.ipynb` with SageMath for complete functionality
+
+### Setup for Full Version
+
+```bash
+# Run the setup script
+./setup_cayley_explorer.sh
+
+# Or manually start Jupyter with SageMath
+sage -n jupyter InteractiveCayley.ipynb
+```
+
+See `CAYLEY_GRAPH_README.md` for detailed documentation.
 
 **⚡ View demo:** [https://content-ops-starter.netlify.app/](https://content-ops-starter.netlify.app/)
 

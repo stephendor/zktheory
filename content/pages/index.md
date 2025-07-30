@@ -66,9 +66,39 @@ sections:
         self:
           textAlign: center
       type: TitleBlock
-    subtitle: ''
-    items: []
-    variant: three-col-grid
+    subtitle: 'Interactive tools and educational resources'
+    items:
+      - type: FeaturedItem
+        title: Cayley Graphs
+        tagline: Group Theory Visualization
+        subtitle: Interactive Mathematical Exploration
+        text: |
+          Explore the structure of finite groups through interactive Cayley graph visualizations. Generate graphs for symmetric groups, dihedral groups, and more with dynamic highlighting of subgroups and cosets.
+        image:
+          type: ImageBlock
+          url: /images/cayley-graph-icon.svg
+          altText: Interactive Cayley Graph Explorer
+          styles:
+            self:
+              borderRadius: x-large
+        actions:
+          - type: Button
+            label: Launch Explorer
+            url: /projects/cayleygraph
+            icon: arrowRight
+            iconPosition: right
+            style: secondary
+        colors: bg-light-fg-dark
+        styles:
+          self:
+            padding:
+              - pt-8
+              - pl-8
+              - pb-8
+              - pr-8
+            borderRadius: x-large
+            flexDirection: col
+    variant: one-col-grid
     colors: bg-neutral-fg-dark
     styles:
       self:

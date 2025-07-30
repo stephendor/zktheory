@@ -9,6 +9,9 @@ import Section from '../Section';
 import TitleBlock from '../../blocks/TitleBlock';
 import { Action, Badge } from '../../atoms';
 
+// Import the Cayley Graph component
+import CayleyGraphExplorer from '../../CayleyGraph/CayleyGraphExplorer';
+
 export default function GenericSection(props) {
     const { elementId, colors, backgroundImage, badge, title, subtitle, text, actions = [], media, styles = {}, enableAnnotations } = props;
     const flexDirection = styles?.self?.flexDirection ?? 'row';
@@ -16,6 +19,9 @@ export default function GenericSection(props) {
     const hasTextContent = !!(badge?.url || title?.text || subtitle || text || actions.length > 0);
     const hasMedia = !!(media && (media?.url || (media?.fields ?? []).length > 0));
     const hasXDirection = flexDirection === 'row' || flexDirection === 'row-reverse';
+
+    // Check if this is the Cayley graph tool section
+    const isCayleyGraphSection = elementId === 'cayley-graph-tool';
 
     return (
         <Section
@@ -42,7 +48,8 @@ export default function GenericSection(props) {
                 {hasTextContent && (
                     <div
                         className={classNames('w-full', 'max-w-sectionBody', {
-                            'lg:max-w-[27.5rem]': hasMedia && hasXDirection
+                            'lg:max-w-[27.5rem]': hasMedia && hasXDirection && !isCayleyGraphSection,
+                            'max-w-none': isCayleyGraphSection
                         })}
                     >
                         {badge && <Badge {...badge} {...(enableAnnotations && { 'data-sb-field-path': '.badge' })} />}
@@ -63,11 +70,34 @@ export default function GenericSection(props) {
                                 {subtitle}
                             </p>
                         )}
+                        
+                        {/* Render Cayley Graph Explorer if this is the special section */}
+                        {isCayleyGraphSection && (
+                            <div className="mt-8">
+                                <CayleyGraphExplorer className="w-full" />
+                            </div>
+                        )}
+                        
                         {text && (
                             <Markdown
-                                options={{ forceBlock: true, forceWrapper: true }}
+                                options={{ 
+                                    forceBlock: true, 
+                                    forceWrapper: true,
+                                    overrides: isCayleyGraphSection ? {
+                                        // Replace the placeholder div with nothing since we render the component above
+                                        div: {
+                                            component: ({ children, ...props }) => {
+                                                if (props.id === 'cayley-graph-explorer-container') {
+                                                    return null; // Don't render the placeholder div
+                                                }
+                                                return <div {...props}>{children}</div>;
+                                            }
+                                        }
+                                    } : {}
+                                }}
                                 className={classNames('sb-markdown', 'sm:text-lg', styles?.text ? mapStyles(styles?.text) : undefined, {
-                                    'mt-6': badge?.label || title?.text || subtitle
+                                    'mt-6': (badge?.label || title?.text || subtitle) && !isCayleyGraphSection,
+                                    'mt-8': isCayleyGraphSection
                                 })}
                                 {...(enableAnnotations && { 'data-sb-field-path': '.text' })}
                             >

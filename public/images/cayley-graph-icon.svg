@@ -1,0 +1,51 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/>
+  
+  <!-- Central node -->
+  <circle cx="100" cy="100" r="12" fill="#3498db" stroke="#2c3e50" stroke-width="2"/>
+  <text x="100" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">e</text>
+  
+  <!-- Outer nodes arranged in hexagon -->
+  <!-- Top -->
+  <circle cx="100" cy="50" r="10" fill="#e74c3c" stroke="#2c3e50" stroke-width="2"/>
+  <text x="100" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">r</text>
+  
+  <!-- Top-right -->
+  <circle cx="143" cy="75" r="10" fill="#27ae60" stroke="#2c3e50" stroke-width="2"/>
+  <text x="143" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">s</text>
+  
+  <!-- Bottom-right -->
+  <circle cx="143" cy="125" r="10" fill="#e74c3c" stroke="#2c3e50" stroke-width="2"/>
+  <text x="143" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="white">r²</text>
+  
+  <!-- Bottom -->
+  <circle cx="100" cy="150" r="10" fill="#27ae60" stroke="#2c3e50" stroke-width="2"/>
+  <text x="100" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="white">sr</text>
+  
+  <!-- Bottom-left -->
+  <circle cx="57" cy="125" r="10" fill="#27ae60" stroke="#2c3e50" stroke-width="2"/>
+  <text x="57" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="white">sr²</text>
+  
+  <!-- Top-left -->
+  <circle cx="57" cy="75" r="10" fill="#9b59b6" stroke="#2c3e50" stroke-width="2"/>
+  <text x="57" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="white">rs</text>
+  
+  <!-- Edges -->
+  <!-- From center to outer nodes -->
+  <line x1="100" y1="88" x2="100" y2="62" stroke="#3498db" stroke-width="2" opacity="0.7"/>
+  <line x1="112" y1="100" x2="131" y2="82" stroke="#3498db" stroke-width="2" opacity="0.7"/>
+  <line x1="112" y1="112" x2="131" y2="118" stroke="#3498db" stroke-width="2" opacity="0.7"/>
+  <line x1="100" y1="112" x2="100" y2="138" stroke="#3498db" stroke-width="2" opacity="0.7"/>
+  <line x1="88" y1="112" x2="69" y2="118" stroke="#3498db" stroke-width="2" opacity="0.7"/>
+  <line x1="88" y1="100" x2="69" y2="82" stroke="#3498db" stroke-width="2" opacity="0.7"/>
+  
+  <!-- Some connecting edges between outer nodes -->
+  <line x1="100" y1="60" x2="133" y2="75" stroke="#e74c3c" stroke-width="1.5" opacity="0.6"/>
+  <line x1="133" y1="75" x2="133" y2="115" stroke="#27ae60" stroke-width="1.5" opacity="0.6"/>
+  <line x1="67" y1="75" x2="100" y2="60" stroke="#9b59b6" stroke-width="1.5" opacity="0.6"/>
+  
+  <!-- Title -->
+  <text x="100" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Cayley Graph</text>
+  <text x="100" y="195" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#7f8c8d">Group Theory Visualization</text>
+</svg>

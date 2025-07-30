@@ -1,0 +1,59 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f8f9fa"/>
+  
+  <!-- Title -->
+  <text x="200" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2c3e50">Cayley Graph D₃</text>
+  
+  <!-- Vertices (hexagon arrangement for D3) -->
+  <!-- Identity element at center -->
+  <circle cx="200" cy="150" r="20" fill="#3498db" stroke="#2c3e50" stroke-width="2"/>
+  <text x="200" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">e</text>
+  
+  <!-- Rotations -->
+  <circle cx="280" cy="100" r="20" fill="#e74c3c" stroke="#2c3e50" stroke-width="2"/>
+  <text x="280" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">r</text>
+  
+  <circle cx="280" cy="200" r="20" fill="#e74c3c" stroke="#2c3e50" stroke-width="2"/>
+  <text x="280" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">r²</text>
+  
+  <!-- Reflections -->
+  <circle cx="120" cy="100" r="20" fill="#27ae60" stroke="#2c3e50" stroke-width="2"/>
+  <text x="120" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">s</text>
+  
+  <circle cx="120" cy="200" r="20" fill="#27ae60" stroke="#2c3e50" stroke-width="2"/>
+  <text x="120" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">sr</text>
+  
+  <circle cx="200" cy="50" r="20" fill="#27ae60" stroke="#2c3e50" stroke-width="2"/>
+  <text x="200" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">sr²</text>
+  
+  <!-- Edges for rotation generator r -->
+  <line x1="220" y1="150" x2="260" y2="110" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrowhead-red)"/>
+  <line x1="270" y1="120" x2="270" y2="180" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrowhead-red)"/>
+  <line x1="260" y1="190" x2="220" y2="150" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrowhead-red)"/>
+  
+  <!-- Edges for reflection generator s -->
+  <line x1="180" y1="150" x2="140" y2="110" stroke="#27ae60" stroke-width="3" marker-end="url(#arrowhead-green)"/>
+  <line x1="140" y1="120" x2="140" y2="180" stroke="#27ae60" stroke-width="3" marker-end="url(#arrowhead-green)"/>
+  <line x1="180" y1="140" x2="180" y2="70" stroke="#27ae60" stroke-width="3" marker-end="url(#arrowhead-green)"/>
+  
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowhead-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#e74c3c"/>
+    </marker>
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#27ae60"/>
+    </marker>
+  </defs>
+  
+  <!-- Legend -->
+  <rect x="10" y="220" width="160" height="70" fill="white" stroke="#bdc3c7" stroke-width="1" rx="5"/>
+  <text x="20" y="240" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Legend:</text>
+  <circle cx="30" cy="255" r="8" fill="#3498db"/>
+  <text x="45" y="260" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">Identity (e)</text>
+  <circle cx="30" cy="270" r="8" fill="#e74c3c"/>
+  <text x="45" y="275" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">Rotations (r, r²)</text>
+  <circle cx="100" cy="255" r="8" fill="#27ae60"/>
+  <text x="115" y="260" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">Reflections</text>
+</svg>

@@ -102,8 +102,38 @@ sections:
               - pr-8
             borderRadius: x-large
             flexDirection: col
+      - type: FeaturedItem
+        title: Interactive Cayley Graphs
+        tagline: Mathematical Visualization
+        subtitle: Group Theory & Abstract Algebra Tools
+        text: |
+          Interactive visualization tool for exploring Cayley graphs of finite groups. Built with SageMath and Jupyter, featuring dynamic highlighting of subgroups, cosets, and group centers.
+        image:
+          type: ImageBlock
+          url: /images/cayley-graph-preview.svg
+          altText: Interactive Cayley Graph Explorer
+          styles:
+            self:
+              borderRadius: x-large
+        actions:
+          - type: Button
+            label: Launch Explorer
+            url: /projects/cayleygraph
+            icon: arrowRight
+            iconPosition: right
+            style: secondary
+        colors: bg-light-fg-dark
+        styles:
+          self:
+            padding:
+              - pt-8
+              - pl-8
+              - pb-8
+              - pr-8
+            borderRadius: x-large
+            flexDirection: col
     actions: []
-    variant: three-col-grid
+    variant: two-col-grid
     colors: bg-neutral-fg-dark
     styles:
       self:
