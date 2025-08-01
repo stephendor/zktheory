@@ -13,42 +13,42 @@ sections:
     subtitle: 'Explore group theory through dynamic Cayley graph visualization'
     text: |
       ## About This Tool
-
+      
       This interactive explorer allows you to visualize Cayley graphs for various finite groups using SageMath. 
       The tool supports:
-
+      
       - **Symmetric Groups** (S_n) - Permutation groups
       - **Dihedral Groups** (D_n) - Symmetries of regular polygons  
       - **Alternating Groups** (A_n) - Even permutations
-
+      
       ### Features Include:
       - ✨ **Dynamic generator selection** - Customize your Cayley graph structure
       - 🎨 **Subgroup highlighting** - Visualize cyclic subgroups in red
       - 📊 **Coset visualization** - Display left/right cosets with color coding
       - ⭐ **Group center identification** - Highlight central elements in yellow
       - 🔄 **Interactive controls** - Real-time graph updates
-
+      
       ## Interactive Explorer
-
+      
       <div id="sagecell-cayley-explorer">
       <script type="text/x-sage">
       print("🎯 Interactive Cayley Graph Explorer")
       print("Loading SageMath environment...")
-
+      
       from sage.all import *
       S3 = SymmetricGroup(3)
       generators = [Permutation((1,2)), Permutation((1,2,3))]
       cayley_graph = S3.cayley_graph(generators=generators)
-
+      
       print(f"Demo: Cayley graph for S₃ with {cayley_graph.order()} vertices")
       cayley_graph.plot(layout='spring', vertex_size=300, vertex_labels=True).show()
-
+      
       print("For full interactive features, visit the Jupyter notebook!")
       </script>
       </div>
-
+      
       ## Usage Instructions
-
+      
       ### Getting Started
       1. **Click "Evaluate"** above to load the interactive interface
       2. **Select Group Type**: Choose from Symmetric, Dihedral, or Alternating groups
@@ -57,44 +57,44 @@ sections:
          - For Symmetric/Alternating groups: Use tuple notation like `(1,2), (1,2,3)`
          - For Dihedral groups: Generators are automatically set
       5. **Generate Graph**: Click the "Generate Cayley Graph" button
-
+      
       ### Exploring Structure
       - **Highlight Subgroups**: Select `<element>` to highlight cyclic subgroups
       - **View Cosets**: Choose Left or Right cosets to see group decomposition
       - **Find Center**: Click "Highlight Center" to identify central elements
       - **Clear All**: Reset all highlighting with "Clear Highlights"
-
+      
       ## Examples to Try
-
+      
       ### Symmetric Group S₃
       - **Group Parameter**: 3
       - **Generators**: `(1,2), (1,2,3)`
       - **Properties**: 6 elements, non-abelian
-
+      
       ### Dihedral Group D₄  
       - **Group Parameter**: 4
       - **Generators**: Automatic (rotation + reflection)
       - **Properties**: 8 elements, symmetries of square
-
+      
       ### Alternating Group A₄
       - **Group Parameter**: 4  
       - **Generators**: `(1,2,3), (1,2,4)`
       - **Properties**: 12 elements, even permutations
-
+      
       ## Mathematical Background
-
+      
       A **Cayley graph** Cay(G,S) for a group G with generating set S is a directed graph where:
       - **Vertices** represent group elements
       - **Edges** connect g to gs for each generator s ∈ S
-
+      
       This visualization reveals:
       - **Group structure** through graph connectivity
       - **Subgroup relationships** via connected components
       - **Coset decompositions** through color patterns
       - **Symmetries** in the geometric layout
-
+      
       ## Alternative Options
-
+      
       - **[Full Jupyter Notebook](/projects/cayley-notebook)** - Complete development environment
       - **[Launch on Binder](https://mybinder.org/v2/gh/stephendor/zktheory/main?filepath=InteractiveCayley.ipynb)** - Ready-to-use cloud instance
 

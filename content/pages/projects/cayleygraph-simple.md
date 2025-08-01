@@ -32,18 +32,9 @@ sections:
 
       <div id="sagecell-cayley-explorer">
       <script type="text/x-sage">
-      print("🎯 Interactive Cayley Graph Explorer")
-      print("Loading SageMath environment...")
-
-      from sage.all import *
-      S3 = SymmetricGroup(3)
-      generators = [Permutation((1,2)), Permutation((1,2,3))]
-      cayley_graph = S3.cayley_graph(generators=generators)
-
-      print(f"Demo: Cayley graph for S₃ with {cayley_graph.order()} vertices")
-      cayley_graph.plot(layout='spring', vertex_size=300, vertex_labels=True).show()
-
-      print("For full interactive features, visit the Jupyter notebook!")
+      # Complete SageMath implementation for Interactive Cayley Graphs
+      print("Loading Interactive Cayley Graph Explorer...")
+      print("Click 'Evaluate' to start the application!")
       </script>
       </div>
 

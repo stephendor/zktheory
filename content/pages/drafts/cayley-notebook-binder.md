@@ -20,11 +20,11 @@ sections:
       - **Interactive Widgets**: IPython widgets for real-time parameter adjustment
       - **Educational Tools**: Subgroup analysis, coset highlighting, and group center identification
       - **Computational Power**: Real-time group theory computations with full SageMath backend
-
+      
       ## 🚀 Launch Options
-
+      
       ### Run in Browser (Recommended)
-
+      
       <div style="text-align: center; margin: 2em 0;">
         <a href="https://mybinder.org/v2/gh/stephendor/zktheory/main?filepath=InteractiveCayley.ipynb" 
            target="_blank"
@@ -32,9 +32,9 @@ sections:
           🔬 Launch Interactive Notebook on Binder
         </a>
       </div>
-
+      
       *No installation required! Click above to open the notebook in a ready-to-use SageMath environment.*
-
+      
       ### Download & Run Locally
 
       ### Getting Started:

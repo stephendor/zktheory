@@ -92,9 +92,9 @@ export default function GenericSection(props) {
                                     forceWrapper: true,
                                     overrides: {
                                         // Add component overrides for embedded components
-                                        // EnhancedCayleyGraphExplorer: {
-                                        //     component: () => <EnhancedCayleyGraphExplorer />
-                                        // },
+                                        EnhancedCayleyGraphExplorer: {
+                                            component: () => <EnhancedCayleyGraphExplorer />
+                                        },
                                         StaticNotebookViewer: {
                                             component: (props) => (
                                                 <StaticNotebookViewer 
