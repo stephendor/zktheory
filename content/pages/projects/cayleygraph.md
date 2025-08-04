@@ -77,6 +77,8 @@ sections:
       - **Conjugacy Classes**: Sets of elements related by conjugation
       - **Center**: Elements that commute with all group elements
       - **Subgroups**: Smaller groups contained within the larger group
+      - **Cosets**: Partitions of the group formed by a subgroup
+      - **Normal Subgroups**: Special subgroups where left and right cosets coincide
 
       ### Supported Group Families
 
@@ -100,6 +102,30 @@ sections:
       - **Klein Four Group (V₄)**: Elementary abelian group of order 4
       - **Quaternion Group (Q₈)**: Non-abelian group modeling quaternion multiplication
       - **Alternating Group (A₄)**: Even permutations, tetrahedral symmetries
+
+      ### Understanding Subgroups and Cosets
+
+      #### What are Subgroups?
+      A **subgroup** H of a group G is a subset that is itself a group under the same operation. Every group has at least two subgroups: the trivial subgroup {e} containing only the identity, and the group itself.
+
+      **Key Properties:**
+      - Must contain the identity element
+      - Must be closed under the group operation
+      - Must contain inverses of all its elements
+
+      #### What are Cosets?
+      Given a subgroup H of group G, the **left cosets** of H are sets of the form gH = {gh : h ∈ H} for each element g ∈ G.
+
+      **Important Facts:**
+      - Cosets partition the entire group (every element belongs to exactly one coset)
+      - All cosets have the same size as the subgroup H
+      - The number of cosets equals |G|/|H| (Lagrange's Theorem)
+
+      #### Normal Subgroups
+      A subgroup N is **normal** if gN = Ng for all g ∈ G (left cosets equal right cosets). Normal subgroups are special because:
+      - They allow us to form quotient groups G/N
+      - The cosets themselves form a group structure
+      - They correspond to kernel of group homomorphisms
 
     colors: bg-neutral-fg-dark
     styles:
@@ -147,9 +173,19 @@ sections:
       ### Educational Applications
 
       - **Visual intuition** for abstract algebraic concepts
-      - **Interactive exploration** of group operations
+      - **Interactive exploration** of group operations  
       - **Pattern recognition** in group structures
       - **Concrete examples** for theoretical concepts
+      - **Subgroup exploration** with automatic coset explanations
+      - **Normal subgroup identification** and quotient group understanding
+
+      ### Exploring Subgroups and Cosets
+
+      1. **Select a group** with interesting subgroup structure (try D₃, D₄, or S₃)
+      2. **Choose "Explore Subgroups & Cosets"** from the dropdown
+      3. **Select a subgroup** to see how it partitions the group
+      4. **Read the educational explanations** that appear automatically
+      5. **Observe the visual changes** in the graph structure
 
     colors: bg-light-fg-dark
     styles:

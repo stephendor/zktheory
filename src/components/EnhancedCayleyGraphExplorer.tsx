@@ -294,22 +294,43 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
           {currentGroup && currentGroup.subgroups && currentGroup.subgroups.length > 1 && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Show Subgroup
+                Explore Subgroups & Cosets
               </label>
               <select
                 className="w-full p-2 border border-gray-300 rounded-md"
                 value={selectedSubgroup}
                 onChange={(e) => setSelectedSubgroup(e.target.value)}
-                title="Select subgroup to visualize"
+                title="Select subgroup to visualize cosets and structure"
               >
                 <option value="full">Full Group ({currentGroup.displayName})</option>
                 {currentGroup.subgroups.map((subgroup, index) => (
                   <option key={index} value={index.toString()}>
                     {subgroup.name} (Order {subgroup.elements.length})
-                    {subgroup.isNormal ? ' - Normal' : ''}
+                    {subgroup.isNormal ? ' - Normal Subgroup' : ' - Subgroup'}
                   </option>
                 ))}
               </select>
+              
+              {selectedSubgroup !== 'full' && (
+                <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
+                  <div className="font-medium text-blue-800 mb-1">
+                    📚 Learning: {currentGroup.subgroups[parseInt(selectedSubgroup)]?.isNormal ? 'Normal Subgroups' : 'Subgroups'}
+                  </div>
+                  <div className="text-blue-700">
+                    {currentGroup.subgroups[parseInt(selectedSubgroup)]?.isNormal ? (
+                      <>
+                        <strong>Normal subgroups</strong> are special: their left and right cosets are identical. 
+                        This subgroup partitions the group into equal-sized cosets of {currentGroup.subgroups[parseInt(selectedSubgroup)]?.elements.length} elements each.
+                      </>
+                    ) : (
+                      <>
+                        This <strong>subgroup</strong> breaks the group into cosets - disjoint sets that partition all group elements. 
+                        Each coset has {currentGroup.subgroups[parseInt(selectedSubgroup)]?.elements.length} elements.
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -324,6 +345,7 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
                 </label>
                 <div className="flex space-x-2">
                   <button
+                    type="button"
                     onClick={() => setVisualizationMode('2d')}
                     className={`px-3 py-1 text-sm rounded ${
                       visualizationMode === '2d' 
@@ -334,6 +356,7 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
                     2D Enhanced
                   </button>
                   <button
+                    type="button"
                     onClick={() => alert('3D mode coming soon! The Smart Layout Engine is currently improving 2D layouts.')}
                     className="px-3 py-1 text-sm rounded bg-gray-100 text-gray-400 cursor-not-allowed"
                   >
@@ -363,6 +386,7 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
                     <span className="text-sm">Show Arrows</span>
                   </label>
                   <button
+                    type="button"
                     onClick={() => {
                       console.log('🎯 DEMO: Current group:', currentGroup?.name, 'Layout improvements active!');
                       if (currentGroup) {

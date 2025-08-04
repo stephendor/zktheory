@@ -43,8 +43,8 @@ export const NotebookViewer: React.FC<NotebookViewerProps> = ({
           <div className="ml-3">
             <p className="text-sm text-yellow-700">
               <strong>📝 Note:</strong> This is a static view of the Jupyter notebook. 
-              For full interactivity, download and run the notebook locally with SageMath 
-              or use the <a href="/projects/cayleygraph" className="underline hover:text-yellow-900">web-based interactive tool</a>.
+              For the best experience, use our <a href="/projects/cayleygraph" className="underline hover:text-yellow-900 font-semibold">web-based interactive tool</a> which requires no setup.
+              Advanced users can also download and run this notebook locally with SageMath.
             </p>
           </div>
         </div>

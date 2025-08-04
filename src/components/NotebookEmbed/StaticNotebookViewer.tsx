@@ -26,10 +26,10 @@ export const StaticNotebookViewer: React.FC<StaticNotebookViewerProps> = ({
         <div className="flex">
           <div className="ml-3">
             <p className="text-sm text-yellow-700">
-              <strong>📝 Note:</strong> This is a static view. For full interactivity, 
-              <a href="/InteractiveCayley.ipynb" className="underline hover:text-yellow-900 ml-1" download>
+              <strong>💡 Recommended:</strong> Try our <a href="/projects/cayleygraph" className="underline hover:text-yellow-900 font-semibold">enhanced web-based explorer</a> instead! 
+              No installation needed and works better for learning. Advanced users can also <a href="/InteractiveCayley.ipynb" className="underline hover:text-yellow-900 ml-1" download>
                 download the notebook
-              </a> and run it with SageMath.
+              </a> for local usage.
             </p>
           </div>
         </div>

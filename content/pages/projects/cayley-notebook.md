@@ -10,22 +10,26 @@ sections:
       styles:
         self:
           textAlign: center
-    subtitle: 'Full SageMath implementation with complete interactivity'
+    subtitle: 'Explore our enhanced web-based interactive tool instead!'
     text: |
-      This is the complete Jupyter notebook implementation of the Interactive Cayley Graph Explorer. using SageMath for exploring arbitrary finite groups and their Cayley graphs.
+      **🚀 Recommended: [Web-Based Interactive Explorer](/projects/cayleygraph)**
 
-      ### Features of the Full Notebook:
-      - **Complete Group Support**: All finite groups supported by SageMath
-      - **Advanced Visualization**: Full graph layout algorithms and rendering
-      - **Interactive Widgets**: IPython widgets for real-time parameter adjustment
-      - **Educational Tools**: Complete subgroup analysis, coset highlighting, and more
-      - **Computational Power**: Real-time group theory computations
+      We now offer a **comprehensive web-based Cayley graph explorer** that works directly in your browser without any setup required! This interactive tool provides:
 
-      ### Getting Started:
-      1. **Install SageMath**: Visit [sagemath.org](https://www.sagemath.org/download.html)
-      2. **Download Files**: Use the download links below
-      3. **Run Setup**: Execute the setup script to configure your environment
-      4. **Launch Notebook**: Open the notebook in Jupyter with SageMath kernel
+      ### ✅ What Works Now (No Setup Needed):
+      - **Complete Group Database**: All finite groups up to order 20
+      - **Interactive Visualization**: Real-time graph manipulation  
+      - **Educational Features**: Built-in explanations of cosets and subgroups
+      - **Advanced Layouts**: Optimized positioning for different group types
+      - **Zero Dependencies**: No SageMath or local installation required
+
+      ### 💡 Why Use the Web Version:
+      - **Instant Access**: Works immediately in any modern browser
+      - **Educational Focus**: Designed specifically for learning group theory
+      - **Mobile Friendly**: Responsive design for all devices
+      - **Always Updated**: Latest features and improvements
+
+      [**➡️ Try the Interactive Explorer Now**](/projects/cayleygraph)
 
     actions:
       - type: Button

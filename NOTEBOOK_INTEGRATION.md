@@ -177,7 +177,7 @@ Add notebook processing to your build pipeline:
 
 ### For Interactive Features
 
-- Link to full Jupyter environment (CoCalc, Binder, etc.)
+- Link to full Jupyter environment (CoCalc, local setup, etc.)
 - Provide local setup instructions
 - Consider web-based alternatives (React components)
 
