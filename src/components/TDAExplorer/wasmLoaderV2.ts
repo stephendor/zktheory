@@ -24,84 +24,86 @@ export const initializeWasmV2 = async (): Promise<boolean> => {
   try {
     console.log('Attempting full WASM integration...');
     
-    // Method 1: Try direct import (Next.js 15 with proper webpack config)
+    // Method 1: Runtime dynamic import (avoids webpack build-time issues)
     try {
-      // This should work with our updated Next.js config
-      const wasmImport = await import('/tda_rust_core.js');
+      // Load the JS bindings from public directory at runtime
+      const response = await fetch('/tda_rust_core.js');
+      if (!response.ok) {
+        throw new Error('Could not fetch JS bindings');
+      }
       
-      // Initialize the WASM module
+      const jsCode = await response.text();
+      
+      // Create a module from the JS code
+      const moduleBlob = new Blob([jsCode], { type: 'application/javascript' });
+      const moduleUrl = URL.createObjectURL(moduleBlob);
+      
+      // Dynamic import the module
+      const wasmImport = await import(moduleUrl);
+      
+      // Initialize with WASM binary from public
       await wasmImport.default('/tda_rust_core_bg.wasm');
       
       wasmModule = wasmImport;
       isInitialized = true;
-      console.log('✅ WASM loaded via direct import');
+      console.log('✅ WASM loaded via runtime dynamic import');
+      
+      // Clean up the blob URL
+      URL.revokeObjectURL(moduleUrl);
       return true;
-    } catch (directImportError) {
-      console.warn('Direct import failed:', directImportError);
+    } catch (runtimeError) {
+      console.warn('Runtime dynamic import failed:', runtimeError);
     }
 
-    // Method 2: Try dynamic fetch + instantiate
+    // Method 2: Direct fetch and manual instantiation
     try {
-      const wasmResponse = await fetch('/tda_rust_core_bg.wasm');
-      if (!wasmResponse.ok) {
-        throw new Error('WASM file not accessible');
-      }
-
-      const wasmArrayBuffer = await wasmResponse.arrayBuffer();
-      const wasmInstance = await WebAssembly.instantiate(wasmArrayBuffer);
+      // Fetch both the WASM binary and JS bindings
+      const [wasmResponse, jsResponse] = await Promise.all([
+        fetch('/tda_rust_core_bg.wasm'),
+        fetch('/tda_rust_core.js')
+      ]);
       
-      // Load the JS bindings
-      const jsResponse = await fetch('/tda_rust_core.js');
-      if (!jsResponse.ok) {
-        throw new Error('JS bindings not accessible');
+      if (!wasmResponse.ok || !jsResponse.ok) {
+        throw new Error('Could not fetch WASM files');
       }
-
-      // Create a module wrapper that mimics the wasm-bindgen structure
-      wasmModule = {
-        TDAEngine: class {
-          constructor() {
-            console.log('TDA Engine initialized via manual instantiation');
-          }
-          
-          set_points(points: any) {
-            // This would need manual binding implementation
-            console.log('Set points called with:', points.length, 'points');
-          }
-          
-          compute_persistence(maxEpsilon: number) {
-            console.log('Compute persistence called with max epsilon:', maxEpsilon);
-            // Manual persistence computation would go here
-            return { pairs: [] };
-          }
-        }
-      };
-
-      isInitialized = true;
-      console.log('✅ WASM loaded via manual instantiation');
-      return true;
+      
+      const wasmBytes = await wasmResponse.arrayBuffer();
+      const jsText = await jsResponse.text();
+      
+      // Manually instantiate the WebAssembly module
+      const wasmModule_raw = await WebAssembly.instantiate(wasmBytes);
+      
+      // Create a simple wrapper that mimics the wasm-bindgen interface
+      // This is a simplified approach - we'll need to implement the TDAEngine interface manually
+      console.log('✅ WASM binary instantiated manually');
+      console.warn('⚠️ Manual instantiation requires implementing the full API wrapper');
+      
+      // For now, fall back to enhanced mock since manual wrapper is complex
+      return false;
     } catch (manualError) {
       console.warn('Manual instantiation failed:', manualError);
     }
 
-    // Method 3: Check if files exist but integration isn't working
+    // Method 3: Check for file availability but use enhanced mock
     try {
       const wasmCheck = await fetch('/tda_rust_core_bg.wasm');
       const jsCheck = await fetch('/tda_rust_core.js');
       
       if (wasmCheck.ok && jsCheck.ok) {
-        console.warn('🟡 WASM files found but integration incomplete - using enhanced mock');
+        console.warn('🟡 WASM files available but integration incomplete - using enhanced mock');
+        console.log('WASM file size:', wasmCheck.headers.get('content-length'), 'bytes');
         return false; // This will trigger the enhanced mock engine
       }
     } catch (checkError) {
-      console.warn('WASM files not found:', checkError);
+      console.warn('WASM files not accessible:', checkError);
     }
 
-    console.warn('❌ All WASM integration methods failed - falling back to mock');
+    console.warn('❌ All WASM integration methods failed - falling back to enhanced mock');
     return false;
 
   } catch (error) {
     console.error('WASM initialization error:', error);
-    console.warn('Falling back to mock computation');
+    console.warn('Falling back to enhanced mock computation');
     return false;
   }
 };
@@ -119,35 +121,42 @@ export const createTDAEngineV2 = (): TDAEngine | null => {
   try {
     // Create a new TDA engine instance using the WASM module
     const engine = new wasmModule.TDAEngine();
+    let currentMaxDistance = 0.5; // Store for persistence computation
     
     return {
       set_points: (points: number[][]) => {
         try {
           // Convert points to the format expected by Rust: Vec<Point2D>
           const rustPoints = points.map(([x, y]) => ({ x, y }));
+          
+          // The Rust API expects a JsValue, so we need to convert properly
+          // wasm-bindgen handles this conversion automatically for us
           engine.set_points(rustPoints);
-          console.log('✅ Points set in WASM engine');
+          console.log('✅ Points set in WASM engine:', points.length, 'points');
         } catch (error) {
           console.error('Error setting points:', error);
           throw error;
         }
       },
       compute_vietoris_rips: (maxDistance: number) => {
-        // This is handled internally by the Rust implementation
-        console.log('Vietoris-Rips computation requested for distance:', maxDistance);
+        // Store the max distance for persistence computation
+        currentMaxDistance = maxDistance;
+        console.log('Vietoris-Rips max distance set to:', maxDistance);
       },
       compute_persistence: (): PersistenceInterval[] => {
         try {
-          // Call the Rust persistence computation
-          const result = engine.compute_persistence(2.0); // Use a reasonable max epsilon
+          // Call the Rust persistence computation with stored max distance
+          const result = engine.compute_persistence(currentMaxDistance);
           
-          console.log('✅ Persistence computed via WASM');
+          console.log('✅ Persistence computed via WASM with max_epsilon:', currentMaxDistance);
           
-          // Extract and filter persistence pairs
-          const diagram = result;
-          return diagram.pairs.filter((interval: any) => {
+          // The result is a JsValue containing a PersistenceDiagram
+          // Extract the persistence pairs and filter infinite ones
+          const pairs = result.pairs || [];
+          
+          return pairs.filter((interval: any) => {
             // Filter out infinite persistence pairs for visualization
-            return isFinite(interval.death);
+            return isFinite(interval.death) && interval.death !== Infinity;
           }).map((interval: any) => ({
             birth: interval.birth,
             death: interval.death,
@@ -155,6 +164,7 @@ export const createTDAEngineV2 = (): TDAEngine | null => {
           }));
         } catch (error) {
           console.error('Error computing persistence:', error);
+          console.error('Error details:', error.toString());
           // Don't throw - let it fall back to mock
           return [];
         }
