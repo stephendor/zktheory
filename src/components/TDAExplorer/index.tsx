@@ -62,7 +62,7 @@ const TDAExplorer: React.FC = () => {
   useEffect(() => {
     const loadWasm = async () => {
       // Toggle between V1 (current working) and V2 (full integration attempt)
-      const useV2Integration = false; // Set to true to test full integration
+      const useV2Integration = true; // Set to true to test full integration
       
       if (useV2Integration) {
         console.log('🔄 Testing V2 WASM integration...');
