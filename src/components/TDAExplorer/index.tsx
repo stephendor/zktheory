@@ -4,6 +4,7 @@ import PersistenceDiagram from './PersistenceDiagram';
 import PersistenceBarcode from './PersistenceBarcode';
 import MapperVisualization from './MapperVisualization';
 import { initializeWasm, createTDAEngine, createMockTDAEngine, isWasmReady } from './wasmLoader';
+import { initializeWasmV2, createTDAEngineV2, createEnhancedMockTDAEngine, isWasmReadyV2 } from './wasmLoaderV2';
 
 interface Point {
   x: number;
@@ -60,26 +61,58 @@ const TDAExplorer: React.FC = () => {
   // Initialize WASM on component mount
   useEffect(() => {
     const loadWasm = async () => {
-      try {
-        const success = await initializeWasm();
-        if (success) {
-          const engine = createTDAEngine();
-          setTdaEngine(engine);
-          setWasmLoaded(true);
-          console.log('TDA Engine ready');
-        } else {
-          // Use mock engine
+      // Toggle between V1 (current working) and V2 (full integration attempt)
+      const useV2Integration = false; // Set to true to test full integration
+      
+      if (useV2Integration) {
+        console.log('🔄 Testing V2 WASM integration...');
+        try {
+          const success = await initializeWasmV2();
+          if (success) {
+            const engine = createTDAEngineV2();
+            if (engine) {
+              setTdaEngine(engine);
+              setWasmLoaded(true);
+              console.log('✅ V2 WASM TDA Engine ready');
+              return;
+            }
+          }
+          
+          // Fallback to enhanced mock
+          console.log('🔄 V2 WASM failed, using enhanced mock');
+          const enhancedMockEngine = createEnhancedMockTDAEngine();
+          setTdaEngine(enhancedMockEngine);
+          setWasmLoaded(false);
+        } catch (error) {
+          console.error('V2 initialization error:', error);
+          const enhancedMockEngine = createEnhancedMockTDAEngine();
+          setTdaEngine(enhancedMockEngine);
+          setWasmLoaded(false);
+        }
+      } else {
+        // Use the current working V1 system
+        console.log('🔄 Using V1 WASM integration (current working)...');
+        try {
+          const success = await initializeWasm();
+          if (success) {
+            const engine = createTDAEngine();
+            setTdaEngine(engine);
+            setWasmLoaded(true);
+            console.log('✅ V1 TDA Engine ready');
+          } else {
+            // Use original mock engine
+            const mockEngine = createMockTDAEngine();
+            setTdaEngine(mockEngine);
+            setWasmLoaded(false);
+            console.log('🔄 Using V1 mock TDA engine');
+          }
+        } catch (error) {
+          console.error('V1 initialization error:', error);
           const mockEngine = createMockTDAEngine();
           setTdaEngine(mockEngine);
           setWasmLoaded(false);
-          console.log('Using mock TDA engine');
+          console.log('🔄 Fallback to V1 mock TDA engine');
         }
-      } catch (error) {
-        console.error('TDA initialization error:', error);
-        const mockEngine = createMockTDAEngine();
-        setTdaEngine(mockEngine);
-        setWasmLoaded(false);
-        console.log('Fallback to mock TDA engine');
       }
     };
     

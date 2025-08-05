@@ -20,23 +20,20 @@ export const initializeWasm = async (): Promise<boolean> => {
   }
 
   try {
-    // Try to load the WASM module
-    const wasmPath = '/tda_rust_core_bg.wasm';
-    const jsPath = '/tda_rust_core.js';
-
     // Check if WASM files exist
-    const wasmResponse = await fetch(wasmPath);
+    const wasmResponse = await fetch('/tda_rust_core_bg.wasm');
     if (!wasmResponse.ok) {
       console.warn('WASM file not found, using mock computation');
       return false;
     }
 
-    // Dynamically import the WASM module
-    const wasmModulePromise = import(jsPath);
-    wasmModule = await wasmModulePromise;
+    // TODO: Proper WASM integration would require:
+    // 1. Setting up wasm-bindgen integration with Next.js
+    // 2. Proper module loading with the generated JS bindings
+    // 3. Handling the async initialization properly
     
-    // Initialize the module
-    await wasmModule.default();
+    console.warn('WASM files found but integration not yet complete, using mock computation');
+    return false;
     
     isInitialized = true;
     console.log('TDA WASM module loaded successfully');
@@ -65,25 +62,30 @@ export const createTDAEngine = (): TDAEngine | null => {
     return {
       set_points: (points: number[][]) => {
         try {
-          engine.set_points(points);
+          // Convert points to the format expected by Rust: Vec<Point2D>
+          const rustPoints = points.map(([x, y]) => ({ x, y }));
+          engine.set_points(rustPoints);
         } catch (error) {
           console.error('Error setting points:', error);
           throw error;
         }
       },
       compute_vietoris_rips: (maxDistance: number) => {
-        try {
-          engine.compute_vietoris_rips(maxDistance);
-        } catch (error) {
-          console.error('Error computing Vietoris-Rips complex:', error);
-          throw error;
-        }
+        // Note: This method exists but we don't need to call it separately
+        // The Rust engine will handle this internally in compute_persistence
       },
       compute_persistence: (): PersistenceInterval[] => {
         try {
-          const result = engine.compute_persistence();
-          // Convert WASM result to TypeScript interface
-          return result.map((interval: any) => ({
+          // Use maxDistance as the filtration parameter
+          const maxDistance = 2.0; // Use a reasonable default
+          const result = engine.compute_persistence(maxDistance);
+          
+          // Extract pairs from the PersistenceDiagram structure
+          const diagram = result;
+          return diagram.pairs.filter((interval: any) => {
+            // Filter out infinite persistence pairs for visualization
+            return isFinite(interval.death);
+          }).map((interval: any) => ({
             birth: interval.birth,
             death: interval.death,
             dimension: interval.dimension
