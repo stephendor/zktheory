@@ -38,6 +38,7 @@ const components = {
     Chart: dynamic(() => import('./blocks/Chart')),
     MathJax: dynamic(() => import('./blocks/MathJax')),
     Mermaid: dynamic(() => import('./blocks/Mermaid')),
+    TDAExplorer: dynamic(() => import('./TDAExplorer')),
     DividerSection: dynamic(() => import('./sections/DividerSection')),
     EmailFormControl: dynamic(() => import('./blocks/FormBlock/EmailFormControl')),
     FeaturedItem: dynamic(() => import('./sections/FeaturedItemsSection/FeaturedItem')),

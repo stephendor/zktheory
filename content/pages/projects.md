@@ -138,6 +138,36 @@ sections:
               - pr-8
             borderRadius: x-large
             flexDirection: col
+      - type: FeaturedItem
+        title: TDA Explorer
+        tagline: Topological Data Analysis
+        subtitle: Interactive Persistent Homology Visualization
+        text: |
+          Explore the topological structure of data with interactive persistence diagrams, barcodes, and Mapper networks. Built with React, D3.js, and Rust/WebAssembly for high-performance computation.
+        image:
+          type: ImageBlock
+          url: /images/abstract-feature1.svg
+          altText: TDA Explorer Interactive Tool
+          styles:
+            self:
+              borderRadius: x-large
+        actions:
+          - type: Button
+            label: Launch Explorer
+            url: /projects/tda-explorer
+            icon: play
+            iconPosition: right
+            style: secondary
+        colors: bg-light-fg-dark
+        styles:
+          self:
+            padding:
+              - pt-8
+              - pl-8
+              - pb-8
+              - pr-8
+            borderRadius: x-large
+            flexDirection: col
     actions: []
     variant: two-col-grid
     colors: bg-neutral-fg-dark

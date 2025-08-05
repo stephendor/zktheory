@@ -98,7 +98,37 @@ sections:
               - pr-8
             borderRadius: x-large
             flexDirection: col
-    variant: one-col-grid
+      - type: FeaturedItem
+        title: TDA Explorer
+        tagline: Topological Data Analysis
+        subtitle: Interactive Persistent Homology
+        text: |
+          Discover the topological structure hidden in your data. Visualize persistence diagrams, barcodes, and Mapper networks to understand connectivity patterns, holes, and clusters in point cloud data.
+        image:
+          type: ImageBlock
+          url: /images/abstract-feature2.svg
+          altText: TDA Explorer Interactive Tool
+          styles:
+            self:
+              borderRadius: x-large
+        actions:
+          - type: Button
+            label: Launch Explorer
+            url: /projects/tda-explorer
+            icon: play
+            iconPosition: right
+            style: secondary
+        colors: bg-light-fg-dark
+        styles:
+          self:
+            padding:
+              - pt-8
+              - pl-8
+              - pb-8
+              - pr-8
+            borderRadius: x-large
+            flexDirection: col
+    variant: two-col-grid
     colors: bg-neutral-fg-dark
     styles:
       self:
