@@ -110,7 +110,7 @@ sections:
           Interactive visualization tool for exploring Cayley graphs of finite groups. Built with SageMath and Jupyter, featuring dynamic highlighting of subgroups, cosets, and group centers.
         image:
           type: ImageBlock
-          url: /images/cayley-graph-preview.svg
+          url: /images/abstract-feature-cayley.svg
           altText: Interactive Cayley Graph Explorer
           styles:
             self:
@@ -146,7 +146,7 @@ sections:
           Explore the topological structure of data with interactive persistence diagrams, barcodes, and Mapper networks. Built with React, D3.js, and Rust/WebAssembly for high-performance computation.
         image:
           type: ImageBlock
-          url: /images/abstract-feature1.svg
+          url: /images/abstract-feature-tda.svg
           altText: TDA Explorer Interactive Tool
           styles:
             self:

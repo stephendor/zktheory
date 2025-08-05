@@ -9,57 +9,14 @@ sections:
       type: TitleBlock
     subtitle: Interactive exploration of persistent homology and topological features in data
     text: >
-      Discover the hidden topological structure in your data with our interactive
-      TDA explorer. This tool allows you to visualize persistence diagrams,
-      barcodes, and Mapper networks to understand the shape and connectivity
-      patterns in point cloud data.
+      Discover the hidden topological structure in your data with our interactive TDA explorer. 
+      Visualize persistence diagrams, barcodes, and Mapper networks to understand the shape and connectivity patterns in point cloud data.
 
 
-      **Key Features:**
-
-      - **Interactive Point Cloud**: Draw points directly or generate sample datasets (circles, clusters, random distributions)
-
-      - **Persistence Analysis**: Compute and visualize persistent homology using Vietoris-Rips complexes
-
-      - **Persistence Diagrams**: See birth-death pairs of topological features across different dimensions
-
-      - **Persistence Barcodes**: Visualize the lifespan of topological features as horizontal bars
-
-      - **Mapper Networks**: Generate simplified network representations of complex data
-
-      - **Real-time Computation**: Adjust filtration parameters and see results update instantly
-
-      - **WASM-Powered**: Uses Rust/WebAssembly for fast topological computations with fallback to JavaScript
+      **Quick Start:** Generate sample data, adjust filtration parameters, and explore how topological features persist across different scales.
 
 
-      **About Topological Data Analysis:**
-
-
-      TDA is a mathematical framework that studies the shape of data by examining
-      its topological properties. It's particularly useful for:
-
-      - Finding clusters and connectivity patterns in high-dimensional data
-
-      - Detecting holes, loops, and voids in data structures  
-
-      - Analyzing time-series data and sensor networks
-
-      - Understanding the global structure of complex datasets
-
-      - Robust feature extraction that's insensitive to noise
-
-
-      **How to Use:**
-
-      1. Generate sample data or draw your own points in the point cloud canvas
-
-      2. Adjust the filtration value to control the scale of analysis
-
-      3. Switch between Persistence Analysis and Mapper Network views
-
-      4. Hover over visualizations for detailed information
-
-      5. Explore how topological features persist across different scales
+      **Key Features:** Interactive point clouds • Real-time persistence analysis • WASM-powered computation • Mapper networks
     actions:
       - type: Button
         label: Launch TDA Explorer
@@ -69,10 +26,6 @@ sections:
         icon: play
         iconPosition: right
         style: primary
-    media:
-      type: ImageBlock
-      url: /images/tda-preview.svg
-      altText: TDA Explorer Preview
     badge:
       type: Badge
       label: Interactive Tool
@@ -100,66 +53,21 @@ sections:
           - pr-16
   - type: GenericSection
     title:
-      text: Technical Details
+      text: About TDA & Implementation
       color: text-dark
       type: TitleBlock
     text: >
-      **Implementation:**
+      **Topological Data Analysis** studies the shape of data by examining its topological properties. 
+      It's particularly useful for finding clusters, detecting holes and voids, and understanding global structure in complex datasets.
 
 
-      This TDA explorer is built using modern web technologies:
-
-      - **Frontend**: React with TypeScript for type-safe interactive components
-
-      - **Visualization**: D3.js for dynamic, scalable vector graphics
-
-      - **Computation**: Rust compiled to WebAssembly for high-performance TDA algorithms
-
-      - **Fallback**: Pure JavaScript implementation for broader compatibility
+      **Core Concepts:** Simplicial complexes • Persistent homology • Filtrations • Persistence diagrams • Mapper algorithm
 
 
-      **Algorithms:**
-
-      - **Vietoris-Rips Complex**: Constructs simplicial complexes from point clouds
-
-      - **Persistent Homology**: Computes topological features across filtration scales  
-
-      - **Mapper Algorithm**: Creates simplified network representations
-
-      - **Persistence Diagrams**: Birth-death visualization of topological features
-
-      - **Barcodes**: Timeline view of feature persistence
+      **Built With:** React + TypeScript • D3.js visualization • Rust/WASM computation • JavaScript fallback
 
 
-      **Mathematical Background:**
-
-
-      The tool implements core TDA concepts:
-
-      - **Simplicial Complexes**: Combinatorial structures encoding topological information
-
-      - **Filtrations**: Nested sequences of topological spaces
-
-      - **Homology Groups**: Algebraic invariants capturing holes of different dimensions
-
-      - **Persistence**: Tracking topological features across scales
-
-      - **Bottleneck Distance**: Measuring similarity between persistence diagrams
-
-
-      **Applications:**
-
-      - **Data Science**: Exploratory analysis of high-dimensional datasets
-
-      - **Biology**: Analyzing protein structures and phylogenetic data
-
-      - **Neuroscience**: Understanding brain connectivity patterns
-
-      - **Materials Science**: Studying porous materials and crystal structures
-
-      - **Computer Vision**: Shape analysis and feature extraction
-
-      - **Finance**: Market analysis and risk assessment
+      **Applications:** Data science • Biology • Neuroscience • Materials science • Computer vision • Finance
     colors: bg-light-fg-dark
     styles:
       self:

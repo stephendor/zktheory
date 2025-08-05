@@ -1,59 +1,91 @@
-<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="400" height="300" fill="#f8f9fa"/>
-  
-  <!-- Title -->
-  <text x="200" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2c3e50">Cayley Graph D₃</text>
-  
-  <!-- Vertices (hexagon arrangement for D3) -->
-  <!-- Identity element at center -->
-  <circle cx="200" cy="150" r="20" fill="#3498db" stroke="#2c3e50" stroke-width="2"/>
-  <text x="200" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">e</text>
-  
-  <!-- Rotations -->
-  <circle cx="280" cy="100" r="20" fill="#e74c3c" stroke="#2c3e50" stroke-width="2"/>
-  <text x="280" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">r</text>
-  
-  <circle cx="280" cy="200" r="20" fill="#e74c3c" stroke="#2c3e50" stroke-width="2"/>
-  <text x="280" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">r²</text>
-  
-  <!-- Reflections -->
-  <circle cx="120" cy="100" r="20" fill="#27ae60" stroke="#2c3e50" stroke-width="2"/>
-  <text x="120" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">s</text>
-  
-  <circle cx="120" cy="200" r="20" fill="#27ae60" stroke="#2c3e50" stroke-width="2"/>
-  <text x="120" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">sr</text>
-  
-  <circle cx="200" cy="50" r="20" fill="#27ae60" stroke="#2c3e50" stroke-width="2"/>
-  <text x="200" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">sr²</text>
-  
-  <!-- Edges for rotation generator r -->
-  <line x1="220" y1="150" x2="260" y2="110" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrowhead-red)"/>
-  <line x1="270" y1="120" x2="270" y2="180" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrowhead-red)"/>
-  <line x1="260" y1="190" x2="220" y2="150" stroke="#e74c3c" stroke-width="3" marker-end="url(#arrowhead-red)"/>
-  
-  <!-- Edges for reflection generator s -->
-  <line x1="180" y1="150" x2="140" y2="110" stroke="#27ae60" stroke-width="3" marker-end="url(#arrowhead-green)"/>
-  <line x1="140" y1="120" x2="140" y2="180" stroke="#27ae60" stroke-width="3" marker-end="url(#arrowhead-green)"/>
-  <line x1="180" y1="140" x2="180" y2="70" stroke="#27ae60" stroke-width="3" marker-end="url(#arrowhead-green)"/>
-  
-  <!-- Arrow markers -->
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <marker id="arrowhead-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#e74c3c"/>
-    </marker>
-    <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#27ae60"/>
-    </marker>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="nodeGrad1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#1e40af"/>
+    </radialGradient>
+    <radialGradient id="nodeGrad2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#10b981"/>
+      <stop offset="1" stop-color="#047857"/>
+    </radialGradient>
+    <radialGradient id="nodeGrad3" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ef4444"/>
+      <stop offset="1" stop-color="#dc2626"/>
+    </radialGradient>
+    <linearGradient id="edgeGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.3" />
+    </linearGradient>
+    <linearGradient id="edgeGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.3" />
+    </linearGradient>
   </defs>
   
-  <!-- Legend -->
-  <rect x="10" y="220" width="160" height="70" fill="white" stroke="#bdc3c7" stroke-width="1" rx="5"/>
-  <text x="20" y="240" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2c3e50">Legend:</text>
-  <circle cx="30" cy="255" r="8" fill="#3498db"/>
-  <text x="45" y="260" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">Identity (e)</text>
-  <circle cx="30" cy="270" r="8" fill="#e74c3c"/>
-  <text x="45" y="275" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">Rotations (r, r²)</text>
-  <circle cx="100" cy="255" r="8" fill="#27ae60"/>
-  <text x="115" y="260" font-family="Arial, sans-serif" font-size="10" fill="#2c3e50">Reflections</text>
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#bgGrad)" rx="12"/>
+  
+  <!-- Graph structure - abstract geometric representation -->
+  <g transform="translate(200, 150)">
+    
+    <!-- Central hub -->
+    <circle cx="0" cy="0" r="16" fill="url(#nodeGrad1)" opacity="0.9"/>
+    
+    <!-- Ring of nodes -->
+    <circle cx="80" cy="0" r="12" fill="url(#nodeGrad2)" opacity="0.8"/>
+    <circle cx="40" cy="69.3" r="12" fill="url(#nodeGrad2)" opacity="0.8"/>
+    <circle cx="-40" cy="69.3" r="12" fill="url(#nodeGrad2)" opacity="0.8"/>
+    <circle cx="-80" cy="0" r="12" fill="url(#nodeGrad2)" opacity="0.8"/>
+    <circle cx="-40" cy="-69.3" r="12" fill="url(#nodeGrad2)" opacity="0.8"/>
+    <circle cx="40" cy="-69.3" r="12" fill="url(#nodeGrad2)" opacity="0.8"/>
+    
+    <!-- Outer nodes -->
+    <circle cx="120" cy="20" r="8" fill="url(#nodeGrad3)" opacity="0.7"/>
+    <circle cx="60" cy="104" r="8" fill="url(#nodeGrad3)" opacity="0.7"/>
+    <circle cx="-60" cy="104" r="8" fill="url(#nodeGrad3)" opacity="0.7"/>
+    <circle cx="-120" cy="20" r="8" fill="url(#nodeGrad3)" opacity="0.7"/>
+    <circle cx="-60" cy="-104" r="8" fill="url(#nodeGrad3)" opacity="0.7"/>
+    <circle cx="60" cy="-104" r="8" fill="url(#nodeGrad3)" opacity="0.7"/>
+    
+    <!-- Edges - flowing curves -->
+    <path d="M 0 0 Q 40 -20 80 0" stroke="url(#edgeGrad1)" stroke-width="3" fill="none" opacity="0.7"/>
+    <path d="M 0 0 Q 20 35 40 69.3" stroke="url(#edgeGrad1)" stroke-width="3" fill="none" opacity="0.7"/>
+    <path d="M 0 0 Q -20 35 -40 69.3" stroke="url(#edgeGrad1)" stroke-width="3" fill="none" opacity="0.7"/>
+    <path d="M 0 0 Q -40 -20 -80 0" stroke="url(#edgeGrad1)" stroke-width="3" fill="none" opacity="0.7"/>
+    <path d="M 0 0 Q -20 -35 -40 -69.3" stroke="url(#edgeGrad1)" stroke-width="3" fill="none" opacity="0.7"/>
+    <path d="M 0 0 Q 20 -35 40 -69.3" stroke="url(#edgeGrad1)" stroke-width="3" fill="none" opacity="0.7"/>
+    
+    <!-- Secondary connections -->
+    <path d="M 80 0 Q 100 10 120 20" stroke="url(#edgeGrad2)" stroke-width="2" fill="none" opacity="0.5"/>
+    <path d="M 40 69.3 Q 50 87 60 104" stroke="url(#edgeGrad2)" stroke-width="2" fill="none" opacity="0.5"/>
+    <path d="M -40 69.3 Q -50 87 -60 104" stroke="url(#edgeGrad2)" stroke-width="2" fill="none" opacity="0.5"/>
+    <path d="M -80 0 Q -100 10 -120 20" stroke="url(#edgeGrad2)" stroke-width="2" fill="none" opacity="0.5"/>
+    <path d="M -40 -69.3 Q -50 -87 -60 -104" stroke="url(#edgeGrad2)" stroke-width="2" fill="none" opacity="0.5"/>
+    <path d="M 40 -69.3 Q 50 -87 60 -104" stroke="url(#edgeGrad2)" stroke-width="2" fill="none" opacity="0.5"/>
+    
+    <!-- Subtle connection lines -->
+    <path d="M 80 0 A 80 80 0 0 1 40 69.3" stroke="#94a3b8" stroke-width="1" fill="none" opacity="0.3"/>
+    <path d="M 40 69.3 A 80 80 0 0 1 -40 69.3" stroke="#94a3b8" stroke-width="1" fill="none" opacity="0.3"/>
+    <path d="M -40 69.3 A 80 80 0 0 1 -80 0" stroke="#94a3b8" stroke-width="1" fill="none" opacity="0.3"/>
+    <path d="M -80 0 A 80 80 0 0 1 -40 -69.3" stroke="#94a3b8" stroke-width="1" fill="none" opacity="0.3"/>
+    <path d="M -40 -69.3 A 80 80 0 0 1 40 -69.3" stroke="#94a3b8" stroke-width="1" fill="none" opacity="0.3"/>
+    <path d="M 40 -69.3 A 80 80 0 0 1 80 0" stroke="#94a3b8" stroke-width="1" fill="none" opacity="0.3"/>
+  </g>
+  
+  <!-- Abstract geometric shapes for visual interest -->
+  <g transform="translate(50, 50)" opacity="0.1">
+    <path d="M0 0 L20 10 L15 30 L-5 20 Z" fill="#3b82f6"/>
+  </g>
+  <g transform="translate(320, 220)" opacity="0.1">
+    <path d="M0 0 L15 8 L10 22 L-5 14 Z" fill="#10b981"/>
+  </g>
+  
+  <!-- Minimal title indicator -->
+  <circle cx="200" cy="40" r="3" fill="#64748b" opacity="0.6"/>
+  <circle cx="210" cy="40" r="3" fill="#64748b" opacity="0.4"/>
+  <circle cx="190" cy="40" r="3" fill="#64748b" opacity="0.4"/>
 </svg>

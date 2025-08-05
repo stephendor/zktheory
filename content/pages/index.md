@@ -76,7 +76,7 @@ sections:
           Explore the structure of finite groups through interactive Cayley graph visualizations. Generate graphs for symmetric groups, dihedral groups, and more with dynamic highlighting of subgroups and cosets.
         image:
           type: ImageBlock
-          url: /images/cayley-graph-icon.svg
+          url: /images/abstract-feature-cayley.svg
           altText: Interactive Cayley Graph Explorer
           styles:
             self:
@@ -106,7 +106,7 @@ sections:
           Discover the topological structure hidden in your data. Visualize persistence diagrams, barcodes, and Mapper networks to understand connectivity patterns, holes, and clusters in point cloud data.
         image:
           type: ImageBlock
-          url: /images/abstract-feature2.svg
+          url: /images/abstract-feature-tda.svg
           altText: TDA Explorer Interactive Tool
           styles:
             self:
