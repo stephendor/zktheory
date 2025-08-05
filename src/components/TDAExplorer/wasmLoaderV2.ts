@@ -24,20 +24,43 @@ export const initializeWasmV2 = async (): Promise<boolean> => {
   try {
     console.log('Attempting full WASM integration...');
     
-    // Method 1: Try direct import (Next.js 15 with proper webpack config)
+    // Method 1: Try dynamic fetch approach (more reliable for deployment)
     try {
-      // This should work with our updated Next.js config
-      const wasmImport = await import('/tda_rust_core.js');
+      // Check if we're in a browser environment
+      if (typeof window === 'undefined') {
+        throw new Error('WASM loading not supported in server environment');
+      }
       
-      // Initialize the WASM module
-      await wasmImport.default('/tda_rust_core_bg.wasm');
+      // Dynamic import using fetch for better deployment compatibility
+      const wasmResponse = await fetch('/tda_rust_core_bg.wasm');
+      const jsResponse = await fetch('/tda_rust_core.js');
       
-      wasmModule = wasmImport;
+      if (!wasmResponse.ok || !jsResponse.ok) {
+        throw new Error('WASM or JS files not accessible');
+      }
+
+      // Load the JS module content and evaluate it
+      const jsContent = await jsResponse.text();
+      
+      // Create a dynamic module by evaluating the JS content
+      const moduleFunction = new Function('exports', jsContent + '; return exports;');
+      const wasmImports = moduleFunction({});
+      
+      // Initialize with the WASM binary
+      const wasmArrayBuffer = await wasmResponse.arrayBuffer();
+      const wasmInstance = await WebAssembly.instantiate(wasmArrayBuffer);
+      
+      // Bind the WASM instance to the JS exports
+      if (wasmImports.default && typeof wasmImports.default === 'function') {
+        await wasmImports.default(wasmInstance);
+      }
+      
+      wasmModule = wasmImports;
       isInitialized = true;
-      console.log('✅ WASM loaded via direct import');
+      console.log('✅ WASM loaded via dynamic fetch');
       return true;
-    } catch (directImportError) {
-      console.warn('Direct import failed:', directImportError);
+    } catch (dynamicFetchError) {
+      console.warn('Dynamic fetch failed:', dynamicFetchError);
     }
 
     // Method 2: Try dynamic fetch + instantiate
