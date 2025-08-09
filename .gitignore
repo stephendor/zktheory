@@ -42,3 +42,6 @@ yarn-error.log*
 .idea
 
 tmp*
+
+#Ignore vscode AI rules
+.github/copilot-instructions.md
