@@ -1,0 +1,376 @@
+# Product Requirements Document: Geometric Computing Platform
+
+<PRD>
+
+# Geometric Computing Platform: Unified Mathematics Research and Visualization Environment
+
+## 1. Introduction
+
+This Product Requirements Document defines the development of an open-source geometric computing platform that serves as both a research portfolio and interactive demonstration environment. The platform unifies advanced mathematical visualization tools with cutting-edge topological data analysis (TDA) research, leveraging AI agents and Claude taskmaster for accelerated development and continuous enhancement.
+
+The document outlines the transformation of disconnected mathematical tools and research projects into a cohesive, academically-rigorous platform that bridges elliptic curves, abstract algebra, and topological data analysis through interactive demonstrations and visualizations.
+
+## 2. Product overview
+
+The Geometric Computing Platform is a Next.js-based web application that showcases mathematical research through interactive visualizations and demonstrations. It integrates existing tools (Cayley Graph Explorer, TDA Explorer) with research outputs from TDA_projects, creating a unified environment for exploring geometric and topological concepts.
+
+### Core value proposition
+- **Research Portfolio**: Present complex mathematical research through accessible, interactive demonstrations
+- **Educational Resource**: Bridge theoretical concepts with practical visualizations
+- **Open-Source Contribution**: Provide the mathematical community with advanced computational tools
+- **AI-Enhanced Development**: Leverage specialized AI agents for rapid feature development and mathematical accuracy
+
+### Platform components
+- Interactive visualization suite for group theory and elliptic curves
+- WASM-powered topological data analysis demonstrations
+- Integrated research journal with reproducible examples
+- Comprehensive documentation bridging theory and application
+
+## 3. Goals and objectives
+
+### Primary goals
+- Create a unified platform that demonstrates the interconnections between elliptic curves, abstract algebra, and topological data analysis
+- Showcase research achievements (98.42% APT detection accuracy, 60% bubble detection sensitivity) through interactive demonstrations
+- Establish the platform as a reference implementation for geometric computing methods
+
+### Specific objectives
+- **Integration**: Merge isolated tools into a cohesive ecosystem with consistent navigation and user experience
+- **Demonstration Excellence**: Develop compelling, interactive demonstrations that effectively communicate complex mathematical concepts
+- **Research Accessibility**: Transform academic research into explorable, reproducible demonstrations
+- **Performance**: Achieve sub-100ms response times for all interactive visualizations through WASM optimization
+- **Documentation**: Provide comprehensive theoretical background alongside practical demonstrations
+
+### Success metrics
+- Complete integration of all existing mathematical tools into unified platform
+- Minimum of 20 interactive research demonstrations deployed
+- Documentation coverage for 100% of mathematical concepts presented
+- Open-source community engagement (stars, forks, contributions)
+
+## 4. Target audience
+
+### Primary audience
+- **Mathematics Researchers**: Academic professionals seeking interactive tools for group theory, topology, and cryptographic research
+- **Graduate Students**: Advanced mathematics and computer science students studying abstract algebra, topology, and cryptographic protocols
+- **Computational Scientists**: Professionals applying topological methods to data analysis and machine learning
+
+### Secondary audience
+- **Educators**: University professors teaching advanced mathematics courses
+- **Industry Practitioners**: Data scientists and engineers interested in topological data analysis applications
+- **Open-Source Contributors**: Developers interested in mathematical visualization and computational geometry
+
+### User personas
+1. **Dr. Sarah Chen** - Mathematics researcher exploring connections between elliptic curves and topological invariants
+2. **Marcus Rodriguez** - PhD candidate studying applications of TDA in cybersecurity
+3. **Prof. James Wright** - Educator seeking interactive tools for teaching abstract algebra
+4. **Emma Thompson** - Data scientist implementing TDA methods for financial bubble detection
+
+## 5. Features and requirements
+
+### Core features
+
+#### F1: Unified navigation system
+- Seamless navigation between all mathematical tools and research demonstrations
+- Contextual cross-references between related concepts
+- Progressive disclosure of mathematical complexity
+
+#### F2: Enhanced Cayley Graph Explorer
+- Visualization of all finite groups up to order 20
+- Elliptic curve group structure visualization
+- Interactive manipulation of group elements and operations
+- Export capabilities for academic publications
+
+#### F3: Advanced TDA Explorer
+- WASM-powered persistence homology computations
+- 3D persistence landscape visualizations
+- Interactive parameter adjustment for real-time analysis
+- Pre-loaded research demonstrations (APT detection, bubble detection)
+
+#### F4: Research demonstration suite
+- Interactive implementations of published research algorithms
+- Side-by-side comparison of theoretical concepts and practical applications
+- Reproducible research pipelines with downloadable datasets
+- Performance benchmarking visualizations
+
+#### F5: Mathematical bridge visualizations
+- Interactive diagrams showing connections between elliptic curves and abstract algebra
+- Animated transformations between different mathematical representations
+- Concept mapping between cryptographic protocols and topological structures
+
+#### F6: Integrated documentation system
+- Transformed MkDocs book: "Geometric Methods in Cryptography and Data Analysis"
+- Inline mathematical notation rendering (LaTeX/MathJax)
+- Interactive code examples with live execution
+- Theoretical background linked to practical demonstrations
+
+#### F7: Performance optimization layer
+- WASM computation engine for intensive calculations
+- Advanced caching strategies for frequently accessed visualizations
+- Lazy loading of demonstration components
+- WebGL acceleration for 3D visualizations
+
+#### F8: Academic integration features
+- BibTeX citation generation for all demonstrations
+- DOI linking for referenced research papers
+- Export functionality for figures and computational results
+- Reproducibility certificates for demonstrated algorithms
+
+### Non-functional requirements
+
+#### NFR1: Performance
+- Page load time < 2 seconds for initial render
+- Interactive response time < 100ms for user actions
+- WASM module initialization < 500ms
+- Smooth 60 FPS for all animations
+
+#### NFR2: Accessibility
+- WCAG 2.1 Level AA compliance
+- Keyboard navigation for all interactive elements
+- Screen reader support for mathematical content
+- High-contrast mode for visualizations
+
+#### NFR3: Browser compatibility
+- Support for Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
+- Graceful degradation for unsupported features
+- Mobile-responsive design for tablets and large phones
+
+#### NFR4: Code quality
+- TypeScript strict mode enforcement
+- 80% minimum test coverage for core algorithms
+- ESLint and Prettier configuration adherence
+- Comprehensive JSDoc documentation
+
+## 6. User stories and acceptance criteria
+
+### Authentication and access
+**ST-101**: As a visitor, I want to access all platform features without authentication so that I can explore the research demonstrations freely.
+- AC1: All visualizations and demonstrations are accessible without login
+- AC2: No user data is collected or stored
+- AC3: Platform loads without authentication checks
+
+### Navigation and discovery
+**ST-102**: As a researcher, I want to navigate seamlessly between related mathematical concepts so that I can explore connections between different areas.
+- AC1: Navigation menu provides clear categorization of tools
+- AC2: Related concepts are cross-linked within demonstrations
+- AC3: Search functionality returns relevant results across all content
+
+**ST-103**: As a student, I want to progressively explore mathematical complexity so that I can learn at my own pace.
+- AC1: Demonstrations offer "Basic" and "Advanced" viewing modes
+- AC2: Mathematical prerequisites are clearly indicated
+- AC3: Suggested learning paths are provided
+
+### Cayley Graph Explorer
+**ST-104**: As a mathematics researcher, I want to visualize finite groups and their Cayley graphs so that I can understand their structure.
+- AC1: All groups up to order 20 are available for selection
+- AC2: Graph renders within 1 second of selection
+- AC3: Interactive manipulation responds in real-time
+- AC4: Group properties are displayed alongside visualization
+
+**ST-105**: As a cryptography researcher, I want to visualize elliptic curve groups so that I can understand their algebraic structure.
+- AC1: Standard elliptic curves are pre-loaded
+- AC2: Custom curve parameters can be specified
+- AC3: Point addition operations are animated
+- AC4: Subgroup structures are highlighted
+
+**ST-106**: As an educator, I want to export Cayley graph visualizations so that I can use them in presentations.
+- AC1: Export available in SVG and PNG formats
+- AC2: Export includes customizable labels and legends
+- AC3: High-resolution export options available
+- AC4: LaTeX code generation for graph structure
+
+### TDA Explorer
+**ST-107**: As a data scientist, I want to compute persistence homology on uploaded datasets so that I can identify topological features.
+- AC1: CSV and JSON file uploads are supported
+- AC2: Computation completes within 10 seconds for datasets < 1000 points
+- AC3: Persistence diagrams update in real-time with parameter changes
+- AC4: Results can be exported for further analysis
+
+**ST-108**: As a researcher, I want to explore pre-loaded TDA demonstrations so that I can understand the published research results.
+- AC1: APT detection demonstration shows 98.42% accuracy visualization
+- AC2: Bubble detection demonstration shows 60% sensitivity results
+- AC3: Original datasets are downloadable
+- AC4: Algorithm parameters are adjustable
+
+**ST-109**: As a computational scientist, I want to visualize 3D persistence landscapes so that I can interpret topological features spatially.
+- AC1: 3D visualization renders using WebGL
+- AC2: Camera controls allow full rotation and zoom
+- AC3: Color mapping represents persistence values
+- AC4: Multiple landscapes can be overlaid for comparison
+
+### Research demonstrations
+**ST-110**: As an academic, I want to access reproducible research pipelines so that I can verify published results.
+- AC1: Each demonstration includes complete methodology
+- AC2: Source code is viewable and downloadable
+- AC3: Datasets are available with documentation
+- AC4: Computational results match published papers
+
+**ST-111**: As a student, I want to interact with mathematical bridge visualizations so that I can understand connections between concepts.
+- AC1: Animations show transformations between representations
+- AC2: Interactive controls allow step-by-step progression
+- AC3: Mathematical notation is displayed alongside visualizations
+- AC4: Concept relationships are explicitly labeled
+
+### Documentation and learning
+**ST-112**: As a learner, I want to access integrated documentation so that I can understand the theoretical foundations.
+- AC1: Documentation is accessible from within each tool
+- AC2: Mathematical notation renders correctly
+- AC3: Interactive examples are embedded in documentation
+- AC4: References link to original papers
+
+**ST-113**: As a contributor, I want to access comprehensive API documentation so that I can extend the platform.
+- AC1: All public APIs are documented with TypeScript definitions
+- AC2: Code examples demonstrate common use cases
+- AC3: Architecture diagrams explain system design
+- AC4: Contribution guidelines are provided
+
+### Performance and optimization
+**ST-114**: As a user, I want fast-loading visualizations so that I can explore without delays.
+- AC1: Initial page render completes in < 2 seconds
+- AC2: Subsequent navigation uses client-side routing
+- AC3: Large computations show progress indicators
+- AC4: Cached results load instantly
+
+**ST-115**: As a mobile user, I want responsive visualizations so that I can access the platform on my tablet.
+- AC1: Layout adapts to screen sizes ≥ 768px width
+- AC2: Touch gestures work for all interactions
+- AC3: Text remains readable without zooming
+- AC4: Performance is optimized for mobile devices
+
+### Export and citation
+**ST-116**: As a researcher, I want to generate citations for demonstrations so that I can reference them in papers.
+- AC1: BibTeX format is generated for each demonstration
+- AC2: DOI links are provided where available
+- AC3: Version information is included in citations
+- AC4: Copy-to-clipboard functionality works reliably
+
+**ST-117**: As an educator, I want to export computational results so that I can use them in teaching materials.
+- AC1: Results export in CSV and JSON formats
+- AC2: Visualizations export as vector graphics
+- AC3: Export includes metadata and parameters
+- AC4: Batch export is available for multiple results
+
+### Error handling
+**ST-118**: As a user, I want graceful error handling so that I can recover from issues without losing work.
+- AC1: Errors display user-friendly messages
+- AC2: State is preserved when possible
+- AC3: Recovery options are provided
+- AC4: Error reports can be generated for debugging
+
+### Database modeling
+**ST-119**: As a system, I need to efficiently store and retrieve demonstration metadata and cached results so that users experience fast load times.
+- AC1: IndexedDB stores visualization cache locally
+- AC2: Demonstration metadata is loaded from static JSON
+- AC3: Research datasets are fetched on-demand
+- AC4: Cache invalidation occurs on version updates
+
+## 7. Technical requirements / Stack
+
+### Core technology stack
+- **Framework**: Next.js 14+ with App Router
+- **Language**: TypeScript 5.0+ with strict mode
+- **Styling**: Tailwind CSS with custom geometric theme
+- **State Management**: Zustand for global state, React Context for local state
+- **Mathematical Rendering**: MathJax 3.0 for LaTeX, KaTeX for performance-critical rendering
+
+### Visualization libraries
+- **2D Graphics**: D3.js for Cayley graphs, SVG.js for custom visualizations
+- **3D Graphics**: Three.js with React Three Fiber for persistence landscapes
+- **WebGL**: Raw WebGL for performance-critical 3D rendering
+- **Charts**: Recharts for statistical visualizations, custom WebGL for complex plots
+
+### Computational engines
+- **WASM Modules**: Rust-compiled WASM for TDA computations
+- **Web Workers**: Dedicated workers for heavy calculations
+- **GPU Acceleration**: GPU.js for parallel computations where applicable
+- **Mathematical Libraries**: Math.js for general computations, custom implementations for specialized algorithms
+
+### Documentation and content
+- **Documentation**: Transformed MkDocs with custom Next.js integration
+- **Content Management**: MDX for rich content with embedded components
+- **Search**: Flexsearch for client-side documentation search
+- **Syntax Highlighting**: Prism.js with mathematical language support
+
+### Development tools
+- **Build System**: Turbo for monorepo management
+- **Testing**: Jest for unit tests, Playwright for E2E tests
+- **Linting**: ESLint with mathematical computation rules
+- **Formatting**: Prettier with consistent configuration
+
+### AI agent architecture
+- **Visualization Agent**: Specialized in D3.js and Three.js implementations
+- **Mathematical Computation Agent**: Expert in algorithm implementation and optimization
+- **Documentation Agent**: Focused on technical writing and example creation
+- **Testing Agent**: Automated test generation and coverage analysis
+- **Performance Agent**: Optimization and profiling specialist
+- **Research Integration Agent**: Bridges academic papers with interactive demonstrations
+
+### Infrastructure requirements
+- **Hosting**: Vercel or Netlify for static site generation
+- **CDN**: CloudFlare for global asset distribution
+- **Analytics**: Privacy-respecting analytics (Plausible or Umami)
+- **Version Control**: Git with semantic versioning
+- **CI/CD**: GitHub Actions for automated testing and deployment
+
+### Performance specifications
+- **Bundle Size**: < 200KB for initial JavaScript bundle
+- **Code Splitting**: Route-based and component-based splitting
+- **Caching Strategy**: Service Worker for offline capability
+- **Asset Optimization**: WebP images, compressed WASM modules
+- **Lazy Loading**: Intersection Observer for demonstration components
+
+## 8. Design and user interface
+
+### Visual design principles
+- **Geometric Aesthetic**: Clean lines, mathematical precision, topological themes
+- **Color Palette**: Monochromatic base with accent colors for mathematical elements
+- **Typography**: Clear distinction between prose and mathematical notation
+- **Whitespace**: Generous spacing to avoid cognitive overload
+- **Consistency**: Unified design language across all tools and demonstrations
+
+### Layout structure
+- **Navigation**: Fixed sidebar with collapsible sections for tool categories
+- **Content Area**: Flexible grid supporting various visualization sizes
+- **Control Panels**: Floating or docked panels for interactive parameters
+- **Documentation Pane**: Toggleable side panel for contextual help
+- **Responsive Breakpoints**: Desktop (≥1280px), Tablet (768px-1279px)
+
+### Component design system
+- **Buttons**: Primary (actions), Secondary (options), Ghost (navigation)
+- **Input Controls**: Sliders for continuous values, Dropdowns for discrete choices
+- **Cards**: Demonstration preview cards with thumbnail visualizations
+- **Modals**: Fullscreen for complex visualizations, Standard for settings
+- **Tooltips**: Mathematical notation previews, Parameter explanations
+
+### Interaction patterns
+- **Direct Manipulation**: Drag to rotate 3D visualizations, Click and drag for graph nodes
+- **Progressive Disclosure**: Expand/collapse for advanced options
+- **Keyboard Shortcuts**: Comprehensive shortcuts for power users
+- **Gesture Support**: Pinch to zoom, Two-finger rotate for 3D
+- **Undo/Redo**: State management for reversible actions
+
+### Accessibility requirements
+- **Color Contrast**: WCAG AAA for text, AA for graphical elements
+- **Focus Indicators**: Clear visual focus states for keyboard navigation
+- **Screen Reader Support**: ARIA labels for all interactive elements
+- **Mathematical Content**: MathML with fallback to described equations
+- **Reduced Motion**: Respect prefers-reduced-motion settings
+
+### Loading and feedback states
+- **Skeleton Screens**: For initial content loading
+- **Progress Indicators**: Percentage-based for long computations
+- **Inline Validation**: Real-time feedback for parameter inputs
+- **Error States**: Clear messaging with recovery actions
+- **Success Confirmations**: Subtle animations for completed actions
+
+### Visualization-specific UI
+- **Cayley Graph Controls**: Group selection, Generator highlighting, Layout algorithms
+- **TDA Controls**: Filtration parameters, Dimension selection, Distance metrics
+- **3D Navigation**: Orbit controls, Reset view, Perspective toggle
+- **Export Interface**: Format selection, Quality settings, Metadata inclusion
+
+### Dark mode considerations
+- **Automatic Detection**: Respect system preferences
+- **Manual Toggle**: Persistent user preference
+- **Visualization Adaptation**: Adjusted colors for optimal contrast
+- **Mathematical Notation**: Inverted colors for readability
+
+</PRD>

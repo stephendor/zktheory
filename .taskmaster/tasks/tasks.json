@@ -1,0 +1,378 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Upgrade to Next.js 14 App Router Architecture",
+        "description": "Migrate the existing Next.js 13 Pages Router to Next.js 14 App Router for improved performance and modern routing patterns",
+        "details": "Convert the existing pages/_app.js and [[...slug]].js structure to the new app directory structure. Update routing patterns, middleware, and layout components. Ensure TypeScript strict mode compatibility and maintain existing functionality for mathematical components. Migrate static props resolvers to the new data fetching patterns.",
+        "testStrategy": "Verify all existing routes work correctly, test mathematical component rendering, validate SEO metadata, and ensure build process completes successfully",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Convert pages/_app.js to app/layout.tsx",
+            "description": "Transform the global application wrapper from Pages Router to App Router layout system",
+            "dependencies": [],
+            "details": "Create app/layout.tsx with TypeScript support, migrate global styles and providers from _app.js, implement proper metadata API configuration, and ensure all global components and context providers are properly integrated into the new layout structure.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Migrate [[...slug]].js to app/[...slug]/page.tsx",
+            "description": "Convert the catch-all dynamic route from Pages Router to App Router structure",
+            "dependencies": [
+              "1.1"
+            ],
+            "details": "Create the new app/[...slug]/page.tsx file with proper TypeScript types, migrate the existing route handling logic, ensure parameter parsing works correctly, and maintain backward compatibility for all existing URL patterns.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Update static props resolvers to generateStaticParams",
+            "description": "Convert getStaticProps and getStaticPaths to App Router data fetching patterns",
+            "dependencies": [
+              "1.2"
+            ],
+            "details": "Replace getStaticProps with server components and fetch calls, convert getStaticPaths to generateStaticParams function, update ISR configuration for the new system, and ensure proper caching behavior is maintained.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Enable TypeScript strict mode compatibility",
+            "description": "Update codebase to work with TypeScript strict mode and resolve type errors",
+            "dependencies": [
+              "1.3"
+            ],
+            "details": "Enable strict mode in tsconfig.json, fix all type errors related to null/undefined checks, add proper type annotations for mathematical components, resolve any/unknown type usage, and ensure full type safety across the application.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Update middleware and routing patterns",
+            "description": "Migrate middleware configuration and implement App Router routing patterns",
+            "dependencies": [
+              "1.4"
+            ],
+            "details": "Update middleware.ts for App Router compatibility, implement new routing patterns for mathematical tools, ensure proper request/response handling, and maintain existing functionality for authentication and redirects.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Test mathematical component rendering compatibility",
+            "description": "Verify all mathematical components work correctly in the new App Router system",
+            "dependencies": [
+              "1.5"
+            ],
+            "details": "Test rendering of all mathematical components including Cayley graphs and TDA visualizations, verify MathJax/LaTeX rendering works properly, ensure WASM integration remains functional, validate performance metrics, and confirm SEO metadata is preserved.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Implement Unified Navigation System",
+        "description": "Create a seamless navigation system connecting all mathematical tools and research demonstrations",
+        "details": "Build a hierarchical navigation component with contextual cross-references between Cayley graphs, TDA explorer, and documentation. Implement progressive disclosure UI patterns and breadcrumb navigation. Add search functionality across all content using Algolia integration. Create navigation state management with Zustand.",
+        "testStrategy": "Test navigation flow between all tools, verify search results accuracy, validate accessibility with keyboard navigation, and ensure mobile responsiveness",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Design Hierarchical Navigation Component Structure",
+            "description": "Create the foundational navigation component architecture with proper hierarchy support for mathematical tools and documentation sections",
+            "dependencies": [],
+            "details": "Design and implement the core navigation component structure using React and TypeScript. Define navigation hierarchy for Cayley graphs, TDA explorer, documentation, and research demonstrations. Create responsive navigation layouts for desktop and mobile. Establish component props interface and styling with Tailwind CSS.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement Contextual Cross-References Between Tools",
+            "description": "Build intelligent cross-referencing system that connects related mathematical concepts across different tools",
+            "dependencies": [
+              "2.1"
+            ],
+            "details": "Implement contextual linking system between Cayley graphs and TDA explorer tools. Create metadata mapping for mathematical concepts and their relationships. Build suggestion engine for related content discovery. Add hover tooltips and inline references for seamless navigation between tools.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Build Progressive Disclosure UI Patterns",
+            "description": "Implement progressive disclosure patterns with breadcrumb navigation for complex mathematical content hierarchy",
+            "dependencies": [
+              "2.1"
+            ],
+            "details": "Create collapsible navigation sections with smooth animations using Framer Motion. Implement breadcrumb component with proper hierarchy visualization. Build expandable menu items with nested content support. Add keyboard navigation support and ARIA labels for accessibility compliance.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Integrate Algolia Search Functionality",
+            "description": "Implement comprehensive search across all mathematical tools, documentation, and research content using existing Algolia integration",
+            "dependencies": [
+              "2.1"
+            ],
+            "details": "Configure Algolia search indices for mathematical content, documentation, and tool descriptions. Implement search UI component with autocomplete and filtering capabilities. Add search result highlighting and contextual previews. Create search analytics tracking for content optimization.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Create Zustand State Management for Navigation",
+            "description": "Implement centralized navigation state management using Zustand for consistent navigation experience across the application",
+            "dependencies": [
+              "2.2",
+              "2.3",
+              "2.4"
+            ],
+            "details": "Set up Zustand store for navigation state including current location, breadcrumb history, and user preferences. Implement navigation actions for programmatic routing and state updates. Add persistence layer for navigation preferences and recent searches. Create navigation middleware for analytics and performance tracking.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Enhance Existing Cayley Graph Explorer",
+        "description": "Extend the current Cayley graph visualization with elliptic curve groups and advanced group operations",
+        "details": "Enhance the existing EnhancedCayleyGraphExplorer component to support elliptic curve groups over finite fields. Add animated point addition operations, subgroup highlighting, and interactive group operation demonstrations. Implement export functionality for SVG/PNG formats and LaTeX code generation.",
+        "testStrategy": "Test all finite groups up to order 20, verify elliptic curve computations, validate export functionality, and ensure real-time interaction performance",
+        "priority": "medium",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Extend GroupTheory Library with Elliptic Curve Support",
+            "description": "Add elliptic curve group classes and operations to the existing GroupTheory library, implementing point arithmetic over finite fields",
+            "dependencies": [],
+            "details": "Implement EllipticCurveGroup class with point addition, scalar multiplication, and order computation. Add support for curves over prime fields Fp and include common curves like secp256k1. Integrate with existing group theory infrastructure and maintain API consistency.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement Animated Point Addition Visualization",
+            "description": "Create animated visualizations showing elliptic curve point addition operations with geometric interpretation",
+            "dependencies": [
+              "3.1"
+            ],
+            "details": "Build interactive animations showing chord-and-tangent method for point addition. Include step-by-step geometric construction with smooth transitions. Add controls for playback speed and step-through mode. Integrate with existing D3.js visualization framework.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Add Subgroup Highlighting and Interactive Demonstrations",
+            "description": "Implement visual highlighting of subgroups and interactive group operation demonstrations within the Cayley graph",
+            "dependencies": [
+              "3.1"
+            ],
+            "details": "Add subgroup detection algorithms and visual highlighting with distinct colors. Create interactive mode for exploring cosets and quotient groups. Implement group operation tables with synchronized highlighting in the graph visualization. Add educational tooltips explaining group theory concepts.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement Export Functionality for SVG/PNG and LaTeX",
+            "description": "Add comprehensive export capabilities for saving visualizations and generating LaTeX code representations",
+            "dependencies": [
+              "3.2",
+              "3.3"
+            ],
+            "details": "Implement SVG export with embedded mathematical notation and PNG export with configurable resolution. Generate LaTeX code for group presentations, Cayley tables, and graph structures. Add export options panel with format selection, sizing controls, and preview functionality. Ensure exported content maintains visual fidelity.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Optimize WASM TDA Engine Performance",
+        "description": "Enhance the existing WASM-based topological data analysis engine for sub-100ms response times",
+        "details": "Optimize the existing tda_rust_core_bg.wasm module with advanced caching strategies. Implement Web Workers for parallel computation and WebGL acceleration for 3D visualizations. Add progress indicators for long computations and smart result caching with IndexedDB.",
+        "testStrategy": "Benchmark computation times for datasets up to 1000 points, verify WebGL rendering performance, test caching effectiveness, and validate worker thread communication",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Build 3D Persistence Landscape Visualizations",
+        "description": "Create interactive 3D visualizations for topological persistence landscapes using Three.js",
+        "details": "Extend the existing TDAExplorer with React Three Fiber to render 3D persistence landscapes. Implement camera controls for orbit navigation, color mapping for persistence values, and overlay capabilities for multiple landscapes. Add WebGL optimizations for smooth 60 FPS rendering.",
+        "testStrategy": "Test 3D rendering performance across browsers, verify camera controls responsiveness, validate color mapping accuracy, and ensure mobile device compatibility",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Integrate Research Demonstration Suite",
+        "description": "Implement interactive demonstrations showcasing 98.42% APT detection and 60% bubble detection research results",
+        "details": "Create demonstration components that reproduce published research results with interactive parameter adjustment. Implement side-by-side comparison views, downloadable datasets, and reproducible pipeline execution. Add performance benchmarking visualizations using Chart.js.",
+        "testStrategy": "Verify research result reproduction accuracy, test parameter adjustment responsiveness, validate dataset downloads, and ensure benchmark visualization correctness",
+        "priority": "medium",
+        "dependencies": [
+          4,
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Create Mathematical Bridge Visualizations",
+        "description": "Develop interactive diagrams showing connections between elliptic curves, abstract algebra, and topology",
+        "details": "Build animated transformation components using D3.js and React to show relationships between mathematical concepts. Implement concept mapping interfaces, animated morphisms between structures, and interactive transformation controls with step-by-step progression.",
+        "testStrategy": "Test animation smoothness and mathematical accuracy, verify concept relationships display correctly, validate interaction controls, and ensure educational clarity",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Implement Integrated Documentation System",
+        "description": "Transform existing MkDocs content into an integrated Next.js documentation system with interactive examples",
+        "details": "Convert existing markdown content to MDX format with embedded React components. Integrate MathJax for LaTeX rendering, add interactive code examples with live execution, and implement contextual help panels. Create documentation search with Flexsearch.",
+        "testStrategy": "Verify LaTeX rendering quality, test interactive example execution, validate search functionality accuracy, and ensure documentation accessibility",
+        "priority": "medium",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Build Academic Integration Features",
+        "description": "Add BibTeX citation generation, DOI linking, and reproducibility certificates for demonstrations",
+        "details": "Implement academic citation tools with BibTeX format generation, DOI resolution integration, and metadata management for demonstrations. Add export functionality for computational results in CSV/JSON formats and figure export in vector graphics.",
+        "testStrategy": "Test citation format accuracy, verify DOI link resolution, validate export file formats, and ensure metadata completeness",
+        "priority": "low",
+        "dependencies": [
+          6,
+          8
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Implement Performance Monitoring Dashboard",
+        "description": "Create real-time performance monitoring for mathematical computations and visualizations",
+        "details": "Build performance dashboard using React and Chart.js to monitor WASM computation times, rendering frame rates, and memory usage. Implement alerts for performance degradation and optimization recommendations based on usage patterns.",
+        "testStrategy": "Verify performance metric accuracy, test alert system responsiveness, validate dashboard real-time updates, and ensure minimal performance impact",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Enhance Accessibility and Mobile Experience",
+        "description": "Achieve WCAG 2.1 Level AA compliance and optimize for tablet interactions",
+        "details": "Implement comprehensive accessibility features including ARIA labels for mathematical content, keyboard navigation for all interactions, screen reader support with MathML, and high-contrast mode. Optimize touch gestures for tablet use and responsive breakpoints.",
+        "testStrategy": "Test with screen readers and accessibility tools, verify keyboard navigation completeness, validate touch gesture responsiveness, and ensure WCAG compliance",
+        "priority": "high",
+        "dependencies": [
+          2,
+          3,
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Build Component Design System",
+        "description": "Create a unified design system with geometric aesthetic and mathematical precision",
+        "details": "Develop a comprehensive component library with Tailwind CSS using geometric design principles. Create reusable UI components for mathematical interfaces, implement consistent color palettes and typography, and build interaction patterns for direct manipulation.",
+        "testStrategy": "Verify visual consistency across components, test design system scalability, validate color contrast ratios, and ensure component reusability",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 13,
+        "title": "Implement Advanced Caching Strategy",
+        "description": "Deploy sophisticated caching for visualizations, computations, and content delivery",
+        "details": "Implement multi-layer caching with IndexedDB for client-side storage, Service Worker for offline capability, and CDN optimization for static assets. Add cache invalidation strategies based on version updates and smart preloading for frequently accessed content.",
+        "testStrategy": "Test cache hit rates and performance improvements, verify offline functionality, validate cache invalidation accuracy, and ensure cross-browser compatibility",
+        "priority": "medium",
+        "dependencies": [
+          4,
+          10
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 14,
+        "title": "Deploy Comprehensive Testing Suite",
+        "description": "Establish automated testing for mathematical computations, visualizations, and user interactions",
+        "details": "Implement Jest unit tests for mathematical algorithms, Playwright E2E tests for user workflows, visual regression testing for mathematical rendering, and performance benchmarking. Add continuous integration with GitHub Actions for automated testing.",
+        "testStrategy": "Achieve 80% minimum test coverage, verify mathematical computation accuracy, validate visual rendering consistency, and ensure performance regression detection",
+        "priority": "high",
+        "dependencies": [
+          3,
+          5,
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 15,
+        "title": "Finalize Production Deployment Pipeline",
+        "description": "Complete CI/CD pipeline with automated deployment, monitoring, and error tracking",
+        "details": "Configure production deployment pipeline with Vercel or Netlify, implement automated monitoring with privacy-respecting analytics, set up error tracking and performance monitoring, and establish backup strategies for critical data and configurations.",
+        "testStrategy": "Test deployment automation reliability, verify monitoring accuracy, validate error tracking functionality, and ensure backup restoration procedures",
+        "priority": "high",
+        "dependencies": [
+          13,
+          14
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-10T18:16:57.041Z",
+      "updated": "2025-08-10T18:23:09.655Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
