@@ -95,7 +95,7 @@ const TAILWIND_MAP = {
         }
         // for regular margins - ['x0:8', 'y0:16'], the value will be object: { left: 4, top: 10 }
         if (typeof value === 'object' && value !== null) {
-            const classNames = [];
+            const classNames: string[] = [];
             Object.entries(value).forEach(([styleProp, styleValue]) => {
                 const twValue = styleValue === 1 ? 'px' : String(Number(styleValue) / 4);
                 if (styleProp === 'top') {
@@ -121,7 +121,7 @@ const TAILWIND_MAP = {
         }
         // for regular paddings - ['x0:8', 'y0:16'], the value will be object: { left: 4, top: 10 }
         if (typeof value === 'object' && value !== null) {
-            const classNames = [];
+            const classNames: string[] = [];
             Object.entries(value).forEach(([styleProp, styleValue]) => {
                 const twValue = styleValue === 1 ? 'px' : String(Number(styleValue) / 4);
                 if (styleProp === 'top') {

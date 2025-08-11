@@ -1,6 +1,9 @@
+'use client';
+
 /*
 Taken from https://www.algolia.com/doc/ui-libraries/autocomplete/integrations/using-react/#with-react-18
 */
+"use client";
 import { autocomplete } from '@algolia/autocomplete-js';
 import React, { createElement, Fragment, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';

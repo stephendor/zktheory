@@ -88,52 +88,52 @@ function FeaturedPeopleVariants(props) {
     }
 }
 
-function FeaturedPeopleThreeCol({ people = [], hasTopMargin, hasSectionTitle, hasAnnotations }) {
+function FeaturedPeopleThreeCol({ people = [], hasTopMargin, hasSectionTitle, hasAnnotations }: { people?: any[], hasTopMargin?: boolean, hasSectionTitle?: boolean, hasAnnotations?: boolean }) {
     if (people.length === 0) {
         return null;
     }
     return (
         <div
             className={classNames('grid', 'gap-10', 'sm:grid-cols-2', 'lg:grid-cols-3', { 'mt-12': hasTopMargin })}
-            {...(hasAnnotations && { 'data-sb-field-path': '.people' })}
+            {...(hasAnnotations ? { 'data-sb-field-path': '.people' } : {})}
         >
             {people.map((person, index) => (
-                <FeaturedPerson key={index} {...person} hasSectionTitle={hasSectionTitle} {...(hasAnnotations && { 'data-sb-field-path': `.${index}` })} />
+                <FeaturedPerson key={index} {...person} hasSectionTitle={hasSectionTitle} {...(hasAnnotations ? { 'data-sb-field-path': `.${index}` } : {})} />
             ))}
         </div>
     );
 }
-function FeaturedPeopleFourCol({ people = [], hasTopMargin, hasSectionTitle, hasAnnotations }) {
+function FeaturedPeopleFourCol({ people = [], hasTopMargin, hasSectionTitle, hasAnnotations }: { people?: any[], hasTopMargin?: boolean, hasSectionTitle?: boolean, hasAnnotations?: boolean }) {
     if (people.length === 0) {
         return null;
     }
     return (
         <div
             className={classNames('grid', 'gap-10', 'sm:grid-cols-2', 'lg:grid-cols-4', { 'mt-12': hasTopMargin })}
-            {...(hasAnnotations && { 'data-sb-field-path': '.people' })}
+            {...(hasAnnotations ? { 'data-sb-field-path': '.people' } : {})}
         >
             {people.map((person, index) => (
-                <FeaturedPerson key={index} {...person} hasSectionTitle={hasSectionTitle} {...(hasAnnotations && { 'data-sb-field-path': `.${index}` })} />
+                <FeaturedPerson key={index} {...person} hasSectionTitle={hasSectionTitle} {...(hasAnnotations ? { 'data-sb-field-path': `.${index}` } : {})} />
             ))}
         </div>
     );
 }
 
-function FeaturedPeopleMixedCol({ people = [], hasTopMargin, hasSectionTitle, hasAnnotations }) {
+function FeaturedPeopleMixedCol({ people = [], hasTopMargin, hasSectionTitle, hasAnnotations }: { people?: any[], hasTopMargin?: boolean, hasSectionTitle?: boolean, hasAnnotations?: boolean }) {
     if (people.length === 0) {
         return null;
     }
     return (
         <div
             className={classNames('grid', 'gap-10', 'sm:grid-cols-2', 'lg:grid-cols-16', { 'mt-12': hasTopMargin })}
-            {...(hasAnnotations && { 'data-sb-field-path': '.people' })}
+            {...(hasAnnotations ? { 'data-sb-field-path': '.people' } : {})}
         >
             {people.map((person, index) => (
                 <FeaturedPerson
                     key={index}
                     {...person}
                     hasSectionTitle={hasSectionTitle}
-                    {...(hasAnnotations && { 'data-sb-field-path': `.${index}` })}
+                    {...(hasAnnotations ? { 'data-sb-field-path': `.${index}` } : {})}
                     className={classNames('lg:col-span-4', {
                         'lg:col-start-3 lg:col-end-span4': (index + 3) % 7 === 0,
                         'lg:col-start-span4 lg:col-end-neg3': (index + 1) % 7 === 0

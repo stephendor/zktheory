@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useCallback, useMemo } from 'react';
 import KaTeX from '../KaTeX/KaTeX';
 import MathJax from '../MathJax/MathJax';

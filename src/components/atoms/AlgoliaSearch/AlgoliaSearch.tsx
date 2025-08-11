@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useRef } from 'react';
 import { autocomplete } from '@algolia/autocomplete-js';
 import algoliasearch from 'algoliasearch';

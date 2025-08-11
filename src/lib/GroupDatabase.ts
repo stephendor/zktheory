@@ -163,7 +163,7 @@ export class GroupDatabase {
     const subgroups = this.findCyclicSubgroups(n);
     
     // Find all possible generators (elements that generate the full group)
-    const allGenerators = [];
+    const allGenerators: string[] = [];
     for (let i = 1; i < n; i++) {
       if (this.gcd(i, n) === 1) { // φ(n) - Euler's totient function
         allGenerators.push(`g${i}`);
@@ -614,11 +614,11 @@ export class GroupDatabase {
   }
 
   private static findCyclicSubgroups(n: number): { elements: string[]; name: string; isNormal: boolean }[] {
-    const subgroups = [];
+    const subgroups: { elements: string[]; name: string; isNormal: boolean }[] = [];
     
     for (let d = 1; d <= n; d++) {
       if (n % d === 0) {
-        const elements = [];
+        const elements: string[] = [];
         const step = n / d;
         for (let i = 0; i < d; i++) {
           elements.push(`g${(i * step) % n}`);
@@ -684,35 +684,35 @@ export class GroupDatabase {
       classes.push([`r${n/2}`]);
       
       // Other rotations
-      const otherRots = [];
+      const otherRots: string[] = [];
       for (let i = 1; i < n; i++) {
         if (i !== n/2) otherRots.push(`r${i}`);
       }
       if (otherRots.length > 0) classes.push(otherRots);
       
       // Reflections through vertices
-      const vertexRefs = [];
+      const vertexRefs: string[] = [];
       for (let i = 0; i < n; i += 2) {
         vertexRefs.push(`s${i}`);
       }
       classes.push(vertexRefs);
       
       // Reflections through edge midpoints
-      const edgeRefs = [];
+      const edgeRefs: string[] = [];
       for (let i = 1; i < n; i += 2) {
         edgeRefs.push(`s${i}`);
       }
       classes.push(edgeRefs);
     } else {
       // Other rotations
-      const otherRots = [];
+      const otherRots: string[] = [];
       for (let i = 1; i < n; i++) {
         otherRots.push(`r${i}`);
       }
       if (otherRots.length > 0) classes.push(otherRots);
       
       // All reflections
-      const allRefs = [];
+      const allRefs: string[] = [];
       for (let i = 0; i < n; i++) {
         allRefs.push(`s${i}`);
       }
@@ -728,7 +728,7 @@ export class GroupDatabase {
     ];
     
     // Cyclic subgroup of rotations
-    const rotations = [];
+    const rotations: string[] = [];
     for (let i = 0; i < n; i++) {
       rotations.push(`r${i}`);
     }
@@ -746,7 +746,7 @@ export class GroupDatabase {
     // Find subgroups corresponding to divisors of n
     for (let d = 2; d < n; d++) {
       if (n % d === 0) {
-        const rotSubgroup = [];
+        const rotSubgroup: string[] = [];
         const step = n / d;
         for (let i = 0; i < d; i++) {
           rotSubgroup.push(`r${(i * step) % n}`);
@@ -771,7 +771,7 @@ export class GroupDatabase {
     }
     
     // Full group
-    const allElements = [];
+    const allElements: string[] = [];
     for (let i = 0; i < n; i++) {
       allElements.push(`r${i}`, `s${i}`);
     }

@@ -1,4 +1,4 @@
-import { defineStackbitConfig, DocumentStringLikeFieldNonLocalized, SiteMapEntry } from '@stackbit/types';
+import { defineStackbitConfig, DocumentStringLikeFieldNonLocalized, SiteMapEntry, DocumentWithSource } from '@stackbit/types';
 import { GitContentSource } from '@stackbit/cms-git';
 import { allModels } from 'sources/local/models';
 
@@ -51,7 +51,8 @@ export const config = defineStackbitConfig({
                             document: document
                         };
                 }
-            });
+            })
+            .filter((entry): entry is { urlPath: string; document: DocumentWithSource } => entry !== null);
     }
 });
 

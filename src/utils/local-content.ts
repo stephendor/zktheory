@@ -13,11 +13,13 @@ const dataDir = 'content/data';
 
 const allReferenceFields = {};
 Object.entries(allModels).forEach(([modelName, model]) => {
-    model.fields.forEach((field) => {
-        if (field.type === 'reference' || (field.type === 'list' && field.items?.type === 'reference')) {
-            allReferenceFields[modelName + ':' + field.name] = true;
-        }
-    });
+    if (model.fields) {
+        model.fields.forEach((field) => {
+            if (field.type === 'reference' || (field.type === 'list' && field.items?.type === 'reference')) {
+                allReferenceFields[modelName + ':' + field.name] = true;
+            }
+        });
+    }
 });
 
 function isRefField(modelName: string, fieldName: string) {
@@ -32,7 +34,7 @@ function contentFilesInPath(dir: string) {
 
 function readContent(file: string) {
     const rawContent = fs.readFileSync(file, 'utf8');
-    let content = null;
+    let content: any = null;
     switch (path.extname(file).substring(1)) {
         case 'md':
             const parsedMd = frontmatter<Record<string, any>>(rawContent);

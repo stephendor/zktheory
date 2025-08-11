@@ -1,6 +1,9 @@
+'use client';
+
+"use client";
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import classNames from 'classnames';
 
 import { mapStylesToClassNames as mapStyles } from '../../../utils/map-styles-to-class-names';
@@ -224,7 +227,7 @@ function HeaderLogoCenteredPrimaryCentered(props) {
 function MobileMenu(props) {
     const { title, logo, primaryLinks = [], secondaryLinks = [], colors = 'bg-light-fg-dark', styles = {}, enableAnnotations } = props;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const router = useRouter();
+    const pathname = usePathname();
 
     const openMobileMenu = () => {
         setIsMenuOpen(true);
@@ -236,17 +239,11 @@ function MobileMenu(props) {
         document.body.style.overflow = 'unset';
     };
 
+    // Close menu when pathname changes (route change)
     useEffect(() => {
-        const handleRouteChange = () => {
-            setIsMenuOpen(false);
-            document.body.style.overflow = 'unset';
-        };
-        router.events.on('routeChangeStart', handleRouteChange);
-
-        return () => {
-            router.events.off('routeChangeStart', handleRouteChange);
-        };
-    }, [router.events]);
+        setIsMenuOpen(false);
+        document.body.style.overflow = 'unset';
+    }, [pathname]);
 
     return (
         <div className="ml-auto lg:hidden">
@@ -333,20 +330,14 @@ function ListOfLinks(props) {
 function LinkWithSubnav(props) {
     const { link, colors, inMobileMenu = false } = props;
     const [isSubNavOpen, setIsSubNavOpen] = useState(false);
-    const router = useRouter();
+    const pathname = usePathname();
     const fieldPath = props['data-sb-field-path'];
 
+    // Close subnav when pathname changes (route change)
     useEffect(() => {
-        const handleRouteChange = () => {
-            setIsSubNavOpen(false);
-            document.body.style.overflow = 'unset';
-        };
-        router.events.on('routeChangeStart', handleRouteChange);
-
-        return () => {
-            router.events.off('routeChangeStart', handleRouteChange);
-        };
-    }, [router.events]);
+        setIsSubNavOpen(false);
+        document.body.style.overflow = 'unset';
+    }, [pathname]);
 
     return (
         <li
@@ -405,7 +396,7 @@ function LinkWithSubnav(props) {
     );
 }
 
-function ListOfSubNavLinks({ links = [], hasAnnotations, inMobileMenu = false }) {
+function ListOfSubNavLinks({ links = [], hasAnnotations, inMobileMenu = false }: { links?: any[], hasAnnotations?: boolean, inMobileMenu?: boolean }) {
     return (
         <>
             {links.map((link, index) => (
@@ -413,7 +404,7 @@ function ListOfSubNavLinks({ links = [], hasAnnotations, inMobileMenu = false })
                     <Action
                         {...link}
                         className={classNames(inMobileMenu ? 'w-full justify-start' : 'text-sm')}
-                        {...(hasAnnotations && { 'data-sb-field-path': `.${index}` })}
+                        {...(hasAnnotations ? { 'data-sb-field-path': `.${index}` } : {})}
                     />
                 </li>
             ))}

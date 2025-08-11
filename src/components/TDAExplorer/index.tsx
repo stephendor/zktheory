@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect, useCallback } from 'react';
 import PointCloudCanvas from './PointCloudCanvas';
 import PersistenceDiagram from './PersistenceDiagram';

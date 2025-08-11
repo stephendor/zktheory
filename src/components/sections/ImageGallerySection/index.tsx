@@ -69,23 +69,23 @@ function ImageGalleryVariants(props) {
     }
 }
 
-function ImageGalleryStaticGrid({ images = [], hasTopMargin, justifyContent = 'flex-start', hasAnnotations }) {
+function ImageGalleryStaticGrid({ images = [], hasTopMargin, justifyContent = 'flex-start', hasAnnotations }: { images?: any[], hasTopMargin?: boolean, justifyContent?: string, hasAnnotations?: boolean }) {
     if (images.length === 0) {
         return null;
     }
     return (
         <div
             className={classNames('w-full', 'flex', 'flex-wrap', 'items-center', mapStyles({ justifyContent: justifyContent }), { 'mt-12': hasTopMargin })}
-            {...(hasAnnotations && { 'data-sb-field-path': '.images' })}
+            {...(hasAnnotations ? { 'data-sb-field-path': '.images' } : {})}
         >
             {images.map((image, index) => (
-                <ImageBlock key={index} {...image} {...(hasAnnotations && { 'data-sb-field-path': `.${index}` })} />
+                <ImageBlock key={index} {...image} {...(hasAnnotations ? { 'data-sb-field-path': `.${index}` } : {})} />
             ))}
         </div>
     );
 }
 
-function ImageGalleryAnimatedGrid({ images = [], motion, hasTopMargin, hasAnnotations }) {
+function ImageGalleryAnimatedGrid({ images = [], motion, hasTopMargin, hasAnnotations }: { images?: any[], motion?: string, hasTopMargin?: boolean, hasAnnotations?: boolean }) {
     if (images.length === 0) {
         return null;
     }
@@ -128,14 +128,14 @@ function ImageGalleryAnimatedGrid({ images = [], motion, hasTopMargin, hasAnnota
                             motion === 'move-to-left' ? 'sb-animate-slide-left' : 'sb-animate-slide-right'
                         )}
                     >
-                        <div className="sb-image-strip-content flex justify-around" {...(hasAnnotations && { 'data-sb-field-path': '.images' })}>
+                        <div className="sb-image-strip-content flex justify-around" {...(hasAnnotations ? { 'data-sb-field-path': '.images' } : {})}>
                             {images.map((image, index) => (
-                                <ImageBlock key={index} {...image} {...(hasAnnotations && { 'data-sb-field-path': `.${index}` })} />
+                                <ImageBlock key={index} {...image} {...(hasAnnotations ? { 'data-sb-field-path': `.${index}` } : {})} />
                             ))}
                         </div>
-                        <div className="sb-image-strip-content flex justify-around" {...(hasAnnotations && { 'data-sb-field-path': '.images' })}>
+                        <div className="sb-image-strip-content flex justify-around" {...(hasAnnotations ? { 'data-sb-field-path': '.images' } : {})}>
                             {images.map((image, index) => (
-                                <ImageBlock key={index} {...image} {...(hasAnnotations && { 'data-sb-field-path': `.${index}` })} />
+                                <ImageBlock key={index} {...image} {...(hasAnnotations ? { 'data-sb-field-path': `.${index}` } : {})} />
                             ))}
                         </div>
                     </div>
