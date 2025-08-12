@@ -22,6 +22,10 @@ const PointCloudCanvas: React.FC<PointCloudCanvasProps> = ({
   width = 600,
   height = 400
 }) => {
+  // Use container dimensions if not specified
+  const [containerRef, setContainerRef] = useState<HTMLDivElement | null>(null);
+  const [containerWidth, setContainerWidth] = useState(width);
+  const [containerHeight, setContainerHeight] = useState(height);
   const svgRef = useRef<SVGSVGElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
 

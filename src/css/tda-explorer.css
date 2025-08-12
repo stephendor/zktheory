@@ -26,7 +26,7 @@
 
 .tda-content {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 160px 1fr;
   gap: 2rem;
   align-items: start;
 }
@@ -210,7 +210,7 @@
 /* Mapper Container */
 .mapper-container {
   display: grid;
-  grid-template-columns: minmax(800px, 2fr) minmax(450px, 1fr);
+  grid-template-columns: minmax(400px, 4fr) minmax(400px, 2fr);
   gap: 1px;
   background: #e2e8f0;
 }

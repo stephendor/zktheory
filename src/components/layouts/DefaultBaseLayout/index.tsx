@@ -2,6 +2,7 @@ import * as React from 'react';
 import classNames from 'classnames';
 import Header from '../../sections/Header';
 import Footer from '../../sections/Footer';
+import { Breadcrumb } from '../../atoms';
 
 export default function DefaultBaseLayout(props) {
     const { page, site } = props;
@@ -12,6 +13,7 @@ export default function DefaultBaseLayout(props) {
         <div className={classNames('sb-page', pageMeta.pageCssClasses)} {...(enableAnnotations && { 'data-sb-object-id': pageMeta.id })}>
             <div className="sb-base sb-default-base-layout">
                 {site.header && <Header {...site.header} enableAnnotations={enableAnnotations} />}
+                <Breadcrumb enableAnnotations={enableAnnotations} />
                 {props.children}
                 {site.footer && <Footer {...site.footer} enableAnnotations={enableAnnotations} />}
             </div>

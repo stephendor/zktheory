@@ -2,6 +2,7 @@ import '../css/main.css';
 import React from 'react';
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import NavigationProvider from '../components/providers/NavigationProvider';
 
 export const metadata: Metadata = {
   title: 'ZKTheory',
@@ -75,7 +76,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         }} />
       </head>
       <body>
-        {children}
+        <NavigationProvider>
+          {children}
+        </NavigationProvider>
 
         {/* Algolia Netlify Search Scripts */}
         <Script

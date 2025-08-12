@@ -20,7 +20,7 @@ function Node({ position, element, color, onClick, scale, highlighted }: NodePro
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
   
-  useFrame((state) => {
+  useFrame((state: any) => {
     if (meshRef.current) {
       // Gentle rotation animation
       meshRef.current.rotation.y += 0.01;

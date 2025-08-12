@@ -39,7 +39,8 @@
         "remark-math": "^6.0.0",
         "swiper": "^11.1.4",
         "tailwindcss": "^3.4.3",
-        "three": "^0.178.0"
+        "three": "^0.178.0",
+        "zustand": "^5.0.7"
     },
     "devDependencies": {
         "@base2/pretty-print-object": "^1.0.2",

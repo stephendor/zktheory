@@ -3,9 +3,9 @@ import classNames from 'classnames';
 import { iconMap } from '../../svgs';
 import Link from '../Link';
 
-export default function Action(props) {
+export default function Action(props: any) {
     const { elementId, className, label, altText, url, showIcon, icon, iconPosition = 'right', style = 'primary' } = props;
-    const IconComponent = icon ? iconMap[icon] : null;
+    const IconComponent = icon ? iconMap[icon as keyof typeof iconMap] : null;
     const fieldPath = props['data-sb-field-path'];
     const annotations = fieldPath
         ? { 'data-sb-field-path': [fieldPath, `${fieldPath}.url#@href`, `${fieldPath}.altText#@aria-label`, `${fieldPath}.elementId#@id`].join(' ').trim() }
