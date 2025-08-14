@@ -1,5 +1,9 @@
 import '@testing-library/jest-dom'
 
+// Import and register mathematical validation matchers
+import { mathematicalMatchers } from './src/__tests__/utils/mathematicalValidation.ts'
+expect.extend(mathematicalMatchers)
+
 // Mock TDA engine for testing (pure JavaScript implementation)
 global.mockTDAEngine = {
   set_points: jest.fn(),

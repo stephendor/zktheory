@@ -11,8 +11,9 @@ const customJestConfig = {
   testEnvironment: 'jsdom',
   
   // Module resolution for TypeScript and aliases
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '\\.wasm$': '<rootDir>/__mocks__/wasmMock.js',
   },
   
   // Test file patterns with enhanced matching
@@ -82,19 +83,11 @@ const customJestConfig = {
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { 
       presets: ['next/babel'],
-      plugins: [
-        // Enable additional mathematical computation support
-        ['@babel/plugin-transform-numeric-separator'],
-      ]
     }],
-    // Handle WASM files for TDA testing
-    '^.+\\.wasm$': 'jest-transform-stub',
   },
   
   transformIgnorePatterns: [
     'node_modules/(?!(.*\\.mjs$))',
-    // Don't transform WASM files
-    '\\.wasm$',
   ],
   
   // Test environment options
@@ -119,13 +112,13 @@ const customJestConfig = {
   cacheDirectory: '<rootDir>/.jest-cache',
   
   // Watch plugins for development
-  watchPlugins: [
-    'jest-watch-typeahead/filename',
-    'jest-watch-typeahead/testname',
-  ],
+  // watchPlugins: [ // Commented out if not installed
+  //   'jest-watch-typeahead/filename',
+  //   'jest-watch-typeahead/testname',
+  // ],
   
   // Test result processor for enhanced reporting
-  testResultsProcessor: 'jest-sonar-reporter',
+  // testResultsProcessor: 'jest-sonar-reporter', // Commented out if not installed
   
   // Global configuration for mathematical testing
   globals: {
@@ -148,9 +141,9 @@ const customJestConfig = {
   restoreMocks: true,
   
   // Snapshot configuration
-  snapshotSerializers: [
-    'jest-serializer-html',
-  ],
+  // snapshotSerializers: [
+  //   'jest-serializer-html', // Commented out if not installed
+  // ],
   
   // Error handling configuration
   errorOnDeprecated: true,
@@ -158,20 +151,20 @@ const customJestConfig = {
   // Additional reporters for CI/CD integration
   reporters: [
     'default',
-    ['jest-junit', {
-      outputDirectory: '<rootDir>/test-results',
-      outputName: 'jest-results.xml',
-      suiteName: 'ZK Theory Mathematical Tests',
-      classNameTemplate: '{classname}',
-      titleTemplate: '{title}',
-      includeConsoleOutput: false,
-    }],
-    ['jest-html-reporter', {
-      pageTitle: 'ZK Theory Test Results',
-      outputPath: '<rootDir>/test-results/test-report.html',
-      includeFailureMsg: true,
-      includeSuiteFailure: true,
-    }],
+    // ['jest-junit', { // Commented out if not installed
+    //   outputDirectory: '<rootDir>/test-results',
+    //   outputName: 'jest-results.xml',
+    //   suiteName: 'ZK Theory Mathematical Tests',
+    //   classNameTemplate: '{classname}',
+    //   titleTemplate: '{title}',
+    //   includeConsoleOutput: false,
+    // }],
+    // ['jest-html-reporter', { // Commented out if not installed
+    //   pageTitle: 'ZK Theory Test Results',
+    //   outputPath: '<rootDir>/test-results/test-report.html',
+    //   includeFailureMsg: true,
+    //   includeSuiteFailure: true,
+    // }],
   ],
 }
 

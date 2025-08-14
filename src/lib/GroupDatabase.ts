@@ -1,10 +1,8 @@
 /**
  * Group Database - Complete implementation of finite groups up to order 20
- * Extended with elliptic curve groups
  */
 
 import { Group, GroupElement, Permutation } from './GroupTheory';
-import { EllipticCurveGroup, EllipticCurveParameters } from './EllipticCurveGroup';
 
 export class GroupDatabase {
   private static groups: Map<string, Group> = new Map();
@@ -119,9 +117,8 @@ export class GroupDatabase {
     this.groups.set('D10', this.createDihedralGroup(10));
     this.groups.set('C4xC5', this.createDirectProduct(4, 5));
     this.groups.set('C2xC10', this.createDirectProduct(2, 10));
-    
-    // Add elliptic curve groups
-    this.initializeEllipticCurveGroups();
+
+
   }
 
   private static createTrivialGroup(): Group {
@@ -785,58 +782,5 @@ export class GroupDatabase {
     return subgroups;
   }
 
-  /**
-   * Initialize elliptic curve groups for educational purposes
-   */
-  private static initializeEllipticCurveGroups() {
-    const examples = EllipticCurveGroup.createExampleCurves();
-    
-    for (const [name, params] of Object.entries(examples)) {
-      try {
-        const ecGroup = new EllipticCurveGroup(params);
-        const group = ecGroup.getGroup();
-        
-        // Add EC prefix to distinguish from other groups
-        const groupName = `EC_${name}`;
-        this.groups.set(groupName, {
-          ...group,
-          name: groupName,
-          displayName: `Elliptic Curve ${name}: ${ecGroup.getCurve().getEquationLatex()}`
-        });
-        
-        console.log(`✅ Added elliptic curve group ${groupName} with ${group.order} elements`);
-      } catch (error) {
-        console.warn(`⚠️ Failed to create elliptic curve group ${name}:`, error.message);
-      }
-    }
-  }
 
-  /**
-   * Add a custom elliptic curve group to the database
-   */
-  static addEllipticCurveGroup(name: string, params: EllipticCurveParameters): boolean {
-    try {
-      const ecGroup = new EllipticCurveGroup(params);
-      const group = ecGroup.getGroup();
-      
-      const groupName = `EC_${name}`;
-      this.groups.set(groupName, {
-        ...group,
-        name: groupName,
-        displayName: `Elliptic Curve ${name}: ${ecGroup.getCurve().getEquationLatex()}`
-      });
-      
-      return true;
-    } catch (error) {
-      console.error(`Failed to add elliptic curve group ${name}:`, error);
-      return false;
-    }
-  }
-
-  /**
-   * Get all elliptic curve groups
-   */
-  static getEllipticCurveGroups(): Group[] {
-    return Array.from(this.groups.values()).filter(g => g.name.startsWith('EC_'));
-  }
 }

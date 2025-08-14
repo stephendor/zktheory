@@ -240,7 +240,17 @@ describe('Cayley Graph Generator', () => {
       expect(graph.edges).toHaveLength(group.order); // Each vertex has one outgoing edge per generator
       expect(graph.generators).toHaveLength(generators.length);
       
-      global.testUtils.expectValidCayleyGraph(graph);
+      // Validate Cayley graph structure
+      expect(graph.vertices.every(v => 
+        typeof v.x === 'number' && typeof v.y === 'number' && 
+        v.id && v.label && v.color
+      )).toBe(true);
+      
+      // Each edge should connect valid vertices
+      graph.edges.forEach(edge => {
+        expect(graph.vertices.find(v => v.id === edge.source)).toBeDefined();
+        expect(graph.vertices.find(v => v.id === edge.target)).toBeDefined();
+      });
     });
 
     test('generates valid Cayley graph for symmetric group', () => {
@@ -253,7 +263,17 @@ describe('Cayley Graph Generator', () => {
       expect(graph.vertices).toHaveLength(group.order);
       expect(graph.edges).toHaveLength(group.order * generators.length);
       
-      global.testUtils.expectValidCayleyGraph(graph);
+      // Validate Cayley graph structure
+      expect(graph.vertices.every(v => 
+        typeof v.x === 'number' && typeof v.y === 'number' && 
+        v.id && v.label && v.color
+      )).toBe(true);
+      
+      // Each edge should connect valid vertices
+      graph.edges.forEach(edge => {
+        expect(graph.vertices.find(v => v.id === edge.source)).toBeDefined();
+        expect(graph.vertices.find(v => v.id === edge.target)).toBeDefined();
+      });
     });
 
     test('assigns unique positions to vertices', () => {
@@ -502,3 +522,308 @@ describe('Mathematical Consistency', () => {
     });
   });
 });
+
+describe('Enhanced Mathematical Validation', () => {
+  describe('Advanced Group Properties', () => {
+    test('verifies generator minimality', () => {
+      const testGroups = ['C6', 'S3', 'D4'];
+      
+      testGroups.forEach(groupName => {
+        const group = GroupTheoryLibrary.getGroup(groupName);
+        if (!group) return;
+        
+        // Verify that generators actually generate the group
+        const generated = new Set(['e']); // Start with identity
+        const queue = [...group.generators];
+        
+        while (queue.length > 0) {
+          const current = queue.shift()!;
+          if (!generated.has(current)) {
+            generated.add(current);
+            
+            // Add all products with existing elements
+            Array.from(generated).forEach(existing => {
+              const product1 = group.operations.get(current)?.get(existing);
+              const product2 = group.operations.get(existing)?.get(current);
+              
+              if (product1 && !generated.has(product1)) queue.push(product1);
+              if (product2 && !generated.has(product2)) queue.push(product2);
+            });
+          }
+        }
+        
+        expect(generated.size).toBe(group.order);
+      });
+    });
+
+    test('verifies subgroup lattice properties', () => {
+      const group = GroupTheoryLibrary.getGroup('D3');
+      if (!group) return;
+      
+      // Verify subgroup intersection and join properties
+      for (let i = 0; i < group.subgroups.length; i++) {
+        for (let j = i + 1; j < group.subgroups.length; j++) {
+          const H = new Set(group.subgroups[i].elements);
+          const K = new Set(group.subgroups[j].elements);
+          
+          // Intersection of subgroups is a subgroup
+          const intersection = Array.from(H).filter(x => K.has(x));
+          
+          // Verify intersection satisfies closure
+          intersection.forEach(a => {
+            intersection.forEach(b => {
+              const product = group.operations.get(a)?.get(b);
+              if (product) {
+                expect(intersection).toContain(product);
+              }
+            });
+          });
+        }
+      }
+    });
+
+    test('verifies normal subgroup properties', () => {
+      const group = GroupTheoryLibrary.getGroup('S3');
+      if (!group) return;
+      
+      group.subgroups.forEach(subgroup => {
+        if (!subgroup.isNormal) return;
+        
+        const N = new Set(subgroup.elements);
+        
+        // For normal subgroups: gNg^(-1) = N for all g in G
+        group.elements.forEach(g => {
+          const gInverse = group.elements.find(e => e.id === g.inverse)!;
+          
+          subgroup.elements.forEach(n => {
+            // Compute gng^(-1)
+            const gn = group.operations.get(g.id)?.get(n);
+            if (gn) {
+              const conjugate = group.operations.get(gn)?.get(gInverse.id);
+              if (conjugate) {
+                expect(N.has(conjugate)).toBe(true);
+              }
+            }
+          });
+        });
+      });
+    });
+  });
+
+  describe('Mathematical Theorems Verification', () => {
+    test('verifies Cauchy theorem for prime divisors', () => {
+      const testGroups = ['S3', 'S4', 'D5', 'A4']; // Groups with various prime factors
+      
+      testGroups.forEach(groupName => {
+        const group = GroupTheoryLibrary.getGroup(groupName);
+        if (!group) return;
+        
+        // Find prime factors of group order
+        const primeFactors = getPrimeFactors(group.order);
+        
+        primeFactors.forEach(p => {
+          // Cauchy theorem: if p divides |G|, then G has an element of order p
+          const elementOfOrderP = group.elements.find(e => e.order === p);
+          expect(elementOfOrderP).toBeDefined();
+        });
+      });
+    });
+
+    test('verifies Sylow theorems', () => {
+      const group = GroupTheoryLibrary.getGroup('S3'); // Order 6 = 2 × 3
+      if (!group) return;
+      
+      // Sylow 2-subgroups (order 2)
+      const sylow2Subgroups = group.subgroups.filter(sg => sg.elements.length === 2);
+      expect(sylow2Subgroups.length).toBe(3); // n_2 = 3 for S3
+      
+      // Sylow 3-subgroups (order 3)
+      const sylow3Subgroups = group.subgroups.filter(sg => sg.elements.length === 3);
+      expect(sylow3Subgroups.length).toBe(1); // n_3 = 1 for S3
+      expect(sylow3Subgroups[0].isNormal).toBe(true); // Unique Sylow p-subgroup is normal
+    });
+
+    test('verifies class equation', () => {
+      const group = GroupTheoryLibrary.getGroup('S3');
+      if (!group) return;
+      
+      // Class equation: |G| = |Z(G)| + Σ|G:C_G(g_i)|
+      const centerSize = group.center.length;
+      
+      let classSizesSum = centerSize; // Start with center size
+      
+      group.conjugacyClasses.forEach(conjugacyClass => {
+        if (conjugacyClass.length > 1) { // Non-central classes
+          classSizesSum += conjugacyClass.length;
+        }
+      });
+      
+      expect(classSizesSum).toBe(group.order);
+    });
+  });
+
+  describe('Algorithmic Correctness', () => {
+    test('verifies multiplication table symmetry for abelian groups', () => {
+      const abelianGroups = ['C4', 'V4', 'C6'];
+      
+      abelianGroups.forEach(groupName => {
+        const group = GroupTheoryLibrary.getGroup(groupName);
+        if (!group || !group.isAbelian) return;
+        
+        // For abelian groups, operation should be commutative
+        group.elements.forEach(a => {
+          group.elements.forEach(b => {
+            const ab = group.operations.get(a.id)?.get(b.id);
+            const ba = group.operations.get(b.id)?.get(a.id);
+            expect(ab).toBe(ba);
+          });
+        });
+      });
+    });
+
+    test('verifies conjugacy class correctness', () => {
+      const group = GroupTheoryLibrary.getGroup('S3');
+      if (!group) return;
+      
+      // Verify each element is in exactly one conjugacy class
+      const allElementsInClasses = group.conjugacyClasses.flat();
+      expect(allElementsInClasses.sort()).toEqual(
+        group.elements.map(e => e.id).sort()
+      );
+      
+      // Verify conjugacy relation
+      group.conjugacyClasses.forEach((conjugacyClass, classIndex) => {
+        conjugacyClass.forEach(elementId => {
+          const element = group.elements.find(e => e.id === elementId)!;
+          expect(element.conjugacyClass).toBe(classIndex);
+          
+          // Check that conjugates are in the same class
+          group.elements.forEach(g => {
+            const gInverse = group.elements.find(e => e.id === g.inverse)!;
+            const ge = group.operations.get(g.id)?.get(elementId);
+            if (ge) {
+              const conjugate = group.operations.get(ge)?.get(gInverse.id);
+              if (conjugate) {
+                expect(conjugacyClass).toContain(conjugate);
+              }
+            }
+          });
+        });
+      });
+    });
+  });
+
+  describe('Numerical Precision', () => {
+    test('handles floating point precision in calculations', () => {
+      const tolerance = global.__MATHEMATICAL_PRECISION__?.FLOAT_TOLERANCE || 1e-6;
+      
+      // Test permutation cycle calculations
+      const perm = new Permutation([1, 2, 0, 4, 3]); // Mixed cycles
+      expect(perm.order()).toBe(6); // LCM(3, 2) = 6
+      
+      // Test repeated operations maintain precision
+      let current = perm;
+      for (let i = 1; i <= perm.order(); i++) {
+        if (i === perm.order()) {
+          // Should return to identity
+          expect(current.equals(new Permutation([0, 1, 2, 3, 4]))).toBe(true);
+        }
+        current = current.multiply(perm);
+      }
+    });
+
+    test('validates element order calculations', () => {
+      const testElements = [
+        { perm: [1, 0, 2], expectedOrder: 2 },
+        { perm: [1, 2, 0], expectedOrder: 3 },
+        { perm: [0, 1, 2], expectedOrder: 1 },
+        { perm: [2, 0, 1], expectedOrder: 3 },
+        { perm: [1, 0, 3, 2], expectedOrder: 2 }
+      ];
+      
+      testElements.forEach(({ perm, expectedOrder }) => {
+        const permutation = new Permutation(perm);
+        expect(permutation.order()).toBe(expectedOrder);
+        
+        // Verify order definition: g^order = identity
+        let power = permutation;
+        for (let i = 1; i < expectedOrder; i++) {
+          power = power.multiply(permutation);
+          expect(power.equals(new Permutation(perm.map((_, i) => i)))).toBe(false);
+        }
+        
+        power = power.multiply(permutation);
+        expect(power.equals(new Permutation(perm.map((_, i) => i)))).toBe(true);
+      });
+    });
+  });
+});
+
+describe('Cayley Graph Mathematical Properties', () => {
+  test('verifies graph connectivity', () => {
+    const group = GroupTheoryLibrary.getGroup('S3');
+    if (!group) return;
+    
+    const graph = CayleyGraphGenerator.generateGraph(group, group.generators);
+    
+    // Cayley graph should be connected (can reach any vertex from identity)
+    const visited = new Set<string>();
+    const queue = ['e']; // Start from identity
+    visited.add('e');
+    
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      
+      // Find all edges from current vertex
+      graph.edges.forEach(edge => {
+        if (edge.source === current && !visited.has(edge.target)) {
+          visited.add(edge.target);
+          queue.push(edge.target);
+        }
+      });
+    }
+    
+    expect(visited.size).toBe(group.order);
+  });
+
+  test('verifies vertex-transitivity', () => {
+    const group = GroupTheoryLibrary.getGroup('C4');
+    if (!group) return;
+    
+    const graph = CayleyGraphGenerator.generateGraph(group, group.generators);
+    
+    // In a Cayley graph, the automorphism group acts transitively on vertices
+    // All vertices should have the same degree (number of edges)
+    const degrees = new Map<string, number>();
+    
+    graph.vertices.forEach(vertex => {
+      const outDegree = graph.edges.filter(e => e.source === vertex.id).length;
+      const inDegree = graph.edges.filter(e => e.target === vertex.id).length;
+      
+      degrees.set(vertex.id, outDegree);
+      expect(outDegree).toBe(inDegree); // Directed graph, but in/out should match
+    });
+    
+    // All degrees should be equal
+    const degreeValues = Array.from(degrees.values());
+    expect(degreeValues.every(d => d === degreeValues[0])).toBe(true);
+  });
+});
+
+// Helper function for mathematical tests
+function getPrimeFactors(n: number): number[] {
+  const factors: number[] = [];
+  let d = 2;
+  
+  while (d * d <= n) {
+    while (n % d === 0) {
+      factors.push(d);
+      n /= d;
+    }
+    d++;
+  }
+  
+  if (n > 1) factors.push(n);
+  
+  return [...new Set(factors)]; // Return unique prime factors
+}

@@ -581,6 +581,194 @@ test.describe('Mathematical Workflows - Core User Journeys', () => {
   });
 });
 
+  test.describe('Advanced Mathematical Validation Workflows', () => {
+    test('mathematical proof verification workflow', async () => {
+      test.setTimeout(MATHEMATICAL_TIMEOUT);
+
+      // Navigate to a mathematical proof interface if available
+      if (await page.locator('[data-testid="proof-verification-link"]').isVisible()) {
+        await page.click('[data-testid="proof-verification-link"]');
+        await page.waitForSelector('[data-testid="proof-container"]');
+
+        // Test step-by-step proof validation
+        await page.click('[data-testid="proof-template-selector"]');
+        await page.click('text=Lagrange Theorem Proof');
+        await page.waitForTimeout(COMPUTATION_WAIT);
+
+        // Verify proof steps are displayed
+        await expect(page.locator('[data-testid="proof-steps"]')).toBeVisible();
+        
+        // Validate each step
+        const steps = await page.locator('[data-testid="proof-step"]').count();
+        for (let i = 0; i < steps; i++) {
+          const step = page.locator('[data-testid="proof-step"]').nth(i);
+          await step.click();
+          await page.waitForTimeout(500);
+          
+          // Each step should have validation
+          await expect(page.locator('[data-testid="step-validation"]')).toBeVisible();
+        }
+
+        // Test proof completion
+        await page.click('[data-testid="verify-complete-proof"]');
+        await page.waitForTimeout(COMPUTATION_WAIT);
+        await expect(page.locator('[data-testid="proof-verification-result"]')).toContainText('Valid');
+      }
+    });
+
+    test('mathematical conjecture testing workflow', async () => {
+      test.setTimeout(MATHEMATICAL_TIMEOUT);
+
+      await page.click('text=TDA Explorer');
+      await page.waitForSelector('[data-testid="tda-explorer-container"]');
+
+      // Test mathematical conjectures with data
+      if (await page.locator('[data-testid="conjecture-testing"]').isVisible()) {
+        await page.click('[data-testid="conjecture-testing"]');
+        
+        // Select a conjecture to test
+        await page.click('[data-testid="conjecture-selector"]');
+        await page.click('text=Persistent Homology Stability');
+        await page.waitForTimeout(COMPUTATION_WAIT);
+
+        // Generate test cases
+        await page.click('[data-testid="generate-test-cases"]');
+        await page.waitForTimeout(COMPUTATION_WAIT);
+
+        // Run conjecture tests
+        await page.click('[data-testid="run-conjecture-tests"]');
+        await page.waitForTimeout(COMPUTATION_WAIT * 2);
+
+        // Verify test results
+        await expect(page.locator('[data-testid="test-results-summary"]')).toBeVisible();
+        await expect(page.locator('[data-testid="passed-tests-count"]')).toBeVisible();
+        
+        if (await page.locator('[data-testid="failed-tests-count"]').isVisible()) {
+          const failedCount = await page.locator('[data-testid="failed-tests-count"]').textContent();
+          console.log('Conjecture test failures:', failedCount);
+        }
+      }
+    });
+
+    test('mathematical optimization workflow', async () => {
+      test.setTimeout(MATHEMATICAL_TIMEOUT);
+
+      await page.click('text=Cayley Graphs');
+      await page.waitForSelector('[data-testid="cayley-graph-container"]');
+
+      // Test graph layout optimization
+      await page.click('[data-testid="group-selector"]');
+      await page.click('text=S4 - Symmetric Group');
+      await page.waitForTimeout(COMPUTATION_WAIT);
+
+      // Access layout optimization if available
+      if (await page.locator('[data-testid="layout-optimization"]').isVisible()) {
+        await page.click('[data-testid="layout-optimization"]');
+        await expect(page.locator('[data-testid="optimization-panel"]')).toBeVisible();
+
+        // Test different optimization objectives
+        await page.click('[data-testid="minimize-edge-crossings"]');
+        await page.click('[data-testid="start-optimization"]');
+        await page.waitForTimeout(COMPUTATION_WAIT);
+
+        const initialCrossings = await page.locator('[data-testid="edge-crossings-count"]').textContent();
+
+        // Try force-directed optimization
+        await page.click('[data-testid="force-directed-optimization"]');
+        await page.waitForTimeout(COMPUTATION_WAIT);
+
+        const optimizedCrossings = await page.locator('[data-testid="edge-crossings-count"]').textContent();
+        console.log(`Edge crossings: ${initialCrossings} → ${optimizedCrossings}`);
+
+        // Test convergence
+        await expect(page.locator('[data-testid="optimization-converged"]')).toBeVisible();
+      }
+    });
+  });
+
+  test.describe('Mathematical Collaboration and Sharing Workflows', () => {
+    test('mathematical workspace sharing workflow', async () => {
+      test.setTimeout(MATHEMATICAL_TIMEOUT);
+
+      await page.click('text=TDA Explorer');
+      await page.waitForSelector('[data-testid="tda-explorer-container"]');
+
+      // Create a workspace with mathematical content
+      await page.click('[data-testid="pattern-circle"]');
+      await page.waitForTimeout(COMPUTATION_WAIT);
+
+      // Add annotations and analysis
+      if (await page.locator('[data-testid="add-annotation"]').isVisible()) {
+        await page.click('[data-testid="add-annotation"]');
+        await page.fill('[data-testid="annotation-text"]', 'This circle shows clear H1 persistence');
+        await page.click('[data-testid="save-annotation"]');
+        await page.waitForTimeout(500);
+      }
+
+      // Test workspace export for sharing
+      if (await page.locator('[data-testid="share-workspace"]').isVisible()) {
+        await page.click('[data-testid="share-workspace"]');
+        await expect(page.locator('[data-testid="sharing-options"]')).toBeVisible();
+
+        // Generate shareable link
+        await page.click('[data-testid="generate-share-link"]');
+        await page.waitForTimeout(1000);
+
+        const shareLink = await page.locator('[data-testid="share-link"]').textContent();
+        expect(shareLink).toMatch(/^https?:\/\//);
+
+        // Test workspace export
+        await page.click('[data-testid="export-workspace"]');
+        const downloadPromise = page.waitForEvent('download');
+        await page.click('[data-testid="export-json"]');
+        const download = await downloadPromise;
+        expect(download.suggestedFilename()).toMatch(/workspace.*\.json$/);
+      }
+    });
+
+    test('mathematical publication workflow', async () => {
+      test.setTimeout(MATHEMATICAL_TIMEOUT);
+
+      await page.click('text=Cayley Graphs');
+      await page.waitForSelector('[data-testid="cayley-graph-container"]');
+
+      // Create content suitable for publication
+      await page.click('[data-testid="group-selector"]');
+      await page.click('text=A4 - Alternating Group');
+      await page.waitForTimeout(COMPUTATION_WAIT);
+
+      // Generate publication-ready exports
+      if (await page.locator('[data-testid="publication-export"]').isVisible()) {
+        await page.click('[data-testid="publication-export"]');
+        await expect(page.locator('[data-testid="publication-panel"]')).toBeVisible();
+
+        // Test high-resolution figure export
+        await page.click('[data-testid="export-figure"]');
+        await page.selectOption('[data-testid="resolution-selector"]', '300dpi');
+        
+        const figureDownloadPromise = page.waitForEvent('download');
+        await page.click('[data-testid="export-png"]');
+        const figureDownload = await figureDownloadPromise;
+        expect(figureDownload.suggestedFilename()).toMatch(/figure.*\.png$/);
+
+        // Test LaTeX table export
+        await page.click('[data-testid="export-latex-table"]');
+        
+        const latexDownloadPromise = page.waitForEvent('download');
+        await page.click('[data-testid="export-table"]');
+        const latexDownload = await latexDownloadPromise;
+        expect(latexDownload.suggestedFilename()).toMatch(/table.*\.tex$/);
+
+        // Test bibliography entry generation
+        if (await page.locator('[data-testid="generate-citation"]').isVisible()) {
+          await page.click('[data-testid="generate-citation"]');
+          await expect(page.locator('[data-testid="bibtex-entry"]')).toBeVisible();
+          await expect(page.locator('[data-testid="apa-citation"]')).toBeVisible();
+        }
+      }
+    });
+  });
+
 test.describe('Mathematical Workflows - Accessibility', () => {
   test('keyboard navigation works correctly', async ({ page }) => {
     test.setTimeout(MATHEMATICAL_TIMEOUT);

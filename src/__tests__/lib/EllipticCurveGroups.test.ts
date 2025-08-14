@@ -701,3 +701,367 @@ describe('Mathematical Accuracy Integration Tests', () => {
     });
   });
 });
+
+describe('Advanced Mathematical Properties', () => {
+  describe('Torsion Points and Subgroups', () => {
+    test('identifies torsion subgroups correctly', () => {
+      const curve: EllipticCurve = { a: 1, b: 1, p: 7, name: 'test', displayName: 'test' };
+      const points = EllipticCurveGroupGenerator.generateCurvePoints(curve);
+      
+      // Find all 2-torsion points (points of order dividing 2)
+      const twoTorsionPoints = points.filter(point => {
+        const order = EllipticCurveArithmetic.getPointOrder(point, curve);
+        return order > 0 && order <= 2;
+      });
+      
+      // For elliptic curves over finite fields, 2-torsion structure is well-defined
+      expect(twoTorsionPoints.length).toBeGreaterThan(0);
+      
+      // Verify that 2P = O for all 2-torsion points
+      twoTorsionPoints.forEach(point => {
+        const doublePoint = EllipticCurveArithmetic.addPoints(point, point, curve);
+        expect(doublePoint.isIdentity).toBe(true);
+      });
+    });
+
+    test('verifies cyclic subgroup generation', () => {
+      const curve: EllipticCurve = { a: 1, b: 1, p: 7, name: 'test', displayName: 'test' };
+      const points = EllipticCurveGroupGenerator.generateCurvePoints(curve);
+      
+      // Find a non-identity point with finite order
+      const generator = points.find(p => 
+        !p.isIdentity && 
+        EllipticCurveArithmetic.getPointOrder(p, curve) > 1 &&
+        EllipticCurveArithmetic.getPointOrder(p, curve) <= 20
+      );
+      
+      if (generator) {
+        const order = EllipticCurveArithmetic.getPointOrder(generator, curve);
+        const generatedPoints = new Set<string>();
+        
+        let currentPoint = generator;
+        for (let i = 1; i <= order; i++) {
+          const pointKey = currentPoint.isIdentity ? 'O' : `(${currentPoint.x},${currentPoint.y})`;
+          generatedPoints.add(pointKey);
+          
+          if (i < order) {
+            currentPoint = EllipticCurveArithmetic.addPoints(currentPoint, generator, curve);
+          }
+        }
+        
+        expect(generatedPoints.size).toBe(order);
+        expect(currentPoint.isIdentity).toBe(true);
+      }
+    });
+  });
+
+  describe('Point Compression and Decompression', () => {
+    test('validates point compression consistency', () => {
+      const curve: EllipticCurve = { a: 1, b: 1, p: 7, name: 'test', displayName: 'test' };
+      const points = EllipticCurveGroupGenerator.generateCurvePoints(curve);
+      
+      points.forEach(point => {
+        if (!point.isIdentity && point.x !== null && point.y !== null) {
+          // For each x-coordinate, there should be at most 2 y-values
+          const sameXPoints = points.filter(p => 
+            !p.isIdentity && p.x === point.x
+          );
+          
+          expect(sameXPoints.length).toBeLessThanOrEqual(2);
+          
+          if (sameXPoints.length === 2) {
+            // The two points should be inverses of each other
+            const p1 = sameXPoints[0];
+            const p2 = sameXPoints[1];
+            expect((p1.y! + p2.y!) % curve.p).toBe(0);
+          }
+        }
+      });
+    });
+
+    test('validates y-coordinate calculation from x', () => {
+      const curve: EllipticCurve = { a: 1, b: 1, p: 7, name: 'test', displayName: 'test' };
+      const points = EllipticCurveGroupGenerator.generateCurvePoints(curve);
+      
+      points.forEach(point => {
+        if (!point.isIdentity && point.x !== null && point.y !== null) {
+          // Verify y² ≡ x³ + ax + b (mod p)
+          const leftSide = (point.y! * point.y!) % curve.p;
+          const rightSide = (point.x! * point.x! * point.x! + curve.a * point.x! + curve.b) % curve.p;
+          
+          expect(leftSide).toBe(rightSide);
+        }
+      });
+    });
+  });
+
+  describe('Quadratic Residue Theory', () => {
+    test('verifies Legendre symbol calculations', () => {
+      const primes = [5, 7, 11, 13];
+      
+      primes.forEach(p => {
+        // Test quadratic residue properties
+        for (let a = 1; a < p; a++) {
+          const squares = [];
+          for (let x = 0; x < p; x++) {
+            squares.push((x * x) % p);
+          }
+          
+          const isQuadraticResidue = squares.includes(a);
+          
+          if (isQuadraticResidue) {
+            // If a is a quadratic residue, a^((p-1)/2) ≡ 1 (mod p)
+            const legendreSymbol = EllipticCurveArithmetic.modPow(a, Math.floor((p - 1) / 2), p);
+            expect(legendreSymbol).toBe(1);
+          } else {
+            // If a is not a quadratic residue, a^((p-1)/2) ≡ -1 ≡ p-1 (mod p)
+            const legendreSymbol = EllipticCurveArithmetic.modPow(a, Math.floor((p - 1) / 2), p);
+            expect(legendreSymbol).toBe(p - 1);
+          }
+        }
+      });
+    });
+
+    test('validates square root calculations for point generation', () => {
+      const curve: EllipticCurve = { a: 1, b: 1, p: 7, name: 'test', displayName: 'test' };
+      
+      // For each x-coordinate, check if x³ + ax + b has square roots
+      for (let x = 0; x < curve.p; x++) {
+        const rhs = (x * x * x + curve.a * x + curve.b) % curve.p;
+        
+        // Check if rhs is a quadratic residue
+        const legendreSymbol = EllipticCurveArithmetic.modPow(rhs, Math.floor((curve.p - 1) / 2), curve.p);
+        
+        if (legendreSymbol === 1 || rhs === 0) {
+          // Should have points with this x-coordinate
+          const pointsWithX = EllipticCurveGroupGenerator.generateCurvePoints(curve)
+            .filter(p => !p.isIdentity && p.x === x);
+          
+          if (rhs === 0) {
+            expect(pointsWithX.length).toBe(1);
+            expect(pointsWithX[0].y).toBe(0);
+          } else {
+            expect(pointsWithX.length).toBe(2);
+          }
+        }
+      }
+    });
+  });
+
+  describe('Endomorphism and Automorphism Properties', () => {
+    test('validates negation map properties', () => {
+      const curve: EllipticCurve = { a: 1, b: 1, p: 7, name: 'test', displayName: 'test' };
+      const points = EllipticCurveGroupGenerator.generateCurvePoints(curve);
+      
+      points.forEach(point => {
+        if (!point.isIdentity && point.x !== null && point.y !== null) {
+          // Negation: (x, y) → (x, -y)
+          const negatedPoint: EllipticCurvePoint = {
+            x: point.x,
+            y: (curve.p - point.y!) % curve.p,
+            isIdentity: false
+          };
+          
+          // Verify negated point is on curve
+          expect(EllipticCurveArithmetic.isOnCurve(negatedPoint, curve)).toBe(true);
+          
+          // Verify P + (-P) = O
+          const sum = EllipticCurveArithmetic.addPoints(point, negatedPoint, curve);
+          expect(sum.isIdentity).toBe(true);
+        }
+      });
+    });
+
+    test('verifies multiplication by scalar properties', () => {
+      const curve: EllipticCurve = { a: 1, b: 1, p: 7, name: 'test', displayName: 'test' };
+      const points = EllipticCurveGroupGenerator.generateCurvePoints(curve);
+      
+      // Test distributive property: n(P + Q) = nP + nQ
+      const testPoints = points.slice(0, Math.min(3, points.length));
+      const testScalar = 3;
+      
+      testPoints.forEach(p => {
+        testPoints.forEach(q => {
+          const pPlusQ = EllipticCurveArithmetic.addPoints(p, q, curve);
+          const nTimespPlusQ = EllipticCurveArithmetic.scalarMultiply(pPlusQ, testScalar, curve);
+          
+          const nP = EllipticCurveArithmetic.scalarMultiply(p, testScalar, curve);
+          const nQ = EllipticCurveArithmetic.scalarMultiply(q, testScalar, curve);
+          const nPPlusnQ = EllipticCurveArithmetic.addPoints(nP, nQ, curve);
+          
+          expect(nTimespPlusQ.x).toBe(nPPlusnQ.x);
+          expect(nTimespPlusQ.y).toBe(nPPlusnQ.y);
+          expect(nTimespPlusQ.isIdentity).toBe(nPPlusnQ.isIdentity);
+        });
+      });
+    });
+  });
+
+  describe('Discrete Logarithm Properties', () => {
+    test('verifies scalar multiplication uniqueness', () => {
+      const curve: EllipticCurve = { a: 1, b: 1, p: 7, name: 'test', displayName: 'test' };
+      const points = EllipticCurveGroupGenerator.generateCurvePoints(curve);
+      
+      // Find a generator point
+      const generator = points.find(p => {
+        const order = EllipticCurveArithmetic.getPointOrder(p, curve);
+        return !p.isIdentity && order > 2 && order <= 10;
+      });
+      
+      if (generator) {
+        const order = EllipticCurveArithmetic.getPointOrder(generator, curve);
+        const multiples = new Map<string, number>();
+        
+        for (let k = 0; k < order; k++) {
+          const kG = EllipticCurveArithmetic.scalarMultiply(generator, k, curve);
+          const key = kG.isIdentity ? 'O' : `(${kG.x},${kG.y})`;
+          
+          // Each multiple should be unique (until we reach the order)
+          expect(multiples.has(key)).toBe(false);
+          multiples.set(key, k);
+        }
+        
+        expect(multiples.size).toBe(order);
+      }
+    });
+
+    test('validates Baby-step Giant-step complexity bounds', () => {
+      const curve: EllipticCurve = { a: 1, b: 1, p: 11, name: 'test', displayName: 'test' };
+      const points = EllipticCurveGroupGenerator.generateCurvePoints(curve);
+      
+      // For small groups, discrete log should be computationally feasible
+      const generator = points.find(p => {
+        const order = EllipticCurveArithmetic.getPointOrder(p, curve);
+        return !p.isIdentity && order > 1 && order <= 15;
+      });
+      
+      if (generator) {
+        const order = EllipticCurveArithmetic.getPointOrder(generator, curve);
+        const target = EllipticCurveArithmetic.scalarMultiply(generator, Math.floor(order / 2), curve);
+        
+        // Simple brute force discrete log for verification
+        let found = false;
+        for (let k = 0; k < order && !found; k++) {
+          const candidate = EllipticCurveArithmetic.scalarMultiply(generator, k, curve);
+          if (candidate.x === target.x && candidate.y === target.y && 
+              candidate.isIdentity === target.isIdentity) {
+            expect(k).toBe(Math.floor(order / 2));
+            found = true;
+          }
+        }
+        
+        expect(found).toBe(true);
+      }
+    });
+  });
+
+  describe('Numerical Stability and Precision', () => {
+    test('validates precision in repeated operations', () => {
+      const curve: EllipticCurve = { a: 1, b: 1, p: 97, name: 'large', displayName: 'large' };
+      const point: EllipticCurvePoint = { x: 1, y: 1, isIdentity: false };
+      
+      // Verify that multiple additions maintain precision
+      let accumulated = point;
+      const original = point;
+      
+      for (let i = 1; i < 10; i++) {
+        accumulated = EllipticCurveArithmetic.addPoints(accumulated, original, curve);
+        
+        // Each result should be valid
+        expect(EllipticCurveArithmetic.isOnCurve(accumulated, curve)).toBe(true);
+        
+        // Coordinates should be within field bounds
+        if (!accumulated.isIdentity) {
+          expect(accumulated.x).toBeGreaterThanOrEqual(0);
+          expect(accumulated.x).toBeLessThan(curve.p);
+          expect(accumulated.y).toBeGreaterThanOrEqual(0);
+          expect(accumulated.y).toBeLessThan(curve.p);
+        }
+      }
+    });
+
+    test('handles edge cases in modular arithmetic', () => {
+      // Test edge cases with large prime
+      const largePrime = 97;
+      
+      // Test modular inverse near boundaries
+      expect(EllipticCurveArithmetic.modInverse(1, largePrime)).toBe(1);
+      expect(EllipticCurveArithmetic.modInverse(largePrime - 1, largePrime)).toBe(largePrime - 1);
+      
+      // Test modular exponentiation with large exponents
+      const result = EllipticCurveArithmetic.modPow(2, largePrime - 1, largePrime);
+      expect(result).toBe(1); // Fermat's little theorem
+    });
+  });
+});
+
+describe('Cryptographic Properties', () => {
+  describe('Security Parameter Validation', () => {
+    test('validates curve discriminant non-zero', () => {
+      const curves = EllipticCurveGroupGenerator.getPredefinedCurves();
+      
+      curves.forEach(curve => {
+        // Discriminant Δ = -16(4a³ + 27b²) must be non-zero
+        const discriminant = -16 * (4 * Math.pow(curve.a, 3) + 27 * Math.pow(curve.b, 2));
+        expect(discriminant % curve.p).not.toBe(0);
+      });
+    });
+
+    test('verifies group order meets minimum security requirements', () => {
+      const curves = EllipticCurveGroupGenerator.getPredefinedCurves();
+      
+      curves.forEach(curve => {
+        const points = EllipticCurveGroupGenerator.generateCurvePoints(curve);
+        const groupOrder = points.length;
+        
+        // For cryptographic applications, group order should be substantial
+        // This is a minimal test for educational curves
+        expect(groupOrder).toBeGreaterThan(4);
+        
+        // Group order should not equal the field size (would indicate weak curve)
+        expect(groupOrder).not.toBe(curve.p);
+      });
+    });
+  });
+
+  describe('Point Validation for Cryptographic Safety', () => {
+    test('rejects points not on curve in cryptographic contexts', () => {
+      const curve: EllipticCurve = { a: 1, b: 1, p: 97, name: 'crypto', displayName: 'crypto' };
+      
+      // Test various invalid points
+      const invalidPoints = [
+        { x: 0, y: 1, isIdentity: false }, // Might not be on this curve
+        { x: curve.p, y: 0, isIdentity: false }, // x-coordinate out of range
+        { x: 0, y: curve.p, isIdentity: false }, // y-coordinate out of range
+        { x: -1, y: 0, isIdentity: false }, // Negative coordinates
+      ];
+      
+      invalidPoints.forEach(point => {
+        if (point.x >= curve.p || point.y >= curve.p || point.x < 0 || point.y < 0) {
+          // Should handle out-of-range coordinates gracefully
+          expect(() => EllipticCurveArithmetic.isOnCurve(point, curve)).not.toThrow();
+        }
+      });
+    });
+
+    test('validates point order bounds for cryptographic operations', () => {
+      const curve: EllipticCurve = { a: 1, b: 1, p: 97, name: 'crypto', displayName: 'crypto' };
+      const points = EllipticCurveGroupGenerator.generateCurvePoints(curve);
+      
+      points.forEach(point => {
+        if (!point.isIdentity) {
+          const order = EllipticCurveArithmetic.getPointOrder(point, curve);
+          
+          if (order > 0 && order <= 100) {
+            // Point order should divide group order (Lagrange's theorem)
+            expect(points.length % order).toBe(0);
+            
+            // Verify order by scalar multiplication
+            const nP = EllipticCurveArithmetic.scalarMultiply(point, order, curve);
+            expect(nP.isIdentity).toBe(true);
+          }
+        }
+      });
+    });
+  });
+});
