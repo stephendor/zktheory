@@ -1049,7 +1049,8 @@ const PersistenceLandscape3D: React.FC<PersistenceLandscape3DProps> = ({
       )}
 
       {/* Color Legend */}
-      <div className={`color-legend ${showColorLegend ? 'show' : ''}`}>
+      {showColorLegend && (
+        <div className={`color-legend ${showColorLegend ? 'show' : ''}`}>
           <div className="legend-header">
             <h4>Color Legend</h4>
             <span className="legend-scheme">{colorScheme}</span>

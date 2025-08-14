@@ -1,0 +1,492 @@
+/* Mathematical Design System CSS */
+/* Extends Tailwind CSS with mathematical-specific styles */
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap');
+
+/* Mathematical CSS Custom Properties */
+:root {
+  /* Mathematical Constants as CSS Variables */
+  --phi: 1.618;
+  --phi-inverse: 0.618; 
+  --phi-squared: 2.618;
+  --sqrt-2: 1.414;
+  --sqrt-3: 1.732;
+  --pi: 3.14159;
+  --e: 2.71828;
+  
+  /* Mathematical Grid System */
+  --math-grid-base: 8px;
+  --math-baseline: 24px;
+  --math-formula-baseline: 32px;
+  
+  /* Mathematical Typography Scale */
+  --text-formula-3xl: calc(1rem * var(--phi) * var(--phi));
+  --text-formula-2xl: calc(1rem * var(--phi) * 1.2);
+  --text-formula-xl: calc(1rem * var(--phi));
+  --text-formula-lg: calc(1rem * 1.25);
+  --text-formula-base: 1rem;
+  --text-formula-sm: calc(1rem * var(--phi-inverse));
+  --text-formula-xs: calc(1rem * var(--phi-inverse) * var(--phi-inverse));
+}
+
+/* Mathematical Base Styles */
+@layer base {
+  /* KaTeX Integration */
+  .katex {
+    font-size: 1.1em !important;
+    color: var(--math-primary) !important;
+  }
+  
+  .katex .base {
+    line-height: 1.4;
+  }
+  
+  /* MathJax Integration */
+  .MathJax {
+    font-size: 110% !important;
+    color: var(--math-primary) !important;
+  }
+  
+  /* Mathematical Code Blocks */
+  code.mathematical {
+    font-family: var(--font-code);
+    background-color: rgba(37, 99, 235, 0.05);
+    color: var(--math-primary);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    font-size: 0.9em;
+  }
+  
+  /* Mathematical Pre Blocks */
+  pre.mathematical {
+    font-family: var(--font-code);
+    background-color: rgba(37, 99, 235, 0.02);
+    border: 2px solid rgba(37, 99, 235, 0.1);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    overflow-x: auto;
+    line-height: 1.6;
+    font-size: 0.9rem;
+  }
+  
+  /* Mathematical Table Styles */
+  table.mathematical {
+    font-family: var(--font-mathematical);
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 2px solid var(--math-primary);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  
+  table.mathematical th {
+    background-color: var(--math-primary);
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    text-align: center;
+  }
+  
+  table.mathematical td {
+    padding: 0.5rem 1rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+    font-family: var(--font-code);
+  }
+  
+  table.mathematical tr:nth-child(even) td {
+    background-color: rgba(37, 99, 235, 0.02);
+  }
+}
+
+/* Mathematical Component Styles */
+@layer components {
+  /* Enhanced Mathematical Display Components */
+  .math-theorem-block {
+    @apply math-display-block;
+    border-left: 4px solid var(--math-accent);
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.02), rgba(5, 150, 105, 0.05));
+    position: relative;
+  }
+  
+  .math-theorem-block::before {
+    content: "Theorem";
+    position: absolute;
+    top: -0.5rem;
+    left: 1rem;
+    background: var(--math-accent);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .math-proof-block {
+    @apply math-display;
+    border-left: 4px solid var(--math-secondary);
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.02), rgba(124, 58, 237, 0.05));
+    position: relative;
+  }
+  
+  .math-proof-block::before {
+    content: "Proof";
+    position: absolute;
+    top: -0.5rem;
+    left: 1rem;
+    background: var(--math-secondary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .math-definition-block {
+    @apply math-display;
+    border-left: 4px solid var(--math-warning);
+    background: linear-gradient(135deg, rgba(217, 119, 6, 0.02), rgba(217, 119, 6, 0.05));
+    position: relative;
+  }
+  
+  .math-definition-block::before {
+    content: "Definition";
+    position: absolute;
+    top: -0.5rem;
+    left: 1rem;
+    background: var(--math-warning);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  /* Mathematical Input Variants */
+  .math-input-parameter {
+    @apply math-input;
+    width: 100px;
+    text-align: center;
+    font-weight: 600;
+    background: linear-gradient(135deg, white, rgba(37, 99, 235, 0.02));
+  }
+  
+  .math-input-matrix {
+    @apply math-input;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    font-family: var(--font-code);
+    font-weight: 500;
+  }
+  
+  .math-input-vector {
+    @apply math-input;
+    width: 80px;
+    text-align: center;
+    border-radius: 2rem;
+  }
+  
+  /* Mathematical Button Variants */
+  .math-btn-operator {
+    @apply math-btn-primary;
+    background: var(--math-operator);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: var(--font-mathematical);
+  }
+  
+  .math-btn-function {
+    @apply math-btn-secondary;
+    font-family: var(--font-mathematical);
+    font-style: italic;
+    min-width: 80px;
+  }
+  
+  .math-btn-constant {
+    @apply math-btn-secondary;
+    background: var(--math-constant);
+    color: white;
+    font-family: var(--font-mathematical);
+    font-weight: 600;
+  }
+  
+  /* Mathematical Progress and Status */
+  .math-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(37, 99, 235, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .math-progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--math-primary), var(--math-accent));
+    width: var(--progress, 0%);
+    border-radius: 4px;
+    transition: width 0.5s var(--ease-golden);
+  }
+  
+  .math-status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .math-status-indicator.success {
+    background: rgba(5, 150, 105, 0.1);
+    color: var(--math-accent);
+    border: 1px solid rgba(5, 150, 105, 0.3);
+  }
+  
+  .math-status-indicator.error {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--math-error);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+  }
+  
+  .math-status-indicator.warning {
+    background: rgba(217, 119, 6, 0.1);
+    color: var(--math-warning);
+    border: 1px solid rgba(217, 119, 6, 0.3);
+  }
+  
+  /* Mathematical Layout Components */
+  .math-sidebar {
+    background: linear-gradient(180deg, rgba(37, 99, 235, 0.02), rgba(37, 99, 235, 0.05));
+    border-right: 2px solid rgba(37, 99, 235, 0.1);
+    padding: 2rem;
+    min-height: 100vh;
+  }
+  
+  .math-main-content {
+    padding: 2rem;
+    background: rgba(248, 250, 252, 0.5);
+  }
+  
+  .math-tools-panel {
+    background: white;
+    border: 2px solid rgba(37, 99, 235, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.1);
+  }
+  
+  /* Mathematical Animation Classes */
+  .math-fade-in {
+    animation: mathFadeIn 0.6s var(--ease-golden) both;
+  }
+  
+  .math-slide-up {
+    animation: mathSlideUp 0.5s var(--ease-fibonacci) both;
+  }
+  
+  .math-scale-in {
+    animation: mathScaleIn 0.4s var(--ease-harmonic) both;
+  }
+  
+  .math-bounce-in {
+    animation: mathBounceIn 0.7s var(--ease-golden) both;
+  }
+}
+
+/* Mathematical Utility Classes */
+@layer utilities {
+  /* Mathematical Spacing Utilities */
+  .space-golden-ratio > * + * {
+    margin-top: calc(1rem * var(--phi-inverse));
+  }
+  
+  .space-fibonacci-sequence > * + * {
+    margin-top: calc(0.25rem + 0.5rem + 0.75rem);
+  }
+  
+  /* Mathematical Alignment Utilities */
+  .align-mathematical {
+    vertical-align: -0.15em;
+  }
+  
+  .align-mathematical-super {
+    vertical-align: 0.5em;
+    font-size: 0.75em;
+  }
+  
+  .align-mathematical-sub {
+    vertical-align: -0.25em;
+    font-size: 0.75em;
+  }
+  
+  /* Mathematical Border Utilities */
+  .border-mathematical {
+    border: 2px solid var(--math-primary);
+    border-radius: calc(var(--phi-inverse) * 1rem);
+  }
+  
+  .border-mathematical-dashed {
+    border: 2px dashed var(--math-secondary);
+    border-radius: calc(var(--phi-inverse) * 1rem);
+  }
+  
+  /* Mathematical Background Patterns */
+  .bg-math-grid {
+    background-image: 
+      linear-gradient(rgba(37, 99, 235, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(37, 99, 235, 0.1) 1px, transparent 1px);
+    background-size: calc(var(--math-grid-base) * 2) calc(var(--math-grid-base) * 2);
+  }
+  
+  .bg-math-dots {
+    background-image: radial-gradient(rgba(37, 99, 235, 0.2) 1px, transparent 1px);
+    background-size: calc(var(--math-grid-base) * 3) calc(var(--math-grid-base) * 3);
+  }
+  
+  /* Mathematical Transform Utilities */
+  .rotate-phi {
+    transform: rotate(calc(var(--phi) * 15deg));
+  }
+  
+  .scale-phi {
+    transform: scale(var(--phi-inverse));
+  }
+  
+  .scale-golden {
+    transform: scale(var(--phi));
+  }
+}
+
+/* Mathematical Animations */
+@keyframes mathFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mathSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes mathScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) rotate(5deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes mathBounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(-50px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05) translateY(10px);
+  }
+  70% {
+    transform: scale(0.95) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Mathematical Responsive Design */
+@media (max-width: 768px) {
+  .math-workspace-split {
+    grid-template-columns: 1fr;
+  }
+  
+  .math-display-block {
+    padding: 1rem;
+    font-size: var(--text-formula-lg);
+  }
+  
+  .math-input-matrix {
+    width: 45px;
+    height: 45px;
+    font-size: 0.875rem;
+  }
+  
+  .math-btn-operator {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .math-workspace-large {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  
+  .math-formula-large {
+    font-size: var(--text-formula-3xl);
+    line-height: 1.2;
+    margin: 3rem 0;
+  }
+}
+
+/* Dark Mode Mathematical Styles */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --math-primary: #60a5fa;
+    --math-secondary: #a78bfa;
+    --math-accent: #34d399;
+    --math-warning: #fbbf24;
+    --math-error: #f87171;
+  }
+  
+  .math-display {
+    background-color: rgba(30, 41, 59, 0.5);
+    border-color: rgba(96, 165, 250, 0.2);
+  }
+  
+  .math-input {
+    background-color: rgba(30, 41, 59, 0.8);
+    border-color: rgba(96, 165, 250, 0.3);
+    color: #f1f5f9;
+  }
+  
+  .math-workspace {
+    background-color: rgba(15, 23, 42, 0.8);
+    border-color: rgba(96, 165, 250, 0.2);
+  }
+}

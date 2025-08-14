@@ -1,0 +1,161 @@
+{
+  "mathematical": {
+    "colors": {
+      "primary": {
+        "mathematical-blue": "#2563eb",
+        "mathematical-purple": "#7c3aed", 
+        "mathematical-green": "#059669",
+        "mathematical-orange": "#d97706",
+        "mathematical-red": "#dc2626"
+      },
+      "semantic": {
+        "variable": "#2563eb",
+        "constant": "#059669",
+        "operator": "#7c3aed",
+        "result": "#d97706",
+        "error": "#dc2626",
+        "success": "#059669",
+        "warning": "#d97706"
+      },
+      "functions": {
+        "primary-function": "#2563eb",
+        "secondary-function": "#dc2626",
+        "tertiary-function": "#059669",
+        "derivative": "#7c3aed",
+        "integral": "#d97706"
+      },
+      "visualization": {
+        "sequential": ["#f7fbff", "#c6dbef", "#6baed6", "#2171b5", "#08306b"],
+        "diverging": ["#d73027", "#f46d43", "#fdae61", "#fee08b", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850"],
+        "categorical": ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#17becf", "#bcbd22"]
+      }
+    },
+    "typography": {
+      "scales": {
+        "mathematical": {
+          "formula-display": "2.488rem",
+          "theorem-header": "1.953rem", 
+          "proof-step": "1.563rem",
+          "explanatory": "1.25rem",
+          "base": "1rem",
+          "annotation": "0.8rem",
+          "subscript": "0.64rem"
+        },
+        "ratios": {
+          "golden": 1.618,
+          "perfect-fourth": 1.333,
+          "major-third": 1.25,
+          "minor-third": 1.2,
+          "major-second": 1.125
+        }
+      },
+      "fonts": {
+        "mathematical": ["KaTeX_Main", "Computer Modern", "Latin Modern Math", "Times New Roman", "serif"],
+        "code": ["Fira Code", "JetBrains Mono", "SF Mono", "Monaco", "monospace"],
+        "ui": ["Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"]
+      },
+      "weights": {
+        "light": 300,
+        "regular": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      }
+    },
+    "spacing": {
+      "fibonacci": {
+        "1": "0.25rem",
+        "2": "0.5rem", 
+        "3": "0.75rem",
+        "4": "1rem",
+        "5": "1.25rem",
+        "6": "1.618rem",
+        "8": "2rem",
+        "10": "2.618rem",
+        "12": "3rem",
+        "16": "4.236rem"
+      },
+      "golden": {
+        "base": "1rem",
+        "phi": "1.618rem",
+        "phi-squared": "2.618rem",
+        "phi-cubed": "4.236rem",
+        "phi-inverse": "0.618rem"
+      }
+    },
+    "grid": {
+      "base-unit": "8px",
+      "baseline": "24px",
+      "mathematical-baseline": "32px",
+      "columns": 12,
+      "gutters": {
+        "xs": "1rem",
+        "sm": "1.25rem", 
+        "md": "1.618rem",
+        "lg": "2rem",
+        "xl": "2.618rem"
+      }
+    },
+    "borders": {
+      "radius": {
+        "sharp": "0",
+        "subtle": "2px",
+        "soft": "4px", 
+        "round": "8px",
+        "circular": "50%"
+      },
+      "width": {
+        "hairline": "0.5px",
+        "thin": "1px",
+        "medium": "2px",
+        "thick": "4px"
+      }
+    },
+    "shadows": {
+      "mathematical": {
+        "subtle": "0 1px 3px rgba(37, 99, 235, 0.1)",
+        "soft": "0 4px 6px rgba(37, 99, 235, 0.1)",
+        "medium": "0 8px 25px rgba(37, 99, 235, 0.15)",
+        "strong": "0 20px 40px rgba(37, 99, 235, 0.2)"
+      },
+      "data-viz": {
+        "hover": "0 4px 20px rgba(37, 99, 235, 0.3)",
+        "active": "0 2px 10px rgba(37, 99, 235, 0.4)",
+        "focus": "0 0 0 3px rgba(37, 99, 235, 0.2)"
+      }
+    },
+    "animation": {
+      "duration": {
+        "instant": "0ms",
+        "fast": "150ms",
+        "normal": "300ms", 
+        "slow": "500ms",
+        "deliberate": "700ms"
+      },
+      "easing": {
+        "golden": "cubic-bezier(0.618, 0, 0.382, 1)",
+        "fibonacci": "cubic-bezier(0.236, 0, 0.764, 1)",
+        "harmonic": "cubic-bezier(0.25, 0, 0.25, 1)",
+        "exponential": "cubic-bezier(0.19, 1, 0.22, 1)"
+      }
+    },
+    "breakpoints": {
+      "xs": "480px",
+      "sm": "640px",
+      "md": "768px",
+      "lg": "1024px",
+      "xl": "1280px",
+      "2xl": "1536px",
+      "mathematical-workspace": "1400px",
+      "large-formula": "1600px"
+    },
+    "z-index": {
+      "base": 0,
+      "mathematical-overlay": 10,
+      "tooltip": 20,
+      "modal-backdrop": 30,
+      "modal": 40,
+      "notification": 50
+    }
+  }
+}
