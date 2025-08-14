@@ -5,6 +5,9 @@ interface Point {
   x: number;
   y: number;
   id: number;
+  density?: number;
+  color?: string;
+  label?: string;
 }
 
 interface MapperNode {
@@ -72,13 +75,23 @@ const MapperVisualization: React.FC<MapperVisualizationProps> = ({
     const stdDevX = d3.deviation(node.points, p => p.x) || 0;
     const stdDevY = d3.deviation(node.points, p => p.y) || 0;
     
+    // Calculate average density from actual point density values
+    const pointsWithDensity = node.points.filter(p => p.density !== undefined);
+    const avgDensity = pointsWithDensity.length > 0 
+      ? d3.mean(pointsWithDensity, p => p.density!) || 0
+      : 0;
+    
+    // Show both geometric density and actual density
+    const geometricDensity = (node.size / (Math.PI * node.radius * node.radius));
+    
     return [
       `Cluster ${node.label}`,
       `Size: ${node.size} points`,
       `Position: (${node.x.toFixed(1)}, ${node.y.toFixed(1)})`,
       `Center: (${avgX.toFixed(2)}, ${avgY.toFixed(2)})`,
       `Spread: ±${stdDevX.toFixed(2)}, ±${stdDevY.toFixed(2)}`,
-      `Density: ${(node.size / (Math.PI * node.radius * node.radius)).toFixed(2)}`
+      `Geometric Density: ${geometricDensity.toFixed(2)}`,
+      `Point Density: ${avgDensity.toFixed(3)}`
     ];
   }, []);
 

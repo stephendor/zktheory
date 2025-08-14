@@ -78,7 +78,7 @@ const TDAExplorer: React.FC = () => {
   });
   const [pointCount, setPointCount] = useState<number>(25);
   const [noiseLevel, setNoiseLevel] = useState<number>(0.05);
-  const [densityRadius, setDensityRadius] = useState<number>(0.1);
+  const [densityRadius, setDensityRadius] = useState<number>(0.2);
   const [performanceSettings, setPerformanceSettings] = useState<{
     enableLazyLoading: boolean;
     maxPointsForRealTime: number;
@@ -179,7 +179,7 @@ const TDAExplorer: React.FC = () => {
       const useV2Integration = false; // Set to true to test full integration
       
       if (useV2Integration) {
-        console.log('🔄 Testing V2 WASM integration...');
+    
         try {
           const success = await initializeWasmV2();
           if (success) {
@@ -187,13 +187,13 @@ const TDAExplorer: React.FC = () => {
             if (engine) {
               setTdaEngine(engine);
               setWasmLoaded(true);
-              console.log('✅ V2 WASM TDA Engine ready');
+      
               return;
             }
           }
           
           // Fallback to enhanced mock
-          console.log('🔄 V2 WASM failed, using enhanced mock');
+  
           const enhancedMockEngine = createEnhancedMockTDAEngine();
           setTdaEngine(enhancedMockEngine);
           setWasmLoaded(false);
@@ -205,27 +205,27 @@ const TDAExplorer: React.FC = () => {
         }
       } else {
         // Use the current working V1 system
-        console.log('🔄 Using V1 WASM integration (current working)...');
+
         try {
           const success = await initializeWasm();
           if (success) {
             const engine = createTDAEngine();
             setTdaEngine(engine);
             setWasmLoaded(true);
-            console.log('✅ V1 TDA Engine ready');
+
           } else {
             // Use original mock engine
             const mockEngine = createMockTDAEngine();
             setTdaEngine(mockEngine);
             setWasmLoaded(false);
-            console.log('🔄 Using V1 mock TDA engine');
+
           }
         } catch (error) {
           console.error('V1 initialization error:', error);
           const mockEngine = createMockTDAEngine();
           setTdaEngine(mockEngine);
           setWasmLoaded(false);
-          console.log('🔄 Fallback to V1 mock TDA engine');
+  
         }
       }
     };
@@ -332,7 +332,7 @@ const TDAExplorer: React.FC = () => {
         }
         
         // Show success message
-        console.log(`Successfully loaded ${points.length} points from ${file.name}`);
+  
       } catch (error) {
         console.error('Error parsing file:', error);
         alert(`Error parsing file: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -511,7 +511,6 @@ const TDAExplorer: React.FC = () => {
   // Compute point density for color coding
   const computePointDensity = (points: Point[]): Point[] => {
     return points.map(point => {
-      let density = 0;
       let neighborCount = 0;
       
       // Count neighbors within a certain radius
@@ -522,14 +521,16 @@ const TDAExplorer: React.FC = () => {
             Math.pow(point.y - otherPoint.y, 2)
           );
           if (distance < densityRadius) { // Dynamic neighbor radius
-            density += 1;
             neighborCount++;
           }
         }
       });
       
-      // Normalize density and assign color
-      const normalizedDensity = neighborCount > 0 ? density / neighborCount : 0;
+      // Calculate density as percentage of total points (excluding self)
+      const totalPossibleNeighbors = points.length - 1;
+      const normalizedDensity = totalPossibleNeighbors > 0 ? neighborCount / totalPossibleNeighbors : 0;
+      
+      // Assign color based on density
       const color = normalizedDensity > 0.5 ? '#ef4444' : 
                    normalizedDensity > 0.3 ? '#f97316' : 
                    normalizedDensity > 0.1 ? '#eab308' : '#22c55e';
@@ -538,7 +539,7 @@ const TDAExplorer: React.FC = () => {
         ...point,
         density: normalizedDensity,
         color: color,
-        label: `P${point.id} (density: ${normalizedDensity.toFixed(2)})`
+        label: `P${point.id} (density: ${normalizedDensity.toFixed(3)})`
       };
     });
   };
@@ -761,7 +762,7 @@ const TDAExplorer: React.FC = () => {
       
       setPersistenceData(computedData);
       setIsComputing(false);
-      console.log(`Used ${wasmLoaded ? 'WASM' : 'mock'} computation`);
+  
     } catch (error) {
       console.error('Persistence computation failed:', error);
       setIsComputing(false);
@@ -775,12 +776,15 @@ const TDAExplorer: React.FC = () => {
       return;
     }
 
-    const numClusters = Math.min(8, Math.max(3, Math.floor(points.length / 3)));
+    // Ensure points have density data
+    const enhancedPoints = points.some(p => p.density !== undefined) ? points : computePointDensity(points);
+    
+    const numClusters = Math.min(8, Math.max(3, Math.floor(enhancedPoints.length / 3)));
     const nodes: MapperNode[] = [];
     const links: MapperLink[] = [];
 
     // Sort points for deterministic behavior
-    const sortedPoints = [...points].sort((a, b) => a.x - b.x || a.y - b.y);
+    const sortedPoints = [...enhancedPoints].sort((a, b) => a.x - b.x || a.y - b.y);
 
     // Create nodes (clusters) using deterministic spacing
     for (let i = 0; i < numClusters; i++) {
@@ -905,88 +909,9 @@ const TDAExplorer: React.FC = () => {
       </header>
       
       <div className="tda-content">
-        {/* Left Control Panel */}
+        {/* Left Control Panel - Analysis & Performance Controls */}
         <div className="tda-controls">
-          <h3>Point Cloud Generation</h3>
-          
-          {/* Basic Patterns - Collapsible */}
-          <div className="control-section collapsible">
-            <button 
-              className="section-header"
-              onClick={() => toggleSection('basic')}
-            >
-              <span>Basic Patterns</span>
-              <span className={`expand-icon ${expandedSections.basic ? 'expanded' : ''}`}>
-                ▼
-              </span>
-            </button>
-            {expandedSections.basic && (
-              <div className="section-content">
-                <div className="button-grid">
-                  <button onClick={() => generateSampleData('circle')} className="btn btn-primary">
-                    Circle
-                  </button>
-                  <button onClick={() => generateSampleData('clusters')} className="btn btn-primary">
-                    Clusters
-                  </button>
-                  <button onClick={() => generateSampleData('random')} className="btn btn-primary">
-                    Random
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-          
-          {/* Advanced Patterns - Collapsible */}
-          <div className="control-section collapsible">
-            <button 
-              className="section-header"
-              onClick={() => toggleSection('advanced')}
-            >
-              <span>Advanced Patterns</span>
-              <span className={`expand-icon ${expandedSections.advanced ? 'expanded' : ''}`}>
-                ▼
-              </span>
-            </button>
-            {expandedSections.advanced && (
-              <div className="section-content">
-                <div className="button-grid">
-                  <button onClick={() => generateSampleData('torus')} className="btn btn-primary">
-                    Torus
-                  </button>
-                  <button onClick={() => generateSampleData('gaussian')} className="btn btn-primary">
-                    Gaussian
-                  </button>
-                  <button onClick={() => generateSampleData('spiral')} className="btn btn-primary">
-                    Spiral
-                  </button>
-                  <button onClick={() => generateSampleData('grid')} className="btn btn-primary">
-                    Grid
-                  </button>
-                  <button onClick={() => generateSampleData('annulus')} className="btn btn-primary">
-                    Annulus
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-          
-          {/* Action Buttons - Always Visible */}
-          <div className="control-section">
-            <h4>Actions</h4>
-            <div className="button-grid">
-              <button onClick={() => setPoints([])} className="btn btn-secondary">
-                Clear
-              </button>
-              <button 
-                onClick={() => points.length > 0 && setPoints(computePointDensity(points))} 
-                className="btn btn-success"
-                disabled={points.length === 0}
-              >
-                Refresh Density
-              </button>
-            </div>
-          </div>
+          <h3>Analysis & Performance</h3>
           
           {/* Filtration Control - Always Visible */}
           <div className="control-section">
@@ -1006,118 +931,6 @@ const TDAExplorer: React.FC = () => {
                 className="filtration-slider"
               />
             </div>
-          </div>
-          
-          {/* Parameters - Always Visible */}
-          <div className="control-section">
-            <h4>Generation Parameters</h4>
-            
-            <div className="parameter-group">
-              <label htmlFor="pointCount">
-                Point Count: {pointCount}
-              </label>
-              <input
-                id="pointCount"
-                type="range"
-                min="10"
-                max="100"
-                step="5"
-                value={pointCount}
-                onChange={(e) => setPointCount(parseInt(e.target.value))}
-                className="parameter-slider"
-              />
-            </div>
-            
-            <div className="parameter-group">
-              <label htmlFor="noiseLevel">
-                Noise Level: {noiseLevel.toFixed(3)}
-              </label>
-              <input
-                id="noiseLevel"
-                type="range"
-                min="0.01"
-                max="0.2"
-                step="0.01"
-                value={noiseLevel}
-                onChange={(e) => setNoiseLevel(parseFloat(e.target.value))}
-                className="parameter-slider"
-              />
-            </div>
-            
-            <div className="parameter-group">
-              <label htmlFor="densityRadius">
-                Density Radius: {densityRadius.toFixed(3)}
-              </label>
-              <input
-                id="densityRadius"
-                type="range"
-                min="0.05"
-                max="0.3"
-                step="0.01"
-                value={densityRadius}
-                onChange={(e) => setDensityRadius(parseFloat(e.target.value))}
-                className="parameter-slider"
-              />
-            </div>
-          </div>
-          
-          {/* Parameter Presets - Collapsible */}
-          <div className="control-section collapsible">
-            <button 
-              className="section-header"
-              onClick={() => toggleSection('presets')}
-            >
-              <span>Parameter Presets</span>
-              <span className={`expand-icon ${expandedSections.presets ? 'expanded' : ''}`}>
-                ▼
-              </span>
-            </button>
-            {expandedSections.presets && (
-              <div className="section-content">
-                <div className="preset-grid">
-                  <button 
-                    onClick={() => applyParameterPreset('clustering')}
-                    className="btn btn-outline preset-btn"
-                    title="Optimized for cluster detection"
-                  >
-                    Clustering
-                  </button>
-                  <button 
-                    onClick={() => applyParameterPreset('topology')}
-                    className="btn btn-outline preset-btn"
-                    title="Optimized for topological features"
-                  >
-                    Topology
-                  </button>
-                  <button 
-                    onClick={() => applyParameterPreset('density')}
-                    className="btn btn-outline preset-btn"
-                    title="Optimized for density analysis"
-                  >
-                    Density
-                  </button>
-                  <button 
-                    onClick={() => applyParameterPreset('sparse')}
-                    className="btn btn-outline preset-btn"
-                    title="Optimized for sparse data"
-                  >
-                    Sparse
-                  </button>
-                  <button 
-                    onClick={() => applyParameterPreset('dense')}
-                    className="btn btn-outline preset-btn"
-                    title="Optimized for dense data"
-                  >
-                    Dense
-                  </button>
-                </div>
-                <div className="preset-info">
-                  <p className="preset-description">
-                    Click any preset to automatically configure optimal parameters for different TDA scenarios.
-                  </p>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Data Import/Export - Collapsible */}
@@ -1491,6 +1304,202 @@ const TDAExplorer: React.FC = () => {
               </div>
             </>
           )}
+        </div>
+        
+        {/* Right Control Panel - Point Cloud Generation */}
+        <div className="tda-right-controls">
+          <h3>Point Cloud Generation</h3>
+          
+          {/* Basic Patterns - Collapsible */}
+          <div className="control-section collapsible">
+            <button 
+              className="section-header"
+              onClick={() => toggleSection('basic')}
+            >
+              <span>Basic Patterns</span>
+              <span className={`expand-icon ${expandedSections.basic ? 'expanded' : ''}`}>
+                ▼
+              </span>
+            </button>
+            {expandedSections.basic && (
+              <div className="section-content">
+                <div className="button-grid">
+                  <button onClick={() => generateSampleData('circle')} className="btn btn-primary">
+                    Circle
+                  </button>
+                  <button onClick={() => generateSampleData('clusters')} className="btn btn-primary">
+                    Clusters
+                  </button>
+                  <button onClick={() => generateSampleData('random')} className="btn btn-primary">
+                    Random
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Advanced Patterns - Collapsible */}
+          <div className="control-section collapsible">
+            <button 
+              className="section-header"
+              onClick={() => toggleSection('advanced')}
+            >
+              <span>Advanced Patterns</span>
+              <span className={`expand-icon ${expandedSections.advanced ? 'expanded' : ''}`}>
+                ▼
+              </span>
+            </button>
+            {expandedSections.advanced && (
+              <div className="section-content">
+                <div className="button-grid">
+                  <button onClick={() => generateSampleData('torus')} className="btn btn-primary">
+                    Torus
+                  </button>
+                  <button onClick={() => generateSampleData('gaussian')} className="btn btn-primary">
+                    Gaussian
+                  </button>
+                  <button onClick={() => generateSampleData('spiral')} className="btn btn-primary">
+                    Spiral
+                  </button>
+                  <button onClick={() => generateSampleData('grid')} className="btn btn-primary">
+                    Grid
+                  </button>
+                  <button onClick={() => generateSampleData('annulus')} className="btn btn-primary">
+                    Annulus
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Action Buttons - Always Visible */}
+          <div className="control-section">
+            <h4>Actions</h4>
+            <div className="button-grid">
+              <button onClick={() => setPoints([])} className="btn btn-secondary">
+                Clear
+              </button>
+              <button 
+                onClick={() => points.length > 0 && setPoints(computePointDensity(points))} 
+                className="btn btn-success"
+                disabled={points.length === 0}
+              >
+                Refresh Density
+              </button>
+            </div>
+          </div>
+          
+          {/* Parameters - Always Visible */}
+          <div className="control-section">
+            <h4>Generation Parameters</h4>
+            
+            <div className="parameter-group">
+              <label htmlFor="pointCount">
+                Point Count: {pointCount}
+              </label>
+              <input
+                id="pointCount"
+                type="range"
+                min="10"
+                max="100"
+                step="5"
+                value={pointCount}
+                onChange={(e) => setPointCount(parseInt(e.target.value))}
+                className="parameter-slider"
+              />
+            </div>
+            
+            <div className="parameter-group">
+              <label htmlFor="noiseLevel">
+                Noise Level: {noiseLevel.toFixed(3)}
+              </label>
+              <input
+                id="noiseLevel"
+                type="range"
+                min="0.01"
+                max="0.2"
+                step="0.01"
+                value={noiseLevel}
+                onChange={(e) => setNoiseLevel(parseFloat(e.target.value))}
+                className="parameter-slider"
+              />
+            </div>
+            
+            <div className="parameter-group">
+              <label htmlFor="densityRadius">
+                Density Radius: {densityRadius.toFixed(3)}
+              </label>
+              <input
+                id="densityRadius"
+                type="range"
+                min="0.05"
+                max="0.3"
+                step="0.01"
+                value={densityRadius}
+                onChange={(e) => setDensityRadius(parseFloat(e.target.value))}
+                className="parameter-slider"
+              />
+            </div>
+          </div>
+          
+          {/* Parameter Presets - Collapsible */}
+          <div className="control-section collapsible">
+            <button 
+              className="section-header"
+              onClick={() => toggleSection('presets')}
+            >
+              <span>Parameter Presets</span>
+              <span className={`expand-icon ${expandedSections.presets ? 'expanded' : ''}`}>
+                ▼
+              </span>
+            </button>
+            {expandedSections.presets && (
+              <div className="section-content">
+                <div className="preset-grid">
+                  <button 
+                    onClick={() => applyParameterPreset('clustering')}
+                    className="btn btn-outline preset-btn"
+                    title="Optimized for cluster detection"
+                  >
+                    Clustering
+                  </button>
+                  <button 
+                    onClick={() => applyParameterPreset('topology')}
+                    className="btn btn-outline preset-btn"
+                    title="Optimized for topological features"
+                  >
+                    Topology
+                  </button>
+                  <button 
+                    onClick={() => applyParameterPreset('density')}
+                    className="btn btn-outline preset-btn"
+                    title="Optimized for density analysis"
+                  >
+                    Density
+                  </button>
+                  <button 
+                    onClick={() => applyParameterPreset('sparse')}
+                    className="btn btn-outline preset-btn"
+                    title="Optimized for sparse data"
+                  >
+                    Sparse
+                  </button>
+                  <button 
+                    onClick={() => applyParameterPreset('dense')}
+                    className="btn btn-outline preset-btn"
+                    title="Optimized for dense data"
+                  >
+                    Dense
+                  </button>
+                </div>
+                <div className="preset-info">
+                  <p className="preset-description">
+                    Click any preset to automatically configure optimal parameters for different TDA scenarios.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

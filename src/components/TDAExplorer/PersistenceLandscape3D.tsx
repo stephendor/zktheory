@@ -18,7 +18,7 @@ interface PersistenceData {
 
 interface PersistenceLandscape3DProps {
   persistenceData: PersistenceData | null;
-  points?: Array<{ x: number; y: number; density?: number; color?: string }>; // Add points with density data
+  points?: Array<{ x: number; y: number; id: number; density?: number; color?: string; label?: string }>; // Add points with density data
   width?: number;
   height?: number;
   showWireframe?: boolean;
@@ -30,7 +30,7 @@ interface PersistenceLandscape3DProps {
 // 3D Scene Component
 const PersistenceLandscapeScene: React.FC<{
   persistenceData: PersistenceData | null;
-  points: Array<{ x: number; y: number; density?: number; color?: string }>; // Add points parameter
+  points: Array<{ x: number; y: number; id: number; density?: number; color?: string; label?: string }>; // Add points parameter
   showWireframe: boolean;
   showSolid: boolean;
   colorScheme: string;
@@ -73,14 +73,10 @@ const PersistenceLandscapeScene: React.FC<{
 
   // Generate 3D geometry from persistence data
   const { vertices, indices, colors, wireframeVertices, wireframeIndices } = useMemo(() => {
-    console.log('Processing persistence data:', {
-      hasData: !!persistenceData,
-      pairsLength: persistenceData?.pairs?.length || 0,
-      dimensionFilter
-    });
+
     
     if (!persistenceData || !persistenceData.pairs || persistenceData.pairs.length === 0) {
-      console.log('No persistence data available, returning empty geometry');
+
       return { vertices: [], indices: [], colors: [], wireframeVertices: [], wireframeIndices: [] };
     }
 
@@ -94,13 +90,7 @@ const PersistenceLandscapeScene: React.FC<{
     const lodMultiplier = enableLOD ? lodLevel : 0.5;
     const gridSize = Math.max(16, Math.floor(adaptiveGridSize * lodMultiplier));
     
-    console.log('Grid generation:', {
-      baseGridSize,
-      adaptiveGridSize,
-      lodLevel,
-      enableLOD,
-      finalGridSize: gridSize
-    });
+
     
     // Calculate data bounds for proper scaling
     const allBirths = persistenceData.pairs.map(p => p.birth);
@@ -338,13 +328,7 @@ const PersistenceLandscapeScene: React.FC<{
       }
     }
     
-    console.log('Geometry generation complete:', {
-      verticesCount: vertices.length,
-      indicesCount: indices.length,
-      colorsCount: colors.length,
-      wireframeVerticesCount: wireframeVertices.length,
-      wireframeIndicesCount: wireframeIndices.length
-    });
+
     
     return { vertices, indices, colors, wireframeVertices, wireframeIndices };
   }, [persistenceData, colorScheme, dimensionFilter, lodLevel]);
@@ -353,20 +337,13 @@ const PersistenceLandscapeScene: React.FC<{
   const solidGeometry = useMemo(() => {
     const geo = new THREE.BufferGeometry();
     
-    console.log('Creating solid geometry with:', { 
-      verticesLength: vertices.length, 
-      indicesLength: indices.length, 
-      colorsLength: colors.length 
-    });
+
     
     if (vertices.length > 0) {
       geo.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
       geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
       geo.setIndex(indices);
       geo.computeVertexNormals();
-      console.log('Solid geometry created successfully');
-    } else {
-      console.log('No vertices available for solid geometry');
     }
     
     return geo;
@@ -375,17 +352,9 @@ const PersistenceLandscapeScene: React.FC<{
   const wireframeGeometry = useMemo(() => {
     const geo = new THREE.BufferGeometry();
     
-    console.log('Creating wireframe geometry with:', { 
-      wireframeVerticesLength: wireframeVertices.length, 
-      wireframeIndicesLength: wireframeIndices.length 
-    });
-    
     if (wireframeVertices.length > 0) {
       geo.setAttribute('position', new THREE.Float32BufferAttribute(wireframeVertices, 3));
       geo.setIndex(wireframeIndices);
-      console.log('Wireframe geometry created successfully');
-    } else {
-      console.log('No wireframe vertices available');
     }
     
     return geo;
@@ -451,49 +420,22 @@ const PersistenceLandscapeScene: React.FC<{
         </lineSegments>
       )}
       
-      {/* Debug: Show when LOD is disabled */}
-      {!enableLOD && (
-        <mesh position={[0, 2, 0]}>
-          <sphereGeometry args={[0.2, 8, 6]} />
-          <meshBasicMaterial color="#ff0000" />
-        </mesh>
-      )}
-      
-      {/* Debug: Show when Frustum Culling is disabled */}
-      {!enableFrustumCulling && (
-        <mesh position={[2, 0, 0]}>
-          <sphereGeometry args={[0.2, 8, 6]} />
-          <meshBasicMaterial color="#00ff00" />
-        </mesh>
-      )}
+
       
       {/* Density Overlay - Real density data */}
       {showDensityOverlay && (
         <group>
-          {/* Debug: Show points data info */}
-          <mesh position={[0, 2, 0]}>
-            <boxGeometry args={[0.1, 0.1, 0.1]} />
-            <meshBasicMaterial color={points.length > 0 ? "#00ff00" : "#ff0000"} />
-          </mesh>
-          
-          {/* Debug: Show points count */}
-          <mesh position={[0.2, 2, 0]}>
-            <boxGeometry args={[0.05, 0.05, 0.05]} />
-            <meshBasicMaterial color="#0000ff" />
-          </mesh>
+
           
           {points.length > 0 && (
             <>
               {/* Show actual density from points data */}
               {points.map((point, index) => {
-                // Debug: Log point data
-                console.log(`Point ${index}:`, point);
-                
                 if (point.density && point.density > 0) {
-                  // Map point coordinates to 3D space
+                  // Map point coordinates to 3D space - make them more visible
                   const x = (point.x - 0.5) * 4; // Scale from [0,1] to [-2,2]
                   const z = (point.y - 0.5) * 4;
-                  const y = 0.5; // Height above landscape
+                  const y = 1.0; // Higher height above landscape for visibility
                   
                   // Color based on actual density value
                   let densityColor = "#22c55e"; // Green for low density
@@ -501,25 +443,24 @@ const PersistenceLandscapeScene: React.FC<{
                   else if (point.density > 0.3) densityColor = "#f97316"; // Orange for medium
                   else if (point.density > 0.1) densityColor = "#eab308"; // Yellow for low
                   
-                  // Size based on density
-                  const sphereSize = 0.05 + (point.density * 0.1);
+                  // Make spheres much larger and more visible
+                  const sphereSize = 0.15 + (point.density * 0.2); // Increased base size
                   
                   return (
                     <mesh key={`density-${index}`} position={[x, y, z]}>
-                      <sphereGeometry args={[sphereSize, 6, 4]} />
-                      <meshBasicMaterial color={densityColor} transparent opacity={0.8} />
+                      <sphereGeometry args={[sphereSize, 8, 6]} />
+                      <meshBasicMaterial color={densityColor} transparent opacity={0.9} />
                     </mesh>
                   );
                 } else {
-                  // Debug: Show points without density
                   const x = (point.x - 0.5) * 4;
                   const z = (point.y - 0.5) * 4;
-                  const y = 0.3; // Lower height for non-density points
+                  const y = 0.8; // Higher height for non-density points
                   
                   return (
                     <mesh key={`no-density-${index}`} position={[x, y, z]}>
-                      <sphereGeometry args={[0.02, 6, 4]} />
-                      <meshBasicMaterial color="#888888" transparent opacity={0.5} />
+                      <sphereGeometry args={[0.08, 6, 4]} />
+                      <meshBasicMaterial color="#888888" transparent opacity={0.7} />
                     </mesh>
                   );
                 }
@@ -565,7 +506,7 @@ const PersistenceLandscapeScene: React.FC<{
 // Main 3D Component
 const PersistenceLandscape3D: React.FC<PersistenceLandscape3DProps> = ({
   persistenceData,
-  points = [], // Add points parameter with default empty array
+  points = [] as Array<{ x: number; y: number; id: number; density?: number; color?: string; label?: string }>, // Add points parameter with default empty array
   width = 800,
   height = 600,
   showWireframe = true,
@@ -573,13 +514,7 @@ const PersistenceLandscape3D: React.FC<PersistenceLandscape3DProps> = ({
   colorScheme = 'viridis',
   opacity = 0.8
 }) => {
-  // Debug: Log what we're receiving
-  console.log('PersistenceLandscape3D received:', {
-    persistenceData: !!persistenceData,
-    pointsCount: points.length,
-    pointsSample: points.slice(0, 3),
-    firstPoint: points[0]
-  });
+
   const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([3, 2, 3]);
   const [showGrid, setShowGrid] = useState(true);
   const [showAxes, setShowAxes] = useState(true);
@@ -646,24 +581,12 @@ const PersistenceLandscape3D: React.FC<PersistenceLandscape3DProps> = ({
   const setCameraPreset = (preset: keyof typeof cameraPresets) => {
     if (isTransitioning) return;
     
-    console.log('=== CAMERA PRESET CALLED ===');
-    console.log('Preset:', preset);
-    console.log('Current camera position:', cameraPosition);
-    console.log('Camera ref available:', !!cameraRef.current);
-    if (cameraRef.current) {
-      console.log('Current camera ref position:', cameraRef.current.position);
-    }
-    
     setIsTransitioning(true);
     const targetPreset = cameraPresets[preset];
-    
-    console.log('Target preset:', targetPreset);
     
     // Update camera position state - useEffect will handle camera updates
     setCameraPosition(targetPreset.position);
     setCameraTarget(targetPreset.target);
-    
-    console.log('State updated - new position:', targetPreset.position);
     
     // Smooth camera transition
     const startPosition = [...cameraPosition];
@@ -684,24 +607,20 @@ const PersistenceLandscape3D: React.FC<PersistenceLandscape3DProps> = ({
         startPosition[2] + (targetPreset.position[2] - startPosition[2]) * easedProgress
       ];
       
-      console.log('Animation frame:', progress, 'new position:', newPosition);
       setCameraPosition(newPosition);
       
       if (progress < 1) {
         requestAnimationFrame(animateCamera);
       } else {
-        console.log('Animation complete');
         setIsTransitioning(false);
         
         // Force camera update after animation completes
         setTimeout(() => {
           if (cameraRef.current) {
-            console.log('Force updating camera after animation');
             const camera = cameraRef.current;
             camera.position.set(...targetPreset.position);
             camera.lookAt(...targetPreset.target);
             camera.updateMatrixWorld();
-            console.log('Camera force-updated to:', targetPreset.position);
             
             // Also update the state to match the final position
             setCameraPosition(targetPreset.position);
@@ -759,21 +678,22 @@ const PersistenceLandscape3D: React.FC<PersistenceLandscape3DProps> = ({
     cameraPosition: [number, number, number];
     cameraTarget: [number, number, number];
     onCameraUpdate: (camera: THREE.Camera) => void;
-  }> = ({ cameraPosition, cameraTarget, onCameraUpdate }) => {
+    isTransitioning: boolean;
+  }> = ({ cameraPosition, cameraTarget, onCameraUpdate, isTransitioning }) => {
     const { camera } = useThree();
     
     useEffect(() => {
-      console.log('CameraController: Updating camera to position:', cameraPosition);
-      console.log('CameraController: Current camera position:', [camera.position.x, camera.position.y, camera.position.z]);
-      
-      // Update the actual camera that the Canvas is using
-      camera.position.set(...cameraPosition);
-      camera.lookAt(...cameraTarget);
-      camera.updateMatrixWorld();
-      
-      console.log('CameraController: Camera updated successfully');
-      onCameraUpdate(camera);
-    }, [cameraPosition, cameraTarget, camera, onCameraUpdate]);
+      // Only update camera when transitioning (preset changes)
+      // Allow free movement when user is manually controlling
+      if (isTransitioning) {
+        // Update the actual camera that the Canvas is using
+        camera.position.set(...cameraPosition);
+        camera.lookAt(...cameraTarget);
+        camera.updateMatrixWorld();
+        
+        onCameraUpdate(camera);
+      }
+    }, [cameraPosition, cameraTarget, camera, onCameraUpdate, isTransitioning]);
     
     return null; // This component doesn't render anything
   };
@@ -870,7 +790,6 @@ const PersistenceLandscape3D: React.FC<PersistenceLandscape3DProps> = ({
               type="checkbox"
               checked={enableLOD}
               onChange={(e) => {
-                console.log('LOD toggled:', e.target.checked);
                 setEnableLOD(e.target.checked);
               }}
             />
@@ -884,7 +803,6 @@ const PersistenceLandscape3D: React.FC<PersistenceLandscape3DProps> = ({
               type="checkbox"
               checked={enableFrustumCulling}
               onChange={(e) => {
-                console.log('Frustum Culling toggled:', e.target.checked);
                 setEnableFrustumCulling(e.target.checked);
               }}
             />
@@ -966,68 +884,7 @@ const PersistenceLandscape3D: React.FC<PersistenceLandscape3DProps> = ({
           </label>
         </div>
         
-        {/* Debug: Show points info */}
-        <div className="debug-info" style={{ fontSize: '12px', color: '#666', marginTop: '10px', padding: '10px', backgroundColor: '#f0f0f0', borderRadius: '4px' }}>
-          <div><strong>Debug Info:</strong></div>
-          <div>Points: {points.length}</div>
-          <div>With Density: {points.filter(p => p.density && p.density > 0).length}</div>
-          <div>First Point: {points[0] ? `${points[0].x.toFixed(2)}, ${points[0].y.toFixed(2)}` : 'None'}</div>
-          <div>First Density: {points[0]?.density?.toFixed(3) || 'None'}</div>
-          <div>Density Range: {points.length > 0 ? 
-            `${Math.min(...points.filter(p => p.density).map(p => p.density || 0)).toFixed(3)} - ${Math.max(...points.filter(p => p.density).map(p => p.density || 0)).toFixed(3)}` : 
-            'N/A'}</div>
-        </div>
-        
-        {/* Test density calculation */}
-        <div className="control-group">
-          <button
-            onClick={() => {
-              console.log('Current points:', points);
-              console.log('Points with density:', points.filter(p => p.density && p.density > 0));
-              console.log('Sample point:', points[0]);
-            }}
-            className="debug-button"
-            style={{ fontSize: '11px', padding: '5px', backgroundColor: '#ff6b6b', color: 'white', border: 'none', borderRadius: '3px' }}
-            title="Log points data to console"
-          >
-            Debug Points
-          </button>
-          
-          <button
-            onClick={() => {
-              // Test manual density calculation
-              if (points.length > 0) {
-                const testRadius = 0.2; // Larger radius for testing
-                const testPoint = points[0];
-                let neighborCount = 0;
-                
-                points.forEach(otherPoint => {
-                  if (otherPoint.id !== testPoint.id) {
-                    const distance = Math.sqrt(
-                      Math.pow(testPoint.x - otherPoint.x, 2) + 
-                      Math.pow(testPoint.y - otherPoint.y, 2)
-                    );
-                    if (distance < testRadius) {
-                      neighborCount++;
-                    }
-                  }
-                });
-                
-                console.log('Manual density test:', {
-                  testPoint: { x: testPoint.x, y: testPoint.y },
-                  testRadius,
-                  neighborCount,
-                  density: neighborCount / points.length
-                });
-              }
-            }}
-            className="test-density-button"
-            style={{ fontSize: '11px', padding: '5px', backgroundColor: '#4ecdc4', color: 'white', border: 'none', borderRadius: '3px', marginLeft: '5px' }}
-            title="Test density calculation manually"
-          >
-            Test Density
-          </button>
-        </div>
+
         
         <div className="control-group">
           <button
@@ -1039,35 +896,7 @@ const PersistenceLandscape3D: React.FC<PersistenceLandscape3DProps> = ({
           </button>
         </div>
         
-        <div className="control-group">
-          <button
-            onClick={() => {
-              // Create sample landscape overlays for testing
-              const sampleOverlays = [
-                {
-                  id: 'sample1',
-                  data: persistenceData,
-                  colorScheme: 'plasma',
-                  opacity: 0.4,
-                  visible: true
-                },
-                {
-                  id: 'sample2',
-                  data: persistenceData,
-                  colorScheme: 'inferno',
-                  opacity: 0.3,
-                  visible: true
-                }
-              ];
-              setLandscapeOverlays(sampleOverlays);
-              console.log('Created sample landscape overlays:', sampleOverlays);
-            }}
-            className="sample-overlays-button"
-            title="Create sample landscape overlays for testing"
-          >
-            Create Sample Overlays
-          </button>
-        </div>
+
         
         <div className="camera-presets">
           <button 
@@ -1363,10 +1192,10 @@ const PersistenceLandscape3D: React.FC<PersistenceLandscape3DProps> = ({
           cameraTarget={cameraTarget}
           onCameraUpdate={(camera) => {
             if (cameraRef.current !== camera) {
-              console.log('Camera ref updated to:', camera, 'position:', camera.position);
               (cameraRef as any).current = camera;
             }
           }}
+          isTransitioning={isTransitioning}
         />
         
         {/* Lighting */}
@@ -1525,9 +1354,13 @@ const PersistenceLandscape3D: React.FC<PersistenceLandscape3DProps> = ({
           enableKeys={!isTransitioning}
           keyPanSpeed={7.0}
           screenSpacePanning={true}
-          onUpdate={() => {
-            // Camera position updates are handled by OrbitControls automatically
-            // But only when not transitioning
+          onChange={() => {
+            // Sync camera position when user manually moves it
+            if (!isTransitioning && cameraRef.current) {
+              const camera = cameraRef.current;
+              const newPosition: [number, number, number] = [camera.position.x, camera.position.y, camera.position.z];
+              setCameraPosition(newPosition);
+            }
           }}
         />
       </Canvas>

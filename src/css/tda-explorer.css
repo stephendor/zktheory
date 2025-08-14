@@ -26,18 +26,25 @@
 
 .tda-content {
   display: grid !important;
-  grid-template-columns: 60px minmax(800px, 1200px) !important;
-  gap: 0 !important;
+  grid-template-columns: 300px minmax(800px, 1200px) 300px !important;
+  gap: 1.5rem !important;
   align-items: start !important;
   min-height: 600px !important;
   width: 100% !important; /* Force full width */
   max-width: none !important; /* Remove any max-width constraints */
 }
 
+@media (max-width: 1400px) {
+  .tda-content {
+    grid-template-columns: 250px 1fr 250px;
+    gap: 1rem;
+  }
+}
+
 @media (max-width: 1200px) {
   .tda-content {
-    grid-template-columns: 180px 1fr;
-    gap: 1.5rem;
+    grid-template-columns: 200px 1fr 200px;
+    gap: 1rem;
   }
 }
 
@@ -48,7 +55,7 @@
   }
   
   .tda-controls,
-  .tda-info-panel {
+  .tda-right-controls {
     position: static;
     max-height: none;
     overflow-y: visible;
@@ -65,7 +72,7 @@
   }
 }
 
-/* Controls Panel */
+/* Left Controls Panel */
 .tda-controls {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
@@ -75,48 +82,33 @@
   top: 2rem;
   max-height: 90vh;
   overflow-y: auto;
-  width: 60px !important; /* Collapsed width */
-  flex-shrink: 0 !important; /* Prevent shrinking */
-  transition: width 0.3s ease !important;
-  overflow: hidden !important;
+  width: 100%;
+  flex-shrink: 0;
 }
 
-/* Controls Panel - Expanded on hover */
-.tda-controls:hover {
-  width: 300px !important; /* Expanded width */
-  overflow-y: auto !important;
-  z-index: 1000 !important;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+/* Right Controls Panel */
+.tda-right-controls {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  position: sticky;
+  top: 2rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  width: 100%;
+  flex-shrink: 0;
 }
 
-/* Collapsed state styling */
-.tda-controls:not(:hover) .control-section {
-  opacity: 0.3 !important;
+/* Control sections styling */
+.control-section {
+  margin-bottom: 1.5rem;
 }
 
-.tda-controls:not(:hover) .section-content {
-  display: none !important;
-}
-
-/* Show only essential elements when collapsed */
-.tda-controls:not(:hover) .section-header {
-  font-size: 0.8rem !important;
-  text-align: center !important;
-  padding: 0.5rem !important;
-}
-
-/* Hover indicator */
-.tda-controls::before {
-  content: "⚙️" !important;
-  display: block !important;
-  text-align: center !important;
-  font-size: 1.5rem !important;
-  margin-bottom: 1rem !important;
-  opacity: 0.7 !important;
-}
-
-.tda-controls:hover::before {
-  display: none !important;
+.control-section h4 {
+  margin-bottom: 1rem;
+  color: #374151;
+  font-weight: 600;
 }
 
 /* Compact Info Sections */
