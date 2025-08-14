@@ -57,6 +57,32 @@ sage -n jupyter InteractiveCayley.ipynb
 
 See `CAYLEY_GRAPH_README.md` for detailed documentation.
 
+## 🧬 Topological Data Analysis Explorer
+
+A comprehensive interactive tool for exploring topological data analysis concepts with real-time visualization and analysis capabilities.
+
+### Features
+
+- **Advanced Point Cloud Generation**: 8 sophisticated patterns (circles, clusters, torus, Gaussian, spiral, grid, annulus)
+- **Parameter Presets**: Optimized configurations for clustering, topology, density, sparse, and dense data analysis
+- **Performance Monitoring**: Real-time frame rate, memory usage, and computation time tracking
+- **Enhanced Export**: High-DPI screenshots, JSON/CSV exports, persistence results with metadata
+- **Smart Data Handling**: CSV/JSON import/export with validation and progressive loading for large datasets
+- **Interactive Visualizations**: Persistence diagrams, barcodes, and Mapper networks with D3.js
+
+### Usage
+
+- **Web Interface**: Visit `/projects/tda-explorer` for the full interactive tool
+- **Real-time Analysis**: Generate point clouds, compute persistence, and explore topological features
+- **Performance Optimization**: Configurable settings for different device capabilities and dataset sizes
+
+### Technical Implementation
+
+- Built with React + TypeScript and D3.js for visualization
+- WASM-powered computation with JavaScript fallback
+- Performance-optimized with lazy loading and monitoring
+- Responsive design with collapsible UI sections
+
 **⚡ View demo:** [https://content-ops-starter.netlify.app/](https://content-ops-starter.netlify.app/)
 
 ## Table of Contents

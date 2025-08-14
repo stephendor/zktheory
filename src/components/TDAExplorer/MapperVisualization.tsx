@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import * as d3 from 'd3';
 
 interface Point {
@@ -44,6 +44,43 @@ const MapperVisualization: React.FC<MapperVisualizationProps> = ({
   height = 600
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [showEdgeWeights, setShowEdgeWeights] = useState(true);
+  const [showNodeDetails, setShowNodeDetails] = useState(true);
+
+  // Enhanced color scale for better cluster visualization
+  const getClusterColor = useCallback((node: MapperNode) => {
+    // Use a more sophisticated color scheme based on cluster properties
+    const hue = (parseInt(node.id) * 137.5) % 360; // Golden angle for good distribution
+    const saturation = 70 + (node.size % 30); // Vary saturation by size
+    const lightness = 45 + (node.size % 20); // Vary lightness by size
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  }, []);
+
+  // Calculate edge thickness based on weight
+  const getEdgeThickness = useCallback((link: MapperLink) => {
+    const baseThickness = 2;
+    const weightFactor = Math.sqrt(link.weight) * 4;
+    return Math.max(baseThickness, Math.min(weightFactor, 12)); // Cap at 12px
+  }, []);
+
+  // Enhanced tooltip content
+  const getTooltipContent = useCallback((node: MapperNode) => {
+    const avgX = d3.mean(node.points, p => p.x) || 0;
+    const avgY = d3.mean(node.points, p => p.y) || 0;
+    const stdDevX = d3.deviation(node.points, p => p.x) || 0;
+    const stdDevY = d3.deviation(node.points, p => p.y) || 0;
+    
+    return [
+      `Cluster ${node.label}`,
+      `Size: ${node.size} points`,
+      `Position: (${node.x.toFixed(1)}, ${node.y.toFixed(1)})`,
+      `Center: (${avgX.toFixed(2)}, ${avgY.toFixed(2)})`,
+      `Spread: ±${stdDevX.toFixed(2)}, ±${stdDevY.toFixed(2)}`,
+      `Density: ${(node.size / (Math.PI * node.radius * node.radius)).toFixed(2)}`
+    ];
+  }, []);
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -65,26 +102,40 @@ const MapperVisualization: React.FC<MapperVisualizationProps> = ({
       return;
     }
 
+    // Create main group for zoom/pan transformations
+    const mainGroup = svg.append("g")
+      .attr("class", "main-group");
+
     // Add background
-    svg.append("rect")
+    mainGroup.append("rect")
       .attr("width", width)
       .attr("height", height)
       .attr("fill", "#fafafa")
       .attr("stroke", "#e2e8f0")
       .attr("rx", 8);
 
-    // Create force simulation with proper bounds
-    const boundsMargin = 60;
+    // Set up zoom behavior
+    const zoom = d3.zoom<SVGSVGElement, unknown>()
+      .scaleExtent([0.1, 5])
+      .on("zoom", (event) => {
+        mainGroup.attr("transform", event.transform);
+        setZoomLevel(event.transform.k);
+      });
+
+    svg.call(zoom);
+
+    // Create force simulation with enhanced bounds
+    const boundsMargin = 80;
     const simulation = d3.forceSimulation(mapperData.nodes)
       .force("link", d3.forceLink(mapperData.links)
         .id((d: any) => d.id)
-        .distance(80)
-        .strength(0.4))
-      .force("charge", d3.forceManyBody().strength(-300))
+        .distance(100)
+        .strength(0.3))
+      .force("charge", d3.forceManyBody().strength(-400))
       .force("center", d3.forceCenter(width / 2, height / 2))
-      .force("collision", d3.forceCollide().radius((d: any) => d.radius + 10))
-      .force("x", d3.forceX(width / 2).strength(0.1))
-      .force("y", d3.forceY(height / 2).strength(0.1))
+      .force("collision", d3.forceCollide().radius((d: any) => d.radius + 15))
+      .force("x", d3.forceX(width / 2).strength(0.05))
+      .force("y", d3.forceY(height / 2).strength(0.05))
       .force("bounds", () => {
         mapperData.nodes.forEach(node => {
           node.x = Math.max(boundsMargin + node.radius, Math.min(width - boundsMargin - node.radius, node.x || width / 2));
@@ -92,19 +143,35 @@ const MapperVisualization: React.FC<MapperVisualizationProps> = ({
         });
       });
 
-    // Add links
-    const link = svg.append("g")
+    // Add links with enhanced visualization
+    const link = mainGroup.append("g")
       .attr("class", "links")
       .selectAll("line")
       .data(mapperData.links)
       .enter()
       .append("line")
       .attr("stroke", "#94a3b8")
-      .attr("stroke-opacity", 0.6)
-      .attr("stroke-width", (d: MapperLink) => Math.sqrt(d.weight) * 3);
+      .attr("stroke-opacity", 0.7)
+      .attr("stroke-width", (d: MapperLink) => getEdgeThickness(d))
+      .attr("stroke-linecap", "round");
 
-    // Add nodes
-    const node = svg.append("g")
+    // Add edge weight labels if enabled
+    if (showEdgeWeights) {
+      mainGroup.append("g")
+        .attr("class", "edge-labels")
+        .selectAll("text")
+        .data(mapperData.links)
+        .enter()
+        .append("text")
+        .attr("class", "edge-label")
+        .style("font-size", "10px")
+        .style("fill", "#64748b")
+        .style("pointer-events", "none")
+        .text((d: MapperLink) => d.weight.toFixed(2));
+    }
+
+    // Add nodes with enhanced interactivity
+    const node = mainGroup.append("g")
       .attr("class", "nodes")
       .selectAll("g")
       .data(mapperData.nodes)
@@ -113,52 +180,48 @@ const MapperVisualization: React.FC<MapperVisualizationProps> = ({
       .attr("class", "node")
       .style("cursor", "pointer");
 
-    // Add node circles
+    // Add node circles with enhanced styling
     node.append("circle")
       .attr("r", (d: MapperNode) => d.radius)
-      .attr("fill", (d: MapperNode) => d.color)
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 2)
+      .attr("fill", (d: MapperNode) => getClusterColor(d))
+      .attr("stroke", (d: MapperNode) => selectedNode === d.id ? "#1f2937" : "#fff")
+      .attr("stroke-width", (d: MapperNode) => selectedNode === d.id ? 4 : 2)
+      .attr("opacity", (d: MapperNode) => selectedNode === null || selectedNode === d.id ? 1 : 0.8)
       .on("mouseover", function(event, d) {
-        // Highlight node
-        d3.select(this)
-          .attr("stroke", "#1f2937")
-          .attr("stroke-width", 3);
+        if (selectedNode !== d.id) {
+          d3.select(this)
+            .attr("stroke", "#3b82f6")
+            .attr("stroke-width", 3)
+            .attr("opacity", 1);
+        }
 
-        // Show tooltip
-        const tooltip = svg.append("g")
+        // Enhanced tooltip
+        const tooltip = mainGroup.append("g")
           .attr("class", "tooltip")
-          .attr("transform", `translate(${d.x + d.radius + 10}, ${d.y - 20})`);
+          .attr("transform", `translate(${d.x + d.radius + 15}, ${d.y - 25})`);
 
         const tooltipRect = tooltip.append("rect")
-          .attr("fill", "rgba(0,0,0,0.8)")
-          .attr("rx", 4)
-          .attr("ry", 4);
+          .attr("fill", "rgba(0,0,0,0.9)")
+          .attr("rx", 6)
+          .attr("ry", 6);
 
-        const tooltipText = tooltip.append("text")
-          .attr("fill", "white")
-          .attr("font-size", "12px")
-          .attr("x", 8)
-          .attr("y", 16);
-
-        tooltipText.append("tspan")
-          .attr("x", 8)
-          .attr("dy", 0)
-          .text(`Cluster ${d.label}`);
-
-        tooltipText.append("tspan")
-          .attr("x", 8)
-          .attr("dy", 14)
-          .text(`Size: ${d.size} points`);
-
-        tooltipText.append("tspan")
-          .attr("x", 8)
-          .attr("dy", 14)
-          .text(`Position: (${d.x.toFixed(1)}, ${d.y.toFixed(1)})`);
+        const tooltipText = tooltip.append("g");
+        const tooltipContent = getTooltipContent(d);
+        
+        tooltipContent.forEach((text, i) => {
+          tooltipText.append("text")
+            .attr("fill", "white")
+            .attr("font-size", "11px")
+            .attr("x", 8)
+            .attr("y", 16 + i * 14)
+            .text(text);
+        });
 
         const bbox = tooltipText.node()?.getBBox();
         if (bbox) {
           tooltipRect
+            .attr("x", bbox.x - 8)
+            .attr("y", bbox.y - 4)
             .attr("width", bbox.width + 16)
             .attr("height", bbox.height + 8);
         }
@@ -167,31 +230,66 @@ const MapperVisualization: React.FC<MapperVisualizationProps> = ({
         link.attr("stroke", (l: MapperLink) => 
           l.source === d.id || l.target === d.id ? "#ef4444" : "#94a3b8")
           .attr("stroke-width", (l: MapperLink) => 
-            l.source === d.id || l.target === d.id ? Math.sqrt(l.weight) * 5 : Math.sqrt(l.weight) * 3);
+            l.source === d.id || l.target === d.id ? getEdgeThickness(l) + 2 : getEdgeThickness(l))
+          .attr("stroke-opacity", (l: MapperLink) => 
+            l.source === d.id || l.target === d.id ? 1 : 0.7);
       })
-      .on("mouseout", function() {
-        d3.select(this)
-          .attr("stroke", "#fff")
-          .attr("stroke-width", 2);
+      .on("mouseout", function(event, d) {
+        if (selectedNode !== d.id) {
+          d3.select(this)
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 2)
+            .attr("opacity", 0.8);
+        }
 
-        svg.select(".tooltip").remove();
+        mainGroup.select(".tooltip").remove();
 
         // Reset link highlighting
         link.attr("stroke", "#94a3b8")
-          .attr("stroke-width", (d: MapperLink) => Math.sqrt(d.weight) * 3);
+          .attr("stroke-width", (d: MapperLink) => getEdgeThickness(d))
+          .attr("stroke-opacity", 0.7);
+      })
+      .on("click", function(event, d) {
+        // Toggle node selection
+        if (selectedNode === d.id) {
+          setSelectedNode(null);
+          d3.select(this)
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 2)
+            .attr("opacity", 0.8);
+        } else {
+          setSelectedNode(d.id);
+          d3.select(this)
+            .attr("stroke", "#1f2937")
+            .attr("stroke-width", 4)
+            .attr("opacity", 1);
+        }
       });
 
-    // Add node labels
-    node.append("text")
-      .attr("text-anchor", "middle")
-      .attr("dy", "0.35em")
-      .style("font-size", "12px")
-      .style("font-weight", "bold")
-      .style("fill", "#fff")
-      .style("pointer-events", "none")
-      .text((d: MapperNode) => d.label);
+    // Add node labels with enhanced visibility
+    if (showNodeDetails) {
+      node.append("text")
+        .attr("text-anchor", "middle")
+        .attr("dy", "0.35em")
+        .style("font-size", "11px")
+        .style("font-weight", "bold")
+        .style("fill", "#fff")
+        .style("pointer-events", "none")
+        .style("text-shadow", "1px 1px 2px rgba(0,0,0,0.8)")
+        .text((d: MapperNode) => d.label);
 
-    // Add drag behavior
+      // Add point count labels
+      node.append("text")
+        .attr("text-anchor", "middle")
+        .attr("dy", "1.2em")
+        .style("font-size", "9px")
+        .style("fill", "#fff")
+        .style("pointer-events", "none")
+        .style("text-shadow", "1px 1px 2px rgba(0,0,0,0.8)")
+        .text((d: MapperNode) => `${d.size}`);
+    }
+
+    // Enhanced drag behavior
     const drag = d3.drag<SVGGElement, MapperNode>()
       .on("start", (event, d) => {
         if (!event.active) simulation.alphaTarget(0.3).restart();
@@ -218,12 +316,19 @@ const MapperVisualization: React.FC<MapperVisualizationProps> = ({
         .attr("x2", (d: any) => d.target.x)
         .attr("y2", (d: any) => d.target.y);
 
+      // Update edge labels if enabled
+      if (showEdgeWeights) {
+        mainGroup.selectAll(".edge-label")
+          .attr("x", (d: any) => (d.source.x + d.target.x) / 2)
+          .attr("y", (d: any) => (d.source.y + d.target.y) / 2);
+      }
+
       node
         .attr("transform", (d: MapperNode) => `translate(${d.x},${d.y})`);
     });
 
-    // Add title
-    svg.append("text")
+    // Enhanced title with zoom level
+    mainGroup.append("text")
       .attr("x", width / 2)
       .attr("y", 25)
       .attr("text-anchor", "middle")
@@ -232,26 +337,26 @@ const MapperVisualization: React.FC<MapperVisualizationProps> = ({
       .style("fill", "#1f2937")
       .text("Mapper Network Visualization");
 
-    // Add instructions
-    svg.append("text")
+    // Enhanced instructions
+    mainGroup.append("text")
       .attr("x", width / 2)
       .attr("y", height - 10)
       .attr("text-anchor", "middle")
       .style("font-size", "12px")
       .style("fill", "#64748b")
-      .text("Drag nodes to explore • Hover for details • Node size reflects cluster size");
+      .text("Drag to move • Scroll to zoom • Click to select • Hover for details");
 
-    // Add network statistics
-    const stats = svg.append("g")
+    // Enhanced network statistics
+    const stats = mainGroup.append("g")
       .attr("class", "stats")
       .attr("transform", `translate(${margin}, ${margin})`);
 
     stats.append("rect")
-      .attr("width", 200)
-      .attr("height", 80)
-      .attr("fill", "rgba(255,255,255,0.9)")
+      .attr("width", 220)
+      .attr("height", 100)
+      .attr("fill", "rgba(255,255,255,0.95)")
       .attr("stroke", "#e2e8f0")
-      .attr("rx", 4);
+      .attr("rx", 6);
 
     stats.append("text")
       .attr("x", 10)
@@ -286,15 +391,129 @@ const MapperVisualization: React.FC<MapperVisualizationProps> = ({
       .style("fill", "#374151")
       .text(`Avg Degree: ${avgDegree}`);
 
+    const totalPoints = mapperData.nodes.reduce((sum, node) => sum + node.size, 0);
+    stats.append("text")
+      .attr("x", 10)
+      .attr("y", 85)
+      .style("font-size", "12px")
+      .style("fill", "#374151")
+      .text(`Total Points: ${totalPoints}`);
+
+    // Add zoom controls
+    const zoomControls = mainGroup.append("g")
+      .attr("class", "zoom-controls")
+      .attr("transform", `translate(${width - 80}, ${margin})`);
+
+    // Zoom in button
+    zoomControls.append("circle")
+      .attr("r", 15)
+      .attr("fill", "rgba(255,255,255,0.9)")
+      .attr("stroke", "#e2e8f0")
+      .attr("stroke-width", 1)
+      .style("cursor", "pointer")
+      .on("click", () => {
+        svg.transition().call(zoom.scaleBy, 1.5);
+      });
+
+    zoomControls.append("text")
+      .attr("text-anchor", "middle")
+      .attr("dy", "0.35em")
+      .style("font-size", "16px")
+      .style("font-weight", "bold")
+      .style("fill", "#374151")
+      .style("pointer-events", "none")
+      .text("+");
+
+    // Zoom out button
+    zoomControls.append("circle")
+      .attr("r", 15)
+      .attr("transform", "translate(0, 35)")
+      .attr("fill", "rgba(255,255,255,0.9)")
+      .attr("stroke", "#e2e8f0")
+      .attr("stroke-width", 1)
+      .style("cursor", "pointer")
+      .on("click", () => {
+        svg.transition().call(zoom.scaleBy, 0.67);
+      });
+
+    zoomControls.append("text")
+      .attr("text-anchor", "middle")
+      .attr("dy", "0.35em")
+      .attr("transform", "translate(0, 35)")
+      .style("font-size", "16px")
+      .style("font-weight", "bold")
+      .style("fill", "#374151")
+      .style("pointer-events", "none")
+      .text("−");
+
+    // Reset zoom button
+    zoomControls.append("circle")
+      .attr("r", 15)
+      .attr("transform", "translate(0, 70)")
+      .attr("fill", "rgba(255,255,255,0.9)")
+      .attr("stroke", "#e2e8f0")
+      .attr("stroke-width", 1)
+      .style("cursor", "pointer")
+      .on("click", () => {
+        svg.transition().call(zoom.transform, d3.zoomIdentity);
+      });
+
+    zoomControls.append("text")
+      .attr("text-anchor", "middle")
+      .attr("dy", "0.35em")
+      .attr("transform", "translate(0, 70)")
+      .style("font-size", "12px")
+      .style("font-weight", "bold")
+      .style("fill", "#374151")
+      .style("pointer-events", "none")
+      .text("⌂");
+
     // Cleanup
     return () => {
       simulation.stop();
     };
 
-  }, [mapperData, width, height]);
+  }, [mapperData, width, height, selectedNode, showEdgeWeights, showNodeDetails, getClusterColor, getEdgeThickness, getTooltipContent]);
 
   return (
     <div className="mapper-visualization-container">
+      {/* Enhanced Control Panel */}
+      <div className="mapper-controls">
+        <div className="control-group">
+          <label>
+            <input
+              type="checkbox"
+              checked={showEdgeWeights}
+              onChange={(e) => setShowEdgeWeights(e.target.checked)}
+            />
+            Show Edge Weights
+          </label>
+        </div>
+        
+        <div className="control-group">
+          <label>
+            <input
+              type="checkbox"
+              checked={showNodeDetails}
+              onChange={(e) => setShowNodeDetails(e.target.checked)}
+            />
+            Show Node Details
+          </label>
+        </div>
+        
+        {selectedNode && (
+          <div className="selection-info">
+            <span>Selected: {selectedNode}</span>
+            <button 
+              onClick={() => setSelectedNode(null)}
+              className="clear-selection-btn"
+            >
+              Clear
+            </button>
+          </div>
+        )}
+      </div>
+
       <svg 
         ref={svgRef} 
         width={width} 

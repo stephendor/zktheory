@@ -6,6 +6,9 @@
 import { StandardLayoutGenerator } from './StandardLayouts';
 import { AdvancedLayoutEngine } from './AdvancedLayoutEngine';
 
+// Export elliptic curve types and functions
+export * from './EllipticCurveGroups';
+
 export interface GroupElement {
   id: string;
   label: string;
@@ -175,26 +178,91 @@ export class Permutation {
 }
 
 /**
- * Group Theory Library with database integration
+ * Group Theory Library with database integration and elliptic curve support
  */
 import { GroupDatabase } from './GroupDatabase';
+import { 
+  EllipticCurveGroupGenerator, 
+  EllipticCurveGroup,
+  EllipticCurve 
+} from './EllipticCurveGroups';
 
 export class GroupTheoryLibrary {
+  private static ellipticCurveGroups: Map<string, Group> = new Map();
+
   static getGroup(name: string): Group | undefined {
+    // Check if it's an elliptic curve group
+    if (name.startsWith('EC_')) {
+      return this.ellipticCurveGroups.get(name);
+    }
     return GroupDatabase.getGroup(name);
   }
 
   static getAllGroups(): Group[] {
-    return GroupDatabase.getAllGroups();
+    const standardGroups = GroupDatabase.getAllGroups();
+    const ecGroups = Array.from(this.ellipticCurveGroups.values());
+    return [...standardGroups, ...ecGroups];
   }
 
   static getGroupsByOrder(order: number): Group[] {
-    return GroupDatabase.getGroupsByOrder(order);
+    const standardGroups = GroupDatabase.getGroupsByOrder(order);
+    const ecGroups = Array.from(this.ellipticCurveGroups.values())
+      .filter(group => group.order === order);
+    return [...standardGroups, ...ecGroups];
   }
 
   static getGroupNames(): string[] {
-    return GroupDatabase.getGroupNames();
+    const standardNames = GroupDatabase.getGroupNames();
+    const ecNames = Array.from(this.ellipticCurveGroups.keys());
+    return [...standardNames, ...ecNames];
   }
+
+  /**
+   * Initialize elliptic curve groups
+   */
+  static initializeEllipticCurveGroups(): void {
+    try {
+      const curves = EllipticCurveGroupGenerator.getPredefinedCurves();
+      
+      curves.forEach(curve => {
+        try {
+          const ecGroup = EllipticCurveGroupGenerator.createEllipticCurveGroup(curve);
+          const standardGroup = EllipticCurveGroupGenerator.toStandardGroup(ecGroup);
+          this.ellipticCurveGroups.set(standardGroup.name, standardGroup);
+          console.log(`✓ Successfully initialized elliptic curve group: ${standardGroup.name}`);
+        } catch (error) {
+          console.warn(`⚠️ Failed to initialize elliptic curve ${curve.name}:`, error);
+          // Continue with other curves even if one fails
+        }
+      });
+    } catch (error) {
+      console.error('❌ Failed to initialize elliptic curve groups:', error);
+      // Don't let elliptic curve failures break the entire system
+    }
+  }
+
+  /**
+   * Get all available elliptic curves
+   */
+  static getEllipticCurves(): EllipticCurve[] {
+    return EllipticCurveGroupGenerator.getPredefinedCurves();
+  }
+
+  /**
+   * Get elliptic curve group by curve parameters
+   */
+  static getEllipticCurveGroup(a: number, b: number, p: number): Group | undefined {
+    const curveName = `E_${p}_${a}_${b}`;
+    return this.ellipticCurveGroups.get(`EC_${curveName}`);
+  }
+}
+
+// Initialize elliptic curve groups on module load (with error handling)
+try {
+  GroupTheoryLibrary.initializeEllipticCurveGroups();
+} catch (error) {
+  console.error('❌ Failed to initialize elliptic curve system:', error);
+  console.log('📋 Continuing with standard groups only');
 }
 
 /**

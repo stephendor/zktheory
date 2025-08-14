@@ -1,0 +1,49 @@
+# Task ID: 1
+# Title: Upgrade to Next.js 14 App Router Architecture
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Migrate the existing Next.js 13 Pages Router to Next.js 14 App Router for improved performance and modern routing patterns
+# Details:
+Convert the existing pages/_app.js and [[...slug]].js structure to the new app directory structure. Update routing patterns, middleware, and layout components. Ensure TypeScript strict mode compatibility and maintain existing functionality for mathematical components. Migrate static props resolvers to the new data fetching patterns.
+
+# Test Strategy:
+Verify all existing routes work correctly, test mathematical component rendering, validate SEO metadata, and ensure build process completes successfully
+
+# Subtasks:
+## 1. Convert pages/_app.js to app/layout.tsx [done]
+### Dependencies: None
+### Description: Transform the global application wrapper from Pages Router to App Router layout system
+### Details:
+Create app/layout.tsx with TypeScript support, migrate global styles and providers from _app.js, implement proper metadata API configuration, and ensure all global components and context providers are properly integrated into the new layout structure.
+
+## 2. Migrate [[...slug]].js to app/[...slug]/page.tsx [done]
+### Dependencies: 1.1
+### Description: Convert the catch-all dynamic route from Pages Router to App Router structure
+### Details:
+Create the new app/[...slug]/page.tsx file with proper TypeScript types, migrate the existing route handling logic, ensure parameter parsing works correctly, and maintain backward compatibility for all existing URL patterns.
+
+## 3. Update static props resolvers to generateStaticParams [done]
+### Dependencies: 1.2
+### Description: Convert getStaticProps and getStaticPaths to App Router data fetching patterns
+### Details:
+Replace getStaticProps with server components and fetch calls, convert getStaticPaths to generateStaticParams function, update ISR configuration for the new system, and ensure proper caching behavior is maintained.
+
+## 4. Enable TypeScript strict mode compatibility [done]
+### Dependencies: 1.3
+### Description: Update codebase to work with TypeScript strict mode and resolve type errors
+### Details:
+Enable strict mode in tsconfig.json, fix all type errors related to null/undefined checks, add proper type annotations for mathematical components, resolve any/unknown type usage, and ensure full type safety across the application.
+
+## 5. Update middleware and routing patterns [done]
+### Dependencies: 1.4
+### Description: Migrate middleware configuration and implement App Router routing patterns
+### Details:
+Update middleware.ts for App Router compatibility, implement new routing patterns for mathematical tools, ensure proper request/response handling, and maintain existing functionality for authentication and redirects.
+
+## 6. Test mathematical component rendering compatibility [done]
+### Dependencies: 1.5
+### Description: Verify all mathematical components work correctly in the new App Router system
+### Details:
+Test rendering of all mathematical components including Cayley graphs and TDA visualizations, verify MathJax/LaTeX rendering works properly, ensure WASM integration remains functional, validate performance metrics, and confirm SEO metadata is preserved.
+

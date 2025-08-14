@@ -5,6 +5,9 @@ interface Point {
   x: number;
   y: number;
   id: number;
+  density?: number;
+  color?: string;
+  label?: string;
 }
 
 interface PointCloudCanvasProps {
@@ -96,7 +99,7 @@ const PointCloudCanvas: React.FC<PointCloudCanvasProps> = ({
       .attr("stroke-width", 1.5)
       .attr("opacity", 0.6);
 
-    // Draw points
+    // Draw points with enhanced properties
     svg.selectAll(".point")
       .data(points)
       .enter()
@@ -105,8 +108,8 @@ const PointCloudCanvas: React.FC<PointCloudCanvasProps> = ({
       .attr("cx", d => xScale(d.x))
       .attr("cy", d => yScale(d.y))
       .attr("r", 6)
-      .attr("fill", "#3b82f6")
-      .attr("stroke", "#1e40af")
+      .attr("fill", d => d.color || "#3b82f6")
+      .attr("stroke", d => d.color ? d3.color(d.color)?.darker(0.3)?.toString() || "#1e40af" : "#1e40af")
       .attr("stroke-width", 2)
       .style("cursor", "pointer")
       .on("click", (event, d) => {
@@ -116,11 +119,40 @@ const PointCloudCanvas: React.FC<PointCloudCanvasProps> = ({
           onPointsChange(points.filter(p => p.id !== d.id));
         }
       })
-      .on("mouseover", function() {
-        d3.select(this).attr("r", 8).attr("fill", "#2563eb");
+      .on("mouseover", function(event, d) {
+        d3.select(this).attr("r", 8);
+        
+        // Show tooltip
+        const tooltip = d3.select("body").append("div")
+          .attr("class", "point-tooltip")
+          .style("position", "absolute")
+          .style("background", "rgba(0, 0, 0, 0.8)")
+          .style("color", "white")
+          .style("padding", "8px 12px")
+          .style("border-radius", "6px")
+          .style("font-size", "12px")
+          .style("pointer-events", "none")
+          .style("z-index", "1000");
+        
+        const tooltipContent = [
+          `Point ${d.id}`,
+          `Position: (${d.x.toFixed(3)}, ${d.y.toFixed(3)})`,
+          ...(d.density !== undefined ? [`Density: ${d.density.toFixed(3)}`] : []),
+          ...(d.label ? [d.label] : [])
+        ].join('<br/>');
+        
+        tooltip.html(tooltipContent);
+        
+        // Position tooltip near mouse
+        const [mouseX, mouseY] = d3.pointer(event);
+        tooltip
+          .style("left", (event.pageX + 10) + "px")
+          .style("top", (event.pageY - 10) + "px");
       })
       .on("mouseout", function() {
-        d3.select(this).attr("r", 6).attr("fill", "#3b82f6");
+        d3.select(this).attr("r", 6);
+        // Remove tooltip
+        d3.selectAll(".point-tooltip").remove();
       });
 
     // Add axes

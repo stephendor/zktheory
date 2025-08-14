@@ -7,13 +7,17 @@ import NavigationProvider from '../components/providers/NavigationProvider';
 export const metadata: Metadata = {
   title: 'ZKTheory',
   description: 'Mathematics, cryptography, and visualization tools',
-  viewport: 'width=device-width, initial-scale=1',
   icons: {
     icon: '/images/favicon.svg',
   },
   other: {
     'algolia-site-verification': '9E3353543245A860',
   },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
