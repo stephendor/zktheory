@@ -16,11 +16,11 @@ import {
   MathButton,
   MathWorkspace,
   MathVisualization,
-} from '../src/components/mathematical';
+} from '../../components/mathematical';
 
 // Mock mathematical validation
-vi.mock('../src/components/mathematical/MathInput', async () => {
-  const actual = await vi.importActual('../src/components/mathematical/MathInput');
+vi.mock('../../components/mathematical/MathInput', async () => {
+  const actual = await vi.importActual('../../components/mathematical/MathInput');
   return {
     ...actual,
     validateMathExpression: vi.fn().mockReturnValue({ isValid: true, parsedValue: 42 }),
@@ -410,7 +410,7 @@ describe('Mathematical Visual Regression', () => {
       <div data-testid="styling-test">
         <MathInput semantic="variable" className="test-variable" />
         <MathInput semantic="constant" className="test-constant" />
-        <MathDisplay variant="theorem" className="test-theorem" />
+        <MathDisplay variant="theorem" className="test-theorem">Test theorem</MathDisplay>
       </div>
     );
     

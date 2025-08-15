@@ -128,6 +128,36 @@ sections:
               - pr-8
             borderRadius: x-large
             flexDirection: col
+      - type: FeaturedItem
+        title: Mathematical Bridges
+        tagline: Advanced Visualization
+        subtitle: Elliptic Curves ↔ Algebra ↔ Topology
+        text: |
+          Explore profound connections between mathematical domains through interactive animated transformations. See how elliptic curves, abstract algebra, and topology interconnect through research-grade visualizations.
+        image:
+          type: ImageBlock
+          url: /images/abstract-feature-bridges.svg
+          altText: Mathematical Bridge Transformations
+          styles:
+            self:
+              borderRadius: x-large
+        actions:
+          - type: Button
+            label: Launch Explorer
+            url: /projects/bridge-transformations
+            icon: play
+            iconPosition: right
+            style: secondary
+        colors: bg-light-fg-dark
+        styles:
+          self:
+            padding:
+              - pt-8
+              - pl-8
+              - pb-8
+              - pr-8
+            borderRadius: x-large
+            flexDirection: col
     variant: two-col-grid
     colors: bg-neutral-fg-dark
     styles:

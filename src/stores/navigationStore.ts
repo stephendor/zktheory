@@ -88,6 +88,18 @@ const defaultNavigationItems: NavigationItem[] = [
     estimatedReadTime: 10
   },
   {
+    id: 'bridge-transformations',
+    title: 'Mathematical Bridge Transformations',
+    path: '/projects/bridge-transformations',
+    type: 'tool',
+    category: 'Advanced Mathematics',
+    tags: ['elliptic-curves', 'abstract-algebra', 'topology', 'visualization', 'morphisms', 'interactive'],
+    relatedConcepts: ['elliptic-curves', 'group-theory', 'topology', 'differential-geometry', 'algebraic-geometry'],
+    description: 'Interactive animated transformations between elliptic curves, abstract algebra, and topology',
+    difficulty: 'advanced',
+    estimatedReadTime: 15
+  },
+  {
     id: 'tda-explorer',
     title: 'TDA Explorer',
     path: '/projects/tda-explorer',

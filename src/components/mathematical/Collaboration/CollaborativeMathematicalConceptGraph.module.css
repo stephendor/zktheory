@@ -1,0 +1,415 @@
+/* CollaborativeMathematicalConceptGraph.module.css */
+/* Styles for the Collaborative Mathematical Concept Graph component */
+
+.collaborativeConceptGraph {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f8f9fa;
+  font-family: 'Inter', sans-serif;
+}
+
+.collaborationStatus {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e9ecef;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.connectionStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.statusIndicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.statusIndicator.connected {
+  background-color: #28a745;
+}
+
+.statusIndicator.disconnected {
+  background-color: #dc3545;
+}
+
+.syncStatus {
+  font-size: 12px;
+  color: #6c757d;
+  font-weight: 400;
+}
+
+.participants {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.participant {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background-color: #f8f9fa;
+  border-radius: 16px;
+}
+
+.participantIndicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--participant-color, #3b82f6);
+}
+
+.participantName {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.youLabel {
+  font-size: 10px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.controlsPanel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e9ecef;
+  align-items: center;
+}
+
+.controlGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.controlGroup label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  margin-right: 8px;
+}
+
+.searchInput {
+  padding: 6px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 200px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #495057;
+  cursor: pointer;
+  margin-right: 12px;
+}
+
+.checkboxLabel input[type="checkbox"] {
+  margin: 0;
+}
+
+.difficultySelect {
+  padding: 6px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.difficultySelect:focus {
+  outline: none;
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.visualizationContainer {
+  flex: 1;
+  position: relative;
+  display: flex;
+  overflow: hidden;
+}
+
+.conceptGraphSvg {
+  flex: 1;
+  background-color: #ffffff;
+  cursor: grab;
+}
+
+.conceptGraphSvg:active {
+  cursor: grabbing;
+}
+
+.collaboratorCursor {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1000;
+  transform: translate(-2px, -2px);
+  color: var(--cursor-color, #3b82f6);
+}
+
+.collaboratorCursor::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 12px solid var(--cursor-color, #3b82f6);
+  transform: rotate(-45deg);
+}
+
+.cursorLabel {
+  position: absolute;
+  top: 16px;
+  left: 8px;
+  font-size: 10px;
+  color: var(--cursor-color, #3b82f6);
+  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+
+.infoPanel {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 240px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+}
+
+.networkStats {
+  margin-bottom: 16px;
+}
+
+.networkStats h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #495057;
+}
+
+.networkStats div {
+  font-size: 12px;
+  color: #6c757d;
+  margin: 4px 0;
+}
+
+.legend {
+  border-top: 1px solid #dee2e6;
+  padding-top: 16px;
+}
+
+.legend h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #495057;
+}
+
+.legend div {
+  font-size: 12px;
+  color: #495057;
+}
+
+.legendItem {
+  margin-bottom: 4px;
+}
+
+.collaborativeNote {
+  margin-top: 8px;
+  font-size: 10px;
+  color: #666;
+}
+
+/* D3.js SVG element styles */
+:global(.concept-node) {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+:global(.concept-node:hover) {
+  stroke: #000;
+  stroke-width: 2px;
+}
+
+:global(.concept-link) {
+  transition: all 0.3s ease;
+}
+
+:global(.concept-label) {
+  pointer-events: none;
+  font-family: 'Inter', sans-serif;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .collaborationStatus {
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .controlsPanel {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .controlGroup {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .infoPanel {
+    position: relative;
+    width: 100%;
+    margin: 16px 0;
+    top: auto;
+    right: auto;
+  }
+
+  .visualizationContainer {
+    flex-direction: column;
+  }
+}
+
+/* Animation classes */
+.fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slideIn {
+  animation: slideIn 0.3s ease-in-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Focus and accessibility */
+.searchInput:focus,
+.difficultySelect:focus,
+.checkboxLabel input:focus {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .collaborativeConceptGraph {
+    background-color: #ffffff;
+  }
+  
+  .collaborationStatus {
+    border-bottom: 2px solid #000000;
+  }
+  
+  .statusIndicator.connected {
+    background-color: #008000;
+  }
+  
+  .statusIndicator.disconnected {
+    background-color: #800000;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .graph,
+  .cursor,
+  .floatingActions {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* Additional utility classes for inline style replacement */
+.colorCodeSection {
+  margin-bottom: 4px;
+}
+
+.colorCodeFooter {
+  margin-top: 8px;
+  font-size: 10px;
+  color: #666;
+}
+
+.cursorPositionBox {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1000;
+  transform: translate(-50%, -100%);
+  margin-top: -8px;
+}
+
+.participantColorBox {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  margin-right: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}

@@ -50,3 +50,85 @@ export type {
   PerformanceMetrics 
 } from './MathVisualization';
 
+// ==========================================
+// Geometric Pattern Library
+// ==========================================
+
+// Core Geometric Pattern Components
+export {
+  PenroseBackground,
+  VoronoiDivider,
+  HexGrid,
+  AlgebraicCurve
+} from '../geometric-patterns';
+
+// Pattern Generators and Utilities
+export {
+  PenroseTilingGenerator,
+  VoronoiGenerator,
+  HexGridGenerator,
+  AlgebraicCurveGenerator,
+  PatternUtils,
+  GeometricPatternUtils,
+  PHI,
+  GEOMETRIC_PATTERN_CONSTANTS
+} from '../geometric-patterns';
+
+// Pattern Hooks
+export {
+  usePatternAnimation,
+  usePatternSequence,
+  useSpiralAnimation,
+  useCurveMorphing,
+  useComplexityLevel,
+  useAdaptiveComplexity
+} from '../geometric-patterns';
+
+// Pattern Types
+export type {
+  // Base Pattern Types
+  BasePatternProps,
+  PatternDimensions,
+  PatternAnimationConfig,
+  PatternPerformanceMetrics,
+  PatternExportOptions,
+  
+  // Pattern-Specific Props
+  PenrosePatternProps,
+  VoronoiPatternProps,
+  HexGridPatternProps,
+  AlgebraicCurveProps,
+  
+  // Mathematical Types
+  PenroseTile,
+  VoronoiCell,
+  HexagonTile,
+  CurveParameters,
+  
+  // Enums and Configuration
+  ComplexityLevel,
+  AudienceType,
+  PerformanceLevel,
+  CurveType,
+  PatternColorScheme,
+  AudienceColorSchemes,
+  
+  // Animation and Interaction
+  AnimationSequence,
+  PatternInteractionState,
+  UsePatternAnimationReturn,
+  UseComplexityLevelReturn,
+  
+  // Utility Types
+  Point2D,
+  Point3D,
+  BoundingBox,
+  PatternBounds
+} from '../geometric-patterns';
+
+// ==========================================
+// Examples and Showcases
+// ==========================================
+
+export { default as GeometricPatternShowcase } from '../geometric-patterns/examples/GeometricPatternShowcase';
+

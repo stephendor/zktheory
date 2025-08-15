@@ -12,6 +12,8 @@ import { Action, Badge } from '../../atoms';
 // Import the Enhanced Cayley Graph component and Notebook Embed
 import EnhancedCayleyGraphExplorer from '../../EnhancedCayleyGraphExplorer';
 import { StaticNotebookViewer } from '../../NotebookEmbed';
+import { UnifiedBridgeOrchestrator } from '../../mathematical/BridgeTransformations';
+import { ConceptMappingExample } from '../../mathematical/ConceptMapping';
 
 export default function GenericSection(props) {
     const { elementId, colors, backgroundImage, badge, title, subtitle, text, actions = [], media, styles = {}, enableAnnotations } = props;
@@ -24,6 +26,8 @@ export default function GenericSection(props) {
     // Check if this is the Cayley graph tool section or notebook viewer
     const isCayleyGraphSection = elementId === 'cayley-graph-tool';
     const isNotebookSection = elementId === 'notebook-viewer';
+    const isBridgeTransformationsSection = elementId === 'bridge-transformations';
+    const isConceptMappingSection = elementId === 'concept-mapping';
 
     return (
         <Section
@@ -50,8 +54,8 @@ export default function GenericSection(props) {
                 {hasTextContent && (
                     <div
                         className={classNames('w-full', 'max-w-sectionBody', {
-                            'lg:max-w-[27.5rem]': hasMedia && hasXDirection && !isCayleyGraphSection && !isNotebookSection,
-                            'max-w-none': isCayleyGraphSection || isNotebookSection
+                            'lg:max-w-[27.5rem]': hasMedia && hasXDirection && !isCayleyGraphSection && !isNotebookSection && !isBridgeTransformationsSection,
+                            'max-w-none': isCayleyGraphSection || isNotebookSection || isBridgeTransformationsSection
                         })}
                     >
                         {badge && <Badge {...badge} {...(enableAnnotations && { 'data-sb-field-path': '.badge' })} />}
@@ -71,6 +75,23 @@ export default function GenericSection(props) {
                             >
                                 {subtitle}
                             </p>
+                        )}
+                        
+                        {/* Render Bridge Transformations if this is the bridge transformations section */}
+                        {isBridgeTransformationsSection && (
+                            <div className="mt-8">
+                                <UnifiedBridgeOrchestrator
+                                    initialTransformation="elliptic-to-algebra"
+                                    showControls={true}
+                                />
+                            </div>
+                        )}
+                        
+                        {/* Render Concept Mapping if this is the concept mapping section */}
+                        {isConceptMappingSection && (
+                            <div className="mt-8">
+                                <ConceptMappingExample />
+                            </div>
                         )}
                         
                         {/* Render Notebook Embed if this is the notebook section */}
@@ -95,6 +116,14 @@ export default function GenericSection(props) {
                                         EnhancedCayleyGraphExplorer: {
                                             component: () => <EnhancedCayleyGraphExplorer />
                                         },
+                                        UnifiedBridgeOrchestrator: {
+                                            component: () => (
+                                                <UnifiedBridgeOrchestrator
+                                                    initialTransformation="elliptic-to-algebra"
+                                                    showControls={true}
+                                                />
+                                            )
+                                        },
                                         StaticNotebookViewer: {
                                             component: (props) => (
                                                 <StaticNotebookViewer 
@@ -106,11 +135,13 @@ export default function GenericSection(props) {
                                                 />
                                             )
                                         },
-                                        ...(isCayleyGraphSection || isNotebookSection ? {
+                                        ...(isCayleyGraphSection || isNotebookSection || isBridgeTransformationsSection ? {
                                             // Replace the placeholder div with nothing since we render the component above
                                             div: {
                                                 component: ({ children, ...props }) => {
-                                                    if (props.id === 'cayley-graph-explorer-container' || props.id === 'notebook-embed-container') {
+                                                    if (props.id === 'cayley-graph-explorer-container' || 
+                                                        props.id === 'notebook-embed-container' ||
+                                                        props.id === 'bridge-transformations-container') {
                                                         return null; // Don't render the placeholder div
                                                     }
                                                     return <div {...props}>{children}</div>;
@@ -120,8 +151,8 @@ export default function GenericSection(props) {
                                     }
                                 }}
                                 className={classNames('sb-markdown', 'sm:text-lg', styles?.text ? mapStyles(styles?.text) : undefined, {
-                                    'mt-6': (badge?.label || title?.text || subtitle) && !isCayleyGraphSection && !isNotebookSection,
-                                    'mt-8': isCayleyGraphSection || isNotebookSection
+                                    'mt-6': (badge?.label || title?.text || subtitle) && !isCayleyGraphSection && !isNotebookSection && !isBridgeTransformationsSection,
+                                    'mt-8': isCayleyGraphSection || isNotebookSection || isBridgeTransformationsSection
                                 })}
                                 {...(enableAnnotations && { 'data-sb-field-path': '.text' })}
                             >

@@ -39,6 +39,7 @@ const components = {
     MathJax: dynamic(() => import('./blocks/MathJax')),
     Mermaid: dynamic(() => import('./blocks/Mermaid')),
     TDAExplorer: dynamic(() => import('./TDAExplorer')),
+    ConceptMapping: dynamic(() => import('./mathematical/ConceptMapping/ConceptMappingExample')),
     DividerSection: dynamic(() => import('./sections/DividerSection')),
     EmailFormControl: dynamic(() => import('./blocks/FormBlock/EmailFormControl')),
     FeaturedItem: dynamic(() => import('./sections/FeaturedItemsSection/FeaturedItem')),

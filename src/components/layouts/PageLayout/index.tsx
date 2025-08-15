@@ -4,7 +4,27 @@ import { getBaseLayoutComponent } from '../../../utils/base-layout';
 import { getComponent } from '../../components-registry';
 import ContentWithCrossReferences from '../ContentWithCrossReferences';
 
-export default function PageLayout(props) {
+interface PageLayoutProps {
+    page: {
+        title?: string;
+        sections?: Array<{
+            __metadata: {
+                modelName: string;
+            };
+            [key: string]: any;
+        }>;
+        baseLayout?: string;
+        [key: string]: any;
+    };
+    site: {
+        enableAnnotations?: boolean;
+        baseLayout?: string;
+        [key: string]: any;
+    };
+    [key: string]: any;
+}
+
+export default function PageLayout(props: PageLayoutProps) {
     const { page, site } = props;
     const BaseLayout = getBaseLayoutComponent(page.baseLayout, site.baseLayout);
     const { enableAnnotations = true } = site;
@@ -22,7 +42,7 @@ export default function PageLayout(props) {
                     {sections.length > 0 && (
                         <div {...(enableAnnotations && { 'data-sb-field-path': 'sections' })}>
                             {sections.map((section, index) => {
-                                const Component = getComponent(section.__metadata.modelName);
+                                const Component = getComponent(section.__metadata.modelName) as React.ComponentType<any>;
                                 if (!Component) {
                                     throw new Error(`no component matching the page section's model name: ${section.__metadata.modelName}`);
                                 }

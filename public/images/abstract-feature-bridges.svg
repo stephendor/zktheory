@@ -1,0 +1,46 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#1e293b"/>
+  
+  <!-- Mathematical domain circles -->
+  <circle cx="100" cy="80" r="40" fill="none" stroke="#3b82f6" stroke-width="2"/>
+  <text x="100" y="84" text-anchor="middle" fill="#3b82f6" font-family="system-ui" font-size="12">Elliptic Curves</text>
+  
+  <circle cx="300" cy="80" r="40" fill="none" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="300" y="84" text-anchor="middle" fill="#8b5cf6" font-family="system-ui" font-size="12">Abstract Algebra</text>
+  
+  <circle cx="200" cy="220" r="40" fill="none" stroke="#ef4444" stroke-width="2"/>
+  <text x="200" y="224" text-anchor="middle" fill="#ef4444" font-family="system-ui" font-size="12">Topology</text>
+  
+  <!-- Bridge arrows -->
+  <path d="M 140 80 Q 200 50 260 80" fill="none" stroke="#10b981" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 280 110 Q 250 160 220 190" fill="none" stroke="#10b981" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 180 190 Q 150 160 120 110" fill="none" stroke="#10b981" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Central bridge symbol -->
+  <circle cx="200" cy="130" r="15" fill="#10b981" opacity="0.8"/>
+  <text x="200" y="135" text-anchor="middle" fill="white" font-family="system-ui" font-size="10" font-weight="bold">∞</text>
+  
+  <!-- Elliptic curve visualization -->
+  <path d="M 70 60 Q 85 45 100 60 Q 115 75 130 60" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.6"/>
+  
+  <!-- Group structure visualization -->
+  <rect x="280" y="60" width="8" height="8" fill="#8b5cf6" opacity="0.6"/>
+  <rect x="292" y="60" width="8" height="8" fill="#8b5cf6" opacity="0.6"/>
+  <rect x="304" y="60" width="8" height="8" fill="#8b5cf6" opacity="0.6"/>
+  <rect x="316" y="60" width="8" height="8" fill="#8b5cf6" opacity="0.6"/>
+  
+  <!-- Topology manifold -->
+  <ellipse cx="200" cy="200" rx="25" ry="10" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.6"/>
+  <ellipse cx="200" cy="210" rx="20" ry="8" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.4"/>
+  
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="200" y="25" text-anchor="middle" fill="#64748b" font-family="system-ui" font-size="16" font-weight="600">Mathematical Bridge Transformations</text>
+</svg>

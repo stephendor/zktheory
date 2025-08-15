@@ -168,8 +168,68 @@ sections:
               - pr-8
             borderRadius: x-large
             flexDirection: col
+      - type: FeaturedItem
+        title: Mathematical Bridge Transformations
+        tagline: Advanced Mathematical Visualization
+        subtitle: Elliptic Curves ↔ Algebra ↔ Topology
+        text: |
+          Explore deep connections between elliptic curves, abstract algebra, and topology through interactive animated transformations. Research-grade mathematical visualizations with step-by-step morphisms.
+        image:
+          type: ImageBlock
+          url: /images/abstract-feature-bridges.svg
+          altText: Mathematical Bridge Transformations
+          styles:
+            self:
+              borderRadius: x-large
+        actions:
+          - type: Button
+            label: Launch Explorer
+            url: /projects/bridge-transformations
+            icon: play
+            iconPosition: right
+            style: secondary
+        colors: bg-light-fg-dark
+        styles:
+          self:
+            padding:
+              - pt-8
+              - pl-8
+              - pb-8
+              - pr-8
+            borderRadius: x-large
+            flexDirection: col
+      - type: FeaturedItem
+        title: Mathematical Concept Mapping
+        tagline: Interactive Knowledge Graph
+        subtitle: Explore Mathematical Connections
+        text: |
+          Navigate the interconnected world of mathematics through force-directed graph visualization. Discover relationships between elliptic curves, abstract algebra, and topology with interactive filtering and learning pathways.
+        image:
+          type: ImageBlock
+          url: /images/concept-mapping-preview.svg
+          altText: Mathematical Concept Mapping Interface
+          styles:
+            self:
+              borderRadius: x-large
+        actions:
+          - type: Button
+            label: Explore Concepts
+            url: /projects/concept-mapping
+            icon: play
+            iconPosition: right
+            style: secondary
+        colors: bg-light-fg-dark
+        styles:
+          self:
+            padding:
+              - pt-8
+              - pl-8
+              - pb-8
+              - pr-8
+            borderRadius: x-large
+            flexDirection: col
     actions: []
-    variant: two-col-grid
+    variant: three-col-grid
     colors: bg-neutral-fg-dark
     styles:
       self:
