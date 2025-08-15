@@ -1,9 +1,11 @@
+export type PerformanceCategory = 'computation' | 'rendering' | 'memory' | 'interaction';
+
 export interface PerformanceMetric {
   id: string;
-  timestamp: number;
-  category: 'computation' | 'rendering' | 'memory' | 'interaction';
+  timestamp: number; // epoch ms
+  category: PerformanceCategory;
   value: number;
-  unit: string;
+  unit: string; // e.g., 'ms', 'MB', 'fps'
   metadata?: Record<string, any>;
 }
 

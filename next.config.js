@@ -1,3 +1,4 @@
+/* eslint-env node */
 /**
  * @type {import('next').NextConfig}
  */
@@ -98,6 +99,13 @@ const nextConfig = {
             ...config.experiments,
             asyncWebAssembly: true
         };
+
+        // Mitigation: avoid filesystem cache rename errors during dev HMR
+        // (ENOENT on .next/cache/webpack/*pack.gz_ -> *.gz). Disable
+        // webpack persistent caching in development only.
+        if (dev) {
+            config.cache = false;
+        }
 
         // Handle .wasm files
         config.module.rules.push({

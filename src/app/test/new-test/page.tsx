@@ -1,4 +1,5 @@
 import React from 'react';
+import ClientPerfPanel from '@/components/performance/ClientPerfPanel';
 
 export default function TestNewPage() {
   const timestamp = new Date().toISOString();
@@ -23,6 +24,12 @@ export default function TestNewPage() {
             ✅ SUCCESS: New route is working!
           </p>
         </div>
+      </div>
+      <div className="mt-6">
+        <a href="/test/perf-live" className="text-purple-700 underline font-medium">Go to Perf Live page</a>
+      </div>
+      <div className="mt-6">
+        <ClientPerfPanel />
       </div>
     </div>
   );

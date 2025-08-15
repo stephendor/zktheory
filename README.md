@@ -33,14 +33,14 @@ A comprehensive platform for exploring cybersecurity, cryptography, and mathemat
 
 A specialized educational tool for visualizing finite group structures through Cayley graphs.
 
-### Features
+### Features (TDA Explorer)
 
 - Support for Symmetric Groups (Sₙ), Dihedral Groups (Dₙ), and Alternating Groups (Aₙ)
 - Interactive subgroup and coset highlighting
 - Real-time graph generation and manipulation
 - Educational explanations and examples
 
-### Usage
+### Usage (TDA Explorer)
 
 - **Web Interface**: Visit `/projects/cayleygraph` for the React-based interactive tool
 - **Full Version**: Use the Jupyter notebook `InteractiveCayley.ipynb` with SageMath for complete functionality
@@ -91,6 +91,7 @@ A comprehensive interactive tool for exploring topological data analysis concept
 - [Develop with Netlify Visual Editor Locally](#develop-with-netlify-visual-editor-locally)
 - [Building for production](#building-for-production)
 - [Setting Up Algolia Search](#setting-up-algolia-search)
+- [Developer Performance Diagnostics](#developer-performance-diagnostics)
 - [Next Steps](#next-steps)
 - [Support](#support)
 
@@ -140,6 +141,25 @@ This starter includes Algolia search integration. To set it up:
    - `NEXT_PUBLIC_ALGOLIA_APP_ID` - Your Algolia application ID
    - `NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY` - Your Algolia search-only API key
    - `NEXT_PUBLIC_ALGOLIA_INDEX_NAME` - Your index name
+
+## Developer Performance Diagnostics
+
+Use the built-in test pages to visualize client-side performance in development:
+
+- Route: `/test/new-test` – simple control route to confirm routing works
+- Route: `/test/perf-live` – live performance page (forces dynamic rendering)
+- Optional HUD: `/test/perf-live?hud=1` – sticky FPS and heap HUD in the top-right
+
+What you’ll see on `/test/perf-live`:
+
+- Performance Panel (client-only): FPS, TTFB, DOMContentLoaded, Load, LCP, FID, CLS, JS Heap
+- Pause/Resume button to stop sampling
+
+Notes:
+
+- Memory (JS heap) appears in Chromium-based browsers only
+- Some Web Vitals may be approximate in dev; interact with the page to see FID/CLS
+- These pages set `dynamic = 'force-dynamic'` and `revalidate = 0` to avoid stale caches
 
 ## Next Steps
 

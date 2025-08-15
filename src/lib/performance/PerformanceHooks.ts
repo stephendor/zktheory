@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { performanceMetrics } from './PerformanceMetrics';
-import { PerformanceMetric } from './types';
+import { PerformanceMetric, PerformanceCategory } from './types';
 
 // Safe environment detection for client-side
 const getNodeEnv = (): string => {
@@ -12,7 +12,7 @@ const getNodeEnv = (): string => {
   return 'production';
 };
 
-export const usePerformanceMonitor = (componentId: string, category: string) => {
+export const usePerformanceMonitor = (componentId: string, category: PerformanceCategory = 'computation') => {
   const startTimer = useCallback(() => {
     return performanceMetrics.startTimer(componentId, category);
   }, [componentId, category]);
@@ -21,7 +21,7 @@ export const usePerformanceMonitor = (componentId: string, category: string) => 
 };
 
 export const usePerformanceMetrics = (
-  category?: string,
+  category?: PerformanceCategory,
   timeRange?: { start: number; end: number },
   updateInterval: number = 1000
 ) => {
@@ -31,7 +31,7 @@ export const usePerformanceMetrics = (
 
   useEffect(() => {
     const updateMetrics = () => {
-      const newMetrics = performanceMetrics.getMetrics(category, timeRange);
+  const newMetrics = performanceMetrics.getMetrics(category, timeRange);
       const newSummary = performanceMetrics.getMetricsSummary();
       setMetrics(newMetrics);
       setSummary(newSummary);
