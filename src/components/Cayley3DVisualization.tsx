@@ -107,6 +107,7 @@ export default function Cayley3DVisualization({
 
   // Generate 3D layout using Advanced Layout Engine
   useEffect(() => {
+    console.log('🎯 Cayley3D: Starting layout generation with performance monitoring');
     const stopTimer = startTimer();
     
     const generators = group.generators.length > 0 ? group.generators : [];
@@ -115,6 +116,7 @@ export default function Cayley3DVisualization({
     console.log('🚀 3D Advanced layout generated:', advancedLayout.description);
     setLayout(advancedLayout);
     
+    console.log('⏱️ Cayley3D: Stopping timer for layout generation');
     stopTimer();
   }, [group, startTimer]);
 

@@ -4,6 +4,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { performanceMetrics } from './PerformanceMetrics';
 import { PerformanceMetric } from './types';
 
+// Safe environment detection for client-side
+const getNodeEnv = (): string => {
+  if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV) {
+    return process.env.NODE_ENV;
+  }
+  return 'production';
+};
+
 export const usePerformanceMonitor = (componentId: string, category: string) => {
   const startTimer = useCallback(() => {
     return performanceMetrics.startTimer(componentId, category);
@@ -48,9 +56,10 @@ export const usePerformanceMetrics = (
 };
 
 export const usePerformanceToggle = () => {
-  const [isEnabled, setIsEnabled] = useState(
-    process.env.NODE_ENV === 'development'
-  );
+  const [isEnabled, setIsEnabled] = useState(() => {
+    // Safe environment detection for client-side
+    return getNodeEnv() === 'development';
+  });
 
   useEffect(() => {
     if (isEnabled) {
