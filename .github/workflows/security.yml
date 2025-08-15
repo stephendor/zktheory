@@ -1,0 +1,470 @@
+name: Security & Dependency Audit
+
+on:
+  schedule:
+    # Run security audit weekly on Sundays at 3 AM UTC
+    - cron: '0 3 * * 0'
+  push:
+    branches: [ main, major-rewrite ]
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/security.yml'
+  pull_request:
+    branches: [ main, major-rewrite ]
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+
+env:
+  NODE_VERSION: '20.x'
+
+jobs:
+  security-audit:
+    name: Security Vulnerability Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run npm audit
+        run: |
+          echo "Running npm security audit..."
+          npm audit --audit-level moderate --json > security-audit.json || true
+          npm audit --audit-level moderate
+        continue-on-error: true
+        
+      - name: Parse audit results
+        run: |
+          echo "Analyzing security audit results..."
+          node -e "
+            const fs = require('fs');
+            const auditData = JSON.parse(fs.readFileSync('security-audit.json', 'utf8'));
+            
+            console.log('Security Audit Summary:');
+            console.log('Total vulnerabilities:', auditData.metadata?.vulnerabilities?.total || 0);
+            console.log('Critical:', auditData.metadata?.vulnerabilities?.critical || 0);
+            console.log('High:', auditData.metadata?.vulnerabilities?.high || 0);
+            console.log('Moderate:', auditData.metadata?.vulnerabilities?.moderate || 0);
+            console.log('Low:', auditData.metadata?.vulnerabilities?.low || 0);
+            
+            // Check for mathematical library vulnerabilities
+            const mathLibs = ['katex', 'plotly.js', 'd3', 'three', 'chart.js', 'mermaid'];
+            let mathVulns = 0;
+            
+            if (auditData.vulnerabilities) {
+              Object.entries(auditData.vulnerabilities).forEach(([pkg, vuln]) => {
+                if (mathLibs.some(lib => pkg.includes(lib))) {
+                  console.log(\`Mathematical library vulnerability: \${pkg}\`);
+                  mathVulns++;
+                }
+              });
+            }
+            
+            console.log(\`Mathematical library vulnerabilities: \${mathVulns}\`);
+            
+            // Exit with error if critical or high vulnerabilities found
+            const critical = auditData.metadata?.vulnerabilities?.critical || 0;
+            const high = auditData.metadata?.vulnerabilities?.high || 0;
+            
+            if (critical > 0 || high > 0) {
+              console.error('Critical or high severity vulnerabilities found!');
+              process.exit(1);
+            }
+          "
+          
+      - name: License compliance check
+        run: |
+          echo "Checking license compliance..."
+          npx license-checker --summary --csv --out license-report.csv
+          npx license-checker --failOn "GPL;AGPL;LGPL;WTFPL" --production
+        continue-on-error: true
+        
+      - name: Mathematical library security validation
+        run: |
+          echo "Validating mathematical libraries for known security issues..."
+          node -e "
+            const pkg = require('./package.json');
+            
+            // Known secure versions of mathematical libraries
+            const secureVersions = {
+              'katex': '>=0.16.0',
+              'd3': '>=7.0.0',
+              'three': '>=0.150.0',
+              'plotly.js': '>=2.0.0',
+              'chart.js': '>=4.0.0',
+              'mermaid': '>=10.0.0'
+            };
+            
+            let hasIssues = false;
+            
+            Object.entries(secureVersions).forEach(([lib, minVersion]) => {
+              const currentVersion = pkg.dependencies[lib] || pkg.devDependencies[lib];
+              if (currentVersion) {
+                console.log(\`\${lib}: \${currentVersion} (minimum secure: \${minVersion})\`);
+                // Note: This is a simplified check - production should use semver
+                const versionNum = currentVersion.replace(/[^0-9.]/g, '');
+                const minVersionNum = minVersion.replace(/[^0-9.]/g, '');
+                
+                if (versionNum < minVersionNum) {
+                  console.error(\`⚠️  \${lib} version \${currentVersion} may have security issues\`);
+                  hasIssues = true;
+                }
+              }
+            });
+            
+            if (hasIssues) {
+              console.error('Security issues detected in mathematical libraries!');
+              process.exit(1);
+            }
+            
+            console.log('✅ All mathematical libraries appear secure');
+          "
+          
+      - name: WASM security check
+        run: |
+          echo "Checking WASM files for security..."
+          find . -name "*.wasm" -type f | while read wasmfile; do
+            echo "Found WASM file: $wasmfile"
+            wc -c "$wasmfile" | awk '{print "Size: " $1 " bytes"}'
+          done
+          
+          # Check for suspiciously large WASM files (>10MB)
+          find . -name "*.wasm" -size +10M -type f | while read largefile; do
+            echo "⚠️  Large WASM file detected: $largefile"
+            echo "Consider reviewing for security implications"
+          done
+          
+      - name: Dependency tree analysis
+        run: |
+          echo "Analyzing dependency tree for security risks..."
+          npm list --depth=0 --json > dependency-tree.json
+          
+          # Check for deeply nested dependencies
+          npm list --depth=3 --json > deep-dependencies.json || true
+          
+          node -e "
+            const shallow = require('./dependency-tree.json');
+            
+            console.log('Direct dependencies:', Object.keys(shallow.dependencies || {}).length);
+            
+            // Check for suspicious packages
+            const suspicious = ['eval', 'exec', 'child_process', 'fs-extra'];
+            const deps = Object.keys(shallow.dependencies || {});
+            
+            suspicious.forEach(pkg => {
+              if (deps.some(dep => dep.includes(pkg))) {
+                console.log(\`⚠️  Potentially risky dependency pattern: \${pkg}\`);
+              }
+            });
+          "
+          
+      - name: Upload security artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-audit-results
+          path: |
+            security-audit.json
+            license-report.csv
+            dependency-tree.json
+            deep-dependencies.json
+          retention-days: 30
+          
+  # SAST (Static Application Security Testing)
+  static-analysis:
+    name: Static Security Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: ESLint security rules
+        run: |
+          echo "Running ESLint with security rules..."
+          npx eslint . \
+            --ext .js,.jsx,.ts,.tsx \
+            --config .eslintrc.js \
+            --format json \
+            --output-file eslint-security.json || true
+            
+          # Check for security-related issues
+          cat eslint-security.json | jq '.[] | select(.messages[].ruleId | contains("security"))'
+        continue-on-error: true
+        
+      - name: Semgrep SAST scan
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/javascript
+            p/typescript
+            p/react
+        continue-on-error: true
+        
+      - name: CodeQL analysis
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+          queries: security-and-quality
+          
+      - name: Build for CodeQL
+        run: npm run build
+        
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v3
+        
+  # Mathematical computation security
+  mathematical-security:
+    name: Mathematical Computation Security
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Mathematical input validation check
+        run: |
+          echo "Checking mathematical computation input validation..."
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Find mathematical computation files
+            const mathFiles = [];
+            
+            function findMathFiles(dir) {
+              const files = fs.readdirSync(dir);
+              files.forEach(file => {
+                const filePath = path.join(dir, file);
+                const stat = fs.statSync(filePath);
+                
+                if (stat.isDirectory() && !file.startsWith('.') && file !== 'node_modules') {
+                  findMathFiles(filePath);
+                } else if (file.endsWith('.ts') || file.endsWith('.js')) {
+                  const content = fs.readFileSync(filePath, 'utf8');
+                  if (content.includes('Math.') || content.includes('mathematical') || 
+                      content.includes('computation') || content.includes('algorithm')) {
+                    mathFiles.push(filePath);
+                  }
+                }
+              });
+            }
+            
+            findMathFiles('src');
+            
+            console.log(\`Found \${mathFiles.length} mathematical computation files\`);
+            
+            // Check for common security issues in mathematical computations
+            let securityIssues = 0;
+            
+            mathFiles.forEach(file => {
+              const content = fs.readFileSync(file, 'utf8');
+              
+              // Check for unsafe eval usage
+              if (content.includes('eval(') || content.includes('Function(')) {
+                console.warn(\`⚠️  Potential eval usage in \${file}\`);
+                securityIssues++;
+              }
+              
+              // Check for buffer overflow risks
+              if (content.includes('Buffer.') && !content.includes('Buffer.alloc')) {
+                console.warn(\`⚠️  Potential unsafe buffer usage in \${file}\`);
+                securityIssues++;
+              }
+              
+              // Check for integer overflow protection
+              if (content.includes('parseInt') && !content.includes('Number.isSafeInteger')) {
+                console.info(\`ℹ️  Consider integer overflow protection in \${file}\`);
+              }
+            });
+            
+            if (securityIssues > 0) {
+              console.error(\`\${securityIssues} potential security issues found in mathematical code\`);
+              process.exit(1);
+            }
+            
+            console.log('✅ No obvious security issues found in mathematical computations');
+          "
+          
+      - name: WASM security validation
+        run: |
+          echo "Validating WASM security..."
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Find WASM files
+            const wasmFiles = [];
+            
+            function findWasmFiles(dir) {
+              if (!fs.existsSync(dir)) return;
+              
+              const files = fs.readdirSync(dir);
+              files.forEach(file => {
+                const filePath = path.join(dir, file);
+                const stat = fs.statSync(filePath);
+                
+                if (stat.isDirectory() && !file.startsWith('.') && file !== 'node_modules') {
+                  findWasmFiles(filePath);
+                } else if (file.endsWith('.wasm')) {
+                  wasmFiles.push(filePath);
+                }
+              });
+            }
+            
+            findWasmFiles('.');
+            
+            console.log(\`Found \${wasmFiles.length} WASM files\`);
+            
+            wasmFiles.forEach(file => {
+              const stats = fs.statSync(file);
+              console.log(\`WASM file: \${file}, Size: \${stats.size} bytes\`);
+              
+              // Basic security checks
+              if (stats.size > 10 * 1024 * 1024) { // 10MB
+                console.warn(\`⚠️  Large WASM file: \${file} (\${Math.round(stats.size / 1024 / 1024)}MB)\`);
+              }
+              
+              if (stats.size < 100) {
+                console.warn(\`⚠️  Suspiciously small WASM file: \${file}\`);
+              }
+            });
+            
+            console.log('✅ WASM security validation completed');
+          "
+          
+  # Dependency update suggestions
+  dependency-updates:
+    name: Dependency Update Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'schedule'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Check for outdated packages
+        run: |
+          echo "Checking for outdated packages..."
+          npm outdated --json > outdated-packages.json || true
+          npm outdated || true
+          
+      - name: Security-focused update recommendations
+        run: |
+          echo "Analyzing security-focused updates..."
+          node -e "
+            const fs = require('fs');
+            
+            if (fs.existsSync('outdated-packages.json')) {
+              const outdated = JSON.parse(fs.readFileSync('outdated-packages.json', 'utf8'));
+              
+              const securityCritical = ['katex', 'plotly.js', 'd3', 'three', 'react', 'next'];
+              const outdatedSecurity = Object.keys(outdated).filter(pkg => 
+                securityCritical.some(critical => pkg.includes(critical))
+              );
+              
+              if (outdatedSecurity.length > 0) {
+                console.log('🔒 Security-critical packages that need updates:');
+                outdatedSecurity.forEach(pkg => {
+                  const info = outdated[pkg];
+                  console.log(\`  \${pkg}: \${info.current} → \${info.latest}\`);
+                });
+              } else {
+                console.log('✅ All security-critical packages are up to date');
+              }
+            }
+          "
+          
+      - name: Create security update issue
+        if: github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            if (fs.existsSync('outdated-packages.json')) {
+              const outdated = JSON.parse(fs.readFileSync('outdated-packages.json', 'utf8'));
+              const securityCritical = ['katex', 'plotly.js', 'd3', 'three', 'react', 'next'];
+              const outdatedSecurity = Object.keys(outdated).filter(pkg => 
+                securityCritical.some(critical => pkg.includes(critical))
+              );
+              
+              if (outdatedSecurity.length > 0) {
+                const issueBody = `
+            # Security-Critical Dependency Updates Available
+            
+            The following security-critical packages have updates available:
+            
+            ${outdatedSecurity.map(pkg => {
+              const info = outdated[pkg];
+              return `- **${pkg}**: ${info.current} → ${info.latest}`;
+            }).join('\n')}
+            
+            ## Recommended Actions
+            1. Review change logs for breaking changes
+            2. Update packages in a development branch
+            3. Run full test suite including mathematical performance tests
+            4. Verify WASM compatibility if applicable
+            
+            _This issue was automatically created by the security workflow._
+                `;
+                
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: `Security Update: ${outdatedSecurity.length} critical dependencies need updates`,
+                  body: issueBody,
+                  labels: ['security', 'dependencies', 'automated']
+                });
+              }
+            }
+            
+      - name: Upload dependency analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-analysis
+          path: |
+            outdated-packages.json
+          retention-days: 7

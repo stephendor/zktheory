@@ -16,12 +16,90 @@ const customJestConfig = {
     '\\.wasm$': '<rootDir>/__mocks__/wasmMock.js',
   },
   
-  // Test file patterns with enhanced matching
+  // Test file patterns with enhanced matching and categorization
   testMatch: [
     '**/__tests__/**/*.(js|jsx|ts|tsx)',
     '**/*.(test|spec).(js|jsx|ts|tsx)',
     '**/__tests__/**/*.mathematical.(js|jsx|ts|tsx)', // Mathematical-specific tests
     '**/*.(perf|benchmark).(js|jsx|ts|tsx)', // Performance tests
+    '**/__tests__/**/*.unit.(js|jsx|ts|tsx)', // Unit tests
+    '**/__tests__/**/*.integration.(js|jsx|ts|tsx)', // Integration tests
+  ],
+
+  // Test categorization through projects for better parallel execution
+  projects: [
+    {
+      displayName: 'Unit Tests (@unit)',
+      testMatch: [
+        '<rootDir>/src/__tests__/**/*.test.(js|jsx|ts|tsx)',
+        '<rootDir>/src/**/*.unit.(js|jsx|ts|tsx)'
+      ],
+      testPathIgnorePatterns: [
+        '<rootDir>/src/__tests__/performance/',
+        '<rootDir>/src/__tests__/integration/'
+      ],
+      // Fast unit tests can use more workers
+      maxWorkers: process.env.CI ? 2 : '100%',
+      globals: {
+        __TEST_CATEGORY__: 'unit'
+      }
+    },
+    {
+      displayName: 'Mathematical Tests (@mathematical)',
+      testMatch: [
+        '<rootDir>/src/__tests__/lib/*.test.(js|jsx|ts|tsx)',
+        '<rootDir>/src/**/*.mathematical.(js|jsx|ts|tsx)'
+      ],
+      // Mathematical tests need more memory per worker
+      maxWorkers: process.env.CI ? 1 : '50%',
+      globals: {
+        __TEST_CATEGORY__: 'mathematical',
+        __MATHEMATICAL_TESTING__: true,
+        __PERFORMANCE_THRESHOLD_MS__: 100,
+        __MEMORY_THRESHOLD_MB__: 50,
+      }
+    },
+    {
+      displayName: 'Performance Tests (@performance)',
+      testMatch: [
+        '<rootDir>/src/__tests__/performance/*.test.(js|jsx|ts|tsx)',
+        '<rootDir>/src/**/*.perf.(js|jsx|ts|tsx)',
+        '<rootDir>/src/**/*.benchmark.(js|jsx|ts|tsx)'
+      ],
+      // Performance tests run sequentially to avoid interference
+      maxWorkers: 1,
+      testTimeout: 30000, // Longer timeout for performance tests
+      globals: {
+        __TEST_CATEGORY__: 'performance',
+        __PERFORMANCE_TESTING__: true
+      }
+    },
+    {
+      displayName: 'Integration Tests (@integration)',
+      testMatch: [
+        '<rootDir>/src/**/*.integration.(js|jsx|ts|tsx)'
+      ],
+      // Integration tests need moderate parallelization
+      maxWorkers: process.env.CI ? 1 : '25%',
+      testTimeout: 20000,
+      globals: {
+        __TEST_CATEGORY__: 'integration'
+      }
+    },
+    {
+      displayName: 'Visual Tests (@visual)',
+      testMatch: [
+        '<rootDir>/src/__tests__/visual/*.test.(js|jsx|ts|tsx)',
+        '<rootDir>/src/**/*.visual.(js|jsx|ts|tsx)'
+      ],
+      // Visual tests run sequentially due to DOM/canvas dependencies
+      maxWorkers: 1,
+      testEnvironment: 'jsdom',
+      setupFilesAfterEnv: ['<rootDir>/tests/visual-setup.js'],
+      globals: {
+        __TEST_CATEGORY__: 'visual'
+      }
+    }
   ],
   
   // Comprehensive coverage collection with 80% minimum threshold
@@ -100,8 +178,14 @@ const customJestConfig = {
   // Enhanced timeout for mathematical computations
   testTimeout: 15000,
   
-  // Performance monitoring and memory management
-  maxWorkers: '50%', // Use half of available cores for stability
+  // Performance monitoring and memory management - Enhanced for parallel execution
+  maxWorkers: process.env.CI ? 2 : '75%', // More aggressive parallelization locally, conservative in CI
+  
+  // Worker allocation for mathematical computations
+  workerIdleMemoryLimit: '2GB', // Increase memory limit for mathematical operations
+  
+  // Enhanced parallel execution configuration
+  testRunner: 'jest-circus/runner', // Better parallel support
   
   // Error handling and debugging
   verbose: true,

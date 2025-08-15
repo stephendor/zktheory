@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
+import { usePerformanceMonitor } from '../../../lib/performance';
 
 interface KaTeXProps {
     math: string;
@@ -14,6 +15,9 @@ export default function KaTeX({ math, display = false, className = '', throwOnEr
     const [renderedMath, setRenderedMath] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
     const [isClient, setIsClient] = useState(false);
+    
+    // Performance monitoring
+    const { startTimer } = usePerformanceMonitor('katex', 'rendering');
 
     // Check if we're on the client side
     useEffect(() => {
@@ -23,12 +27,15 @@ export default function KaTeX({ math, display = false, className = '', throwOnEr
     useEffect(() => {
         if (!isClient || !math) return;
 
+        const stopTimer = startTimer();
+
         try {
             const cleanMath = typeof math === 'string' ? math.trim() : String(math || '').trim();
 
             if (!cleanMath) {
                 setRenderedMath('');
                 setError(null);
+                stopTimer();
                 return;
             }
 
@@ -63,6 +70,7 @@ export default function KaTeX({ math, display = false, className = '', throwOnEr
 
             setRenderedMath(rendered);
             setError(null);
+            stopTimer();
         } catch (err) {
             const errorMsg = err instanceof Error ? err.message : 'KaTeX rendering error';
             if (process.env.NODE_ENV === 'development') {
@@ -78,8 +86,9 @@ export default function KaTeX({ math, display = false, className = '', throwOnEr
                 setRenderedMath(`<span class="math-error">${math}</span>`);
                 setError(null);
             }
+            stopTimer();
         }
-    }, [math, display, throwOnError, isClient]);
+    }, [math, display, throwOnError, isClient, startTimer]);
 
     // Don't render on server side to prevent hydration mismatches
     if (!isClient) {

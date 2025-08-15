@@ -6,6 +6,13 @@
 
 import { performance } from 'perf_hooks';
 import { GroupTheoryValidator, TDAValidator, PrecisionValidator } from './mathematicalValidation';
+import { 
+  mathematicalPerformanceMonitor, 
+  wasmPerformanceWrapper,
+  withTDAPerformanceMonitoring,
+  withCayleyPerformanceMonitoring,
+  type MathematicalOperation 
+} from '@/lib/performance';
 import type { Group } from '@/lib/GroupTheory';
 import type { EllipticCurvePoint, EllipticCurve } from '@/lib/EllipticCurveGroups';
 
@@ -121,13 +128,37 @@ export class PerformanceBenchmark {
   }
 
   /**
-   * Benchmark group theory operations
+   * Benchmark group theory operations with enhanced mathematical monitoring
    */
   async benchmarkGroupOperations(group: Group): Promise<Map<string, BenchmarkResult>> {
     const results = new Map<string, BenchmarkResult>();
 
-    // Benchmark group multiplication
+    // Benchmark group multiplication with mathematical monitoring
     const elements = group.elements.slice(0, Math.min(10, group.elements.length));
+    const multiplicationResult = await mathematicalPerformanceMonitor.monitorMathematicalOperation(
+      {
+        operation: 'group_multiplication',
+        category: 'group_theory',
+        complexity: 'O(n²)',
+        inputSize: group.order,
+        expectedTimeMs: group.order * 0.1,
+        maxAllowedTimeMs: group.order * 2
+      },
+      () => {
+        for (const a of elements) {
+          for (const b of elements) {
+            group.operations.get(a.id)?.get(b.id);
+          }
+        }
+        return { operationsPerformed: elements.length * elements.length };
+      },
+      {
+        environment: 'testing',
+        trackMemory: true,
+        validateResult: (result) => result.operationsPerformed > 0 ? 1.0 : 0.0
+      }
+    );
+
     results.set('group_multiplication', await this.measureExecutionTime(
       'group_multiplication',
       () => {
@@ -140,7 +171,24 @@ export class PerformanceBenchmark {
       50
     ));
 
-    // Benchmark group validation
+    // Benchmark group validation with mathematical monitoring
+    const validationResult = await mathematicalPerformanceMonitor.monitorMathematicalOperation(
+      {
+        operation: 'group_validation',
+        category: 'group_theory',
+        complexity: 'O(n³)',
+        inputSize: group.order,
+        expectedTimeMs: group.order * 2,
+        maxAllowedTimeMs: group.order * 10
+      },
+      () => GroupTheoryValidator.validateGroupAxioms(group),
+      {
+        environment: 'testing',
+        trackMemory: true,
+        validateResult: (result) => result.isValid ? 1.0 : 0.0
+      }
+    );
+
     results.set('group_validation', await this.measureExecutionTime(
       'group_validation',
       () => GroupTheoryValidator.validateGroupAxioms(group),

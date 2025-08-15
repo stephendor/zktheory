@@ -6,6 +6,7 @@ import { OrbitControls, Text, Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { Group, GroupElement } from '@/lib/GroupTheory';
 import { AdvancedLayoutEngine } from '@/lib/AdvancedLayoutEngine';
+import { usePerformanceMonitor, useMemoryTracking } from '@/lib/performance';
 
 interface NodeProps {
   position: [number, number, number];
@@ -53,7 +54,6 @@ function Node({ position, element, color, onClick, scale, highlighted }: NodePro
         color={highlighted ? '#ff6b6b' : '#333333'}
         anchorX="center"
         anchorY="middle"
-        font="/fonts/Inter-Medium.woff"
       >
         {element.label}
       </Text>
@@ -100,19 +100,29 @@ export default function Cayley3DVisualization({
 }: Cayley3DVisualizationProps) {
   const [layout, setLayout] = useState<any>(null);
   const [cameraControls, setCameraControls] = useState(true);
+  
+  // Performance monitoring hooks
+  const { startTimer } = usePerformanceMonitor('cayley_3d', 'rendering');
+  useMemoryTracking('cayley_3d', 5000); // Track memory every 5 seconds
 
   // Generate 3D layout using Advanced Layout Engine
   useEffect(() => {
+    const stopTimer = startTimer();
+    
     const generators = group.generators.length > 0 ? group.generators : [];
     const advancedLayout = AdvancedLayoutEngine.generateOptimalLayout(group, generators, true);
     
     console.log('🚀 3D Advanced layout generated:', advancedLayout.description);
     setLayout(advancedLayout);
-  }, [group]);
+    
+    stopTimer();
+  }, [group, startTimer]);
 
   // Generate edges based on selected generator
   const edges = useMemo(() => {
     if (!selectedGenerator || !layout) return [];
+    
+    const stopTimer = startTimer();
     
     const edgeList: Array<{
       start: [number, number, number];
@@ -141,15 +151,18 @@ export default function Cayley3DVisualization({
       }
     });
 
+    stopTimer();
     return edgeList;
-  }, [group, selectedGenerator, layout]);
+  }, [group, selectedGenerator, layout, startTimer]);
 
   // Generate node positions
   const nodes = useMemo(() => {
     if (!layout) return [];
     
+    const stopTimer = startTimer();
+    
     const scale = 5;
-    return group.elements.map(element => {
+    const result = group.elements.map(element => {
       const pos = layout.positions[element.id] || layout.positions[element.label] || { x: 0, y: 0, z: 0 };
       return {
         element,
@@ -157,7 +170,10 @@ export default function Cayley3DVisualization({
         color: getElementColor(element, group)
       };
     });
-  }, [group, layout]);
+    
+    stopTimer();
+    return result;
+  }, [group, layout, startTimer]);
 
   if (!layout) {
     return (

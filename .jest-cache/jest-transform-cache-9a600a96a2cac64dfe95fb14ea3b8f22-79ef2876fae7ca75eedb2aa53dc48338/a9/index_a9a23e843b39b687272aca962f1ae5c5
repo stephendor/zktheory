@@ -1,0 +1,66 @@
+85a62c34411363b09c178c7239942057
+// Core performance monitoring classes
+"use strict";
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+function _export(target, all) {
+    for(var name in all)Object.defineProperty(target, name, {
+        enumerable: true,
+        get: all[name]
+    });
+}
+_export(exports, {
+    MathematicalPerformanceMonitor: function() {
+        return _MathematicalPerformanceMonitor.MathematicalPerformanceMonitor;
+    },
+    MetricsBuffer: function() {
+        return _MetricsBuffer.MetricsBuffer;
+    },
+    PerformanceMetricsCollector: function() {
+        return _PerformanceMetrics.PerformanceMetricsCollector;
+    },
+    WASMPerformanceWrapper: function() {
+        return _WASMPerformanceWrapper.WASMPerformanceWrapper;
+    },
+    mathematicalPerformanceMonitor: function() {
+        return _MathematicalPerformanceMonitor.mathematicalPerformanceMonitor;
+    },
+    performanceMetrics: function() {
+        return _PerformanceMetrics.performanceMetrics;
+    },
+    useMemoryTracking: function() {
+        return _PerformanceHooks.useMemoryTracking;
+    },
+    usePerformanceMetrics: function() {
+        return _PerformanceHooks.usePerformanceMetrics;
+    },
+    usePerformanceMonitor: function() {
+        return _PerformanceHooks.usePerformanceMonitor;
+    },
+    usePerformanceOptimization: function() {
+        return _PerformanceHooks.usePerformanceOptimization;
+    },
+    usePerformanceToggle: function() {
+        return _PerformanceHooks.usePerformanceToggle;
+    },
+    useWASMPerformance: function() {
+        return _PerformanceHooks.useWASMPerformance;
+    },
+    wasmPerformanceWrapper: function() {
+        return _WASMPerformanceWrapper.wasmPerformanceWrapper;
+    },
+    withCayleyPerformanceMonitoring: function() {
+        return _WASMPerformanceWrapper.withCayleyPerformanceMonitoring;
+    },
+    withTDAPerformanceMonitoring: function() {
+        return _WASMPerformanceWrapper.withTDAPerformanceMonitoring;
+    }
+});
+const _PerformanceMetrics = require("./PerformanceMetrics");
+const _MetricsBuffer = require("./MetricsBuffer");
+const _MathematicalPerformanceMonitor = require("./MathematicalPerformanceMonitor");
+const _WASMPerformanceWrapper = require("./WASMPerformanceWrapper");
+const _PerformanceHooks = require("./PerformanceHooks");
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3N0ZXBoZW4tZG9ybWFuL2Rldi96a3RoZW9yeS9zcmMvbGliL3BlcmZvcm1hbmNlL2luZGV4LnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIENvcmUgcGVyZm9ybWFuY2UgbW9uaXRvcmluZyBjbGFzc2VzXG5leHBvcnQgeyBQZXJmb3JtYW5jZU1ldHJpY3NDb2xsZWN0b3IsIHBlcmZvcm1hbmNlTWV0cmljcyB9IGZyb20gJy4vUGVyZm9ybWFuY2VNZXRyaWNzJztcbmV4cG9ydCB7IE1ldHJpY3NCdWZmZXIgfSBmcm9tICcuL01ldHJpY3NCdWZmZXInO1xuXG4vLyBNYXRoZW1hdGljYWwgcGVyZm9ybWFuY2UgbW9uaXRvcmluZ1xuZXhwb3J0IHsgXG4gIE1hdGhlbWF0aWNhbFBlcmZvcm1hbmNlTW9uaXRvciwgXG4gIG1hdGhlbWF0aWNhbFBlcmZvcm1hbmNlTW9uaXRvciBcbn0gZnJvbSAnLi9NYXRoZW1hdGljYWxQZXJmb3JtYW5jZU1vbml0b3InO1xuXG4vLyBXQVNNIHBlcmZvcm1hbmNlIG1vbml0b3JpbmdcbmV4cG9ydCB7IFxuICBXQVNNUGVyZm9ybWFuY2VXcmFwcGVyLCBcbiAgd2FzbVBlcmZvcm1hbmNlV3JhcHBlcixcbiAgd2l0aFREQVBlcmZvcm1hbmNlTW9uaXRvcmluZyxcbiAgd2l0aENheWxleVBlcmZvcm1hbmNlTW9uaXRvcmluZ1xufSBmcm9tICcuL1dBU01QZXJmb3JtYW5jZVdyYXBwZXInO1xuXG4vLyBSZWFjdCBob29rcyBmb3IgcGVyZm9ybWFuY2UgbW9uaXRvcmluZ1xuZXhwb3J0IHtcbiAgdXNlUGVyZm9ybWFuY2VNb25pdG9yLFxuICB1c2VQZXJmb3JtYW5jZU1ldHJpY3MsXG4gIHVzZVBlcmZvcm1hbmNlVG9nZ2xlLFxuICB1c2VNZW1vcnlUcmFja2luZyxcbiAgdXNlUGVyZm9ybWFuY2VPcHRpbWl6YXRpb24sXG4gIHVzZVdBU01QZXJmb3JtYW5jZVxufSBmcm9tICcuL1BlcmZvcm1hbmNlSG9va3MnO1xuXG4vLyBUeXBlc1xuZXhwb3J0IHR5cGUge1xuICBQZXJmb3JtYW5jZU1ldHJpYyxcbiAgVGltZVJhbmdlLFxuICBQZXJmb3JtYW5jZUhvb2ssXG4gIEFsZXJ0LFxuICBUaHJlc2hvbGQsXG4gIFJlY29tbWVuZGF0aW9uLFxuICBQZXJmb3JtYW5jZVJlcG9ydCxcbiAgQm90dGxlbmVjayxcbiAgQ2hhcnREYXRhXG59IGZyb20gJy4vdHlwZXMnO1xuXG4vLyBNYXRoZW1hdGljYWwgcGVyZm9ybWFuY2UgdHlwZXNcbmV4cG9ydCB0eXBlIHtcbiAgTWF0aGVtYXRpY2FsT3BlcmF0aW9uLFxuICBNYXRoZW1hdGljYWxNZXRyaWMsXG4gIE1hdGhlbWF0aWNhbFBlcmZvcm1hbmNlVGhyZXNob2xkLFxuICBSZWdyZXNzaW9uQW5hbHlzaXNcbn0gZnJvbSAnLi9NYXRoZW1hdGljYWxQZXJmb3JtYW5jZU1vbml0b3InO1xuXG4vLyBXQVNNIHBlcmZvcm1hbmNlIHR5cGVzXG5leHBvcnQgdHlwZSB7XG4gIFdBU01PcGVyYXRpb25Db250ZXh0LFxuICBXQVNNUGVyZm9ybWFuY2VNZXRyaWNzXG59IGZyb20gJy4vV0FTTVBlcmZvcm1hbmNlV3JhcHBlcic7XG4iXSwibmFtZXMiOlsiTWF0aGVtYXRpY2FsUGVyZm9ybWFuY2VNb25pdG9yIiwiTWV0cmljc0J1ZmZlciIsIlBlcmZvcm1hbmNlTWV0cmljc0NvbGxlY3RvciIsIldBU01QZXJmb3JtYW5jZVdyYXBwZXIiLCJtYXRoZW1hdGljYWxQZXJmb3JtYW5jZU1vbml0b3IiLCJwZXJmb3JtYW5jZU1ldHJpY3MiLCJ1c2VNZW1vcnlUcmFja2luZyIsInVzZVBlcmZvcm1hbmNlTWV0cmljcyIsInVzZVBlcmZvcm1hbmNlTW9uaXRvciIsInVzZVBlcmZvcm1hbmNlT3B0aW1pemF0aW9uIiwidXNlUGVyZm9ybWFuY2VUb2dnbGUiLCJ1c2VXQVNNUGVyZm9ybWFuY2UiLCJ3YXNtUGVyZm9ybWFuY2VXcmFwcGVyIiwid2l0aENheWxleVBlcmZvcm1hbmNlTW9uaXRvcmluZyIsIndpdGhUREFQZXJmb3JtYW5jZU1vbml0b3JpbmciXSwibWFwcGluZ3MiOiJBQUFBLHNDQUFzQzs7Ozs7Ozs7Ozs7O0lBTXBDQSw4QkFBOEI7ZUFBOUJBLDhEQUE4Qjs7SUFKdkJDLGFBQWE7ZUFBYkEsNEJBQWE7O0lBRGJDLDJCQUEyQjtlQUEzQkEsK0NBQTJCOztJQVdsQ0Msc0JBQXNCO2VBQXRCQSw4Q0FBc0I7O0lBTHRCQyw4QkFBOEI7ZUFBOUJBLDhEQUE4Qjs7SUFOTUMsa0JBQWtCO2VBQWxCQSxzQ0FBa0I7O0lBc0J0REMsaUJBQWlCO2VBQWpCQSxtQ0FBaUI7O0lBRmpCQyxxQkFBcUI7ZUFBckJBLHVDQUFxQjs7SUFEckJDLHFCQUFxQjtlQUFyQkEsdUNBQXFCOztJQUlyQkMsMEJBQTBCO2VBQTFCQSw0Q0FBMEI7O0lBRjFCQyxvQkFBb0I7ZUFBcEJBLHNDQUFvQjs7SUFHcEJDLGtCQUFrQjtlQUFsQkEsb0NBQWtCOztJQVpsQkMsc0JBQXNCO2VBQXRCQSw4Q0FBc0I7O0lBRXRCQywrQkFBK0I7ZUFBL0JBLHVEQUErQjs7SUFEL0JDLDRCQUE0QjtlQUE1QkEsb0RBQTRCOzs7b0NBYmtDOytCQUNsQztnREFNdkI7d0NBUUE7a0NBVUEifQ==

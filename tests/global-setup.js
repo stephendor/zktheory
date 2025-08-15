@@ -152,6 +152,31 @@ module.exports = async () => {
     }
   };
   
+  // Set up CI-specific configuration
+  global.__MATHEMATICAL_TESTING__ = true;
+  global.__PERFORMANCE_THRESHOLD_MS__ = parseInt(process.env.PERFORMANCE_THRESHOLD_MS || '100');
+  global.__MEMORY_THRESHOLD_MB__ = parseInt(process.env.MEMORY_THRESHOLD_MB || '50');
+  
+  // Initialize WASM testing environment
+  if (typeof globalThis !== 'undefined') {
+    // Mock WebAssembly for Node.js testing environment
+    if (typeof globalThis.WebAssembly === 'undefined') {
+      globalThis.WebAssembly = {
+        instantiate: () => Promise.resolve({ instance: { exports: {} } }),
+        compile: () => Promise.resolve({}),
+        Module: class MockWasmModule {}
+      };
+    }
+  }
+  
+  // Create performance data directory
+  const path = require('path');
+  const fs = require('fs');
+  const perfDataDir = path.join(process.cwd(), 'performance-data');
+  if (!fs.existsSync(perfDataDir)) {
+    fs.mkdirSync(perfDataDir, { recursive: true });
+  }
+  
   // Set up performance monitoring
   if (typeof performance !== 'undefined' && performance.mark) {
     performance.mark('test-suite-start');
@@ -160,5 +185,6 @@ module.exports = async () => {
   console.log('✅ Mathematical testing environment configured');
   console.log(`📊 Benchmark datasets: ${Object.keys(global.__BENCHMARK_DATA__).length} prepared`);
   console.log(`🎯 Mathematical precision: ${global.__MATHEMATICAL_PRECISION__.DEFAULT_TOLERANCE}`);
-  console.log(`⏱️  Performance monitoring: enabled\n`);
+  console.log(`⏱️  Performance monitoring: enabled`);
+  console.log(`🔧 CI configuration: Performance threshold ${global.__PERFORMANCE_THRESHOLD_MS__}ms, Memory threshold ${global.__MEMORY_THRESHOLD_MB__}MB\n`);
 };

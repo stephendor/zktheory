@@ -1,0 +1,20 @@
+{
+  "timestamp": "2025-08-15T04:07:55.343Z",
+  "environment": "test",
+  "totalDuration": 538,
+  "memoryDelta": {
+    "rss": 11960320,
+    "heapTotal": 7864320,
+    "heapUsed": 7673856,
+    "external": 31136,
+    "arrayBuffers": 31096
+  },
+  "thresholds": {
+    "performanceMs": 100,
+    "memoryMB": 50
+  },
+  "passed": {
+    "performance": false,
+    "memory": true
+  }
+}

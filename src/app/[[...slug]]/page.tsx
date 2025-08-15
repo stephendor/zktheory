@@ -15,21 +15,29 @@ export async function generateStaticParams(): Promise<{ slug?: string[] }[]> {
   const data = allContent();
   const paths = resolveStaticPaths(data);
   
-  return paths.map((path: string) => {
-    // Remove leading slash and split into segments
-    const slugSegments = path.startsWith('/') ? path.slice(1).split('/') : path.split('/');
-    // Filter out empty segments
-    const filteredSegments = slugSegments.filter(segment => segment.length > 0);
-    
-    // Handle root path case
-    if (filteredSegments.length === 0) {
-      return {}; // No slug for root path
-    }
-    
-    return {
-      slug: filteredSegments
-    };
-  });
+  return paths
+    .filter((path: string) => {
+      // Filter out static assets and API routes
+      return !path.match(/\.(woff|woff2|ttf|eot|svg|png|jpg|jpeg|gif|ico|css|js|map)$/i) &&
+             !path.startsWith('/api/') &&
+             !path.startsWith('/_next/') &&
+             !path.startsWith('/fonts/');
+    })
+    .map((path: string) => {
+      // Remove leading slash and split into segments
+      const slugSegments = path.startsWith('/') ? path.slice(1).split('/') : path.split('/');
+      // Filter out empty segments
+      const filteredSegments = slugSegments.filter(segment => segment.length > 0);
+      
+      // Handle root path case
+      if (filteredSegments.length === 0) {
+        return {}; // No slug for root path
+      }
+      
+      return {
+        slug: filteredSegments
+      };
+    });
 }
 
 // Generate metadata for each page
@@ -38,7 +46,29 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const resolvedParams = await params;
     const data = allContent();
     const urlPath = '/' + (resolvedParams.slug || []).join('/');
+    
+    // Skip static assets and API routes
+    if (urlPath.match(/\.(woff|woff2|ttf|eot|svg|png|jpg|jpeg|gif|ico|css|js|map)$/i) || 
+        urlPath.startsWith('/api/') || 
+        urlPath.startsWith('/_next/') ||
+        urlPath.startsWith('/fonts/')) {
+      return {
+        title: 'ZKTheory',
+        description: 'Mathematics, cryptography, and visualization tools',
+      };
+    }
+    
     const props = await resolveStaticProps(urlPath, data);
+    
+    // Check if props is null or undefined
+    if (!props) {
+      console.warn('No props returned for path:', urlPath);
+      return {
+        title: 'ZKTheory',
+        description: 'Mathematics, cryptography, and visualization tools',
+      };
+    }
+    
     const { page, site } = props;
     
     const title = seoGenerateTitle(page, site);
@@ -61,7 +91,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         const key = metaTag.property.replace('og:', '');
         openGraph[key] = metaTag.content;
       } else if (metaTag.property?.startsWith('twitter:')) {
-        const key = metaTag.property.replace('twitter:', '');
+        const key = metaTag.property.replace('og:', '');
         twitter[key] = metaTag.content;
       } else if (metaTag.property) {
         other[metaTag.property] = metaTag.content;
@@ -104,7 +134,47 @@ export default async function Page({ params }: PageProps) {
     const resolvedParams = await params;
     const data = allContent();
     const urlPath = '/' + (resolvedParams.slug || []).join('/');
+    
+    // Skip static assets and API routes
+    if (urlPath.match(/\.(woff|woff2|ttf|eot|svg|png|jpg|jpeg|gif|ico|css|js|map)$/i) || 
+        urlPath.startsWith('/api/') || 
+        urlPath.startsWith('/_next/') ||
+        urlPath.startsWith('/fonts/')) {
+      return (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Static Asset</h1>
+            <p className="text-gray-600 mb-8">
+              This is a static asset and cannot be rendered as a page.
+            </p>
+            <a href="/" className="text-blue-600 hover:text-blue-800 underline">
+              Return to Home
+            </a>
+          </div>
+        </div>
+      );
+    }
+    
     const props = await resolveStaticProps(urlPath, data);
+    
+    // Check if props is null or undefined
+    if (!props) {
+      console.warn('No props returned for path:', urlPath);
+      return (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Page Not Found</h1>
+            <p className="text-gray-600 mb-8">
+              The page you&apos;re looking for doesn&apos;t exist or there was an error loading it.
+            </p>
+            <a href="/" className="text-blue-600 hover:text-blue-800 underline">
+              Return to Home
+            </a>
+          </div>
+        </div>
+      );
+    }
+    
     const { page, site } = props;
     
     const { modelName } = page.__metadata;
@@ -132,11 +202,8 @@ export default async function Page({ params }: PageProps) {
           <p className="text-gray-600 mb-8">
             The page you&apos;re looking for doesn&apos;t exist or there was an error loading it.
           </p>
-          <a 
-            href="/" 
-            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Return Home
+          <a href="/" className="text-blue-600 hover:text-blue-800 underline">
+            Return to Home
           </a>
         </div>
       </div>

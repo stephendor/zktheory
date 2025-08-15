@@ -1,3 +1,113 @@
 [build]
   command = "python -m ensurepip --upgrade && python -m pip install -r requirements.txt && npm run build"
   publish = ".next"
+
+# CDN and Cache Optimization for zktheory mathematical platform
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Security headers
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+    # Cache control for general content
+    Cache-Control = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800"
+
+# Mathematical computation assets - long-term caching
+[[headers]]
+  for = "/api/mathematical/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    ETag = "true"
+
+# WASM files - very long-term caching
+[[headers]]
+  for = "/*.wasm"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "application/wasm"
+    ETag = "true"
+
+# Mathematical visualization assets
+[[headers]]
+  for = "/images/abstract-features/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, s-maxage=31536000"
+    ETag = "true"
+
+# Fonts - long-term caching
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Access-Control-Allow-Origin = "*"
+
+# Static mathematical content
+[[headers]]
+  for = "/notebooks/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, s-maxage=2592000"
+
+# JavaScript bundles - version-based caching
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    ETag = "true"
+
+# CSS files
+[[headers]]
+  for = "/_next/static/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    ETag = "true"
+
+# Mathematical data files
+[[headers]]
+  for = "/data/*.json"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, s-maxage=604800"
+    ETag = "true"
+
+# Service Worker - no caching
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
+# HTML pages - moderate caching with revalidation
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=300, s-maxage=3600"
+    ETag = "true"
+
+# API responses - short-term caching
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300, s-maxage=3600"
+    ETag = "true"
+
+# Redirects for better performance
+[[redirects]]
+  from = "/mathematical-tools"
+  to = "/tools"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/math-visualizations"
+  to = "/visualizations"
+  status = 301
+  force = true
+
+# SPA fallback for client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin"]}

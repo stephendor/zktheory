@@ -56,6 +56,49 @@ module.exports = async () => {
     }
   }
   
+  // Save performance data for CI analysis
+  try {
+    const path = require('path');
+    const fs = require('fs');
+    
+    const perfDataDir = path.join(process.cwd(), 'performance-data');
+    if (!fs.existsSync(perfDataDir)) {
+      fs.mkdirSync(perfDataDir, { recursive: true });
+    }
+    
+    // Save performance summary for CI
+    const performanceSummary = {
+      timestamp: new Date().toISOString(),
+      environment: 'test',
+      totalDuration,
+      memoryDelta,
+      thresholds: {
+        performanceMs: global.__PERFORMANCE_THRESHOLD_MS__ || 100,
+        memoryMB: global.__MEMORY_THRESHOLD_MB__ || 50
+      },
+      passed: {
+        performance: totalDuration < (global.__PERFORMANCE_THRESHOLD_MS__ || 100),
+        memory: heapUsedMB < (global.__MEMORY_THRESHOLD_MB__ || 50)
+      }
+    };
+    
+    const summaryPath = path.join(perfDataDir, 'test-summary.json');
+    fs.writeFileSync(summaryPath, JSON.stringify(performanceSummary, null, 2));
+    console.log(`📊 Performance summary saved to ${summaryPath}`);
+    
+    // Check for performance regressions
+    if (!performanceSummary.passed.performance) {
+      console.warn(`⚠️  Performance regression: ${totalDuration}ms exceeds threshold of ${performanceSummary.thresholds.performanceMs}ms`);
+    }
+    
+    if (!performanceSummary.passed.memory) {
+      console.warn(`⚠️  Memory usage regression: ${heapUsedMB}MB exceeds threshold of ${performanceSummary.thresholds.memoryMB}MB`);
+    }
+    
+  } catch (saveError) {
+    console.warn('⚠️  Error saving performance data:', saveError.message);
+  }
+  
   // Cleanup global variables
   try {
     delete global.__MATHEMATICAL_CONSTANTS__;
@@ -66,6 +109,9 @@ module.exports = async () => {
     delete global.__BENCHMARK_DATA__;
     delete global.__TEST_TIMEOUTS__;
     delete global.__STATISTICAL_UTILS__;
+    delete global.__MATHEMATICAL_TESTING__;
+    delete global.__PERFORMANCE_THRESHOLD_MS__;
+    delete global.__MEMORY_THRESHOLD_MB__;
   } catch (cleanupError) {
     console.warn('⚠️  Error during cleanup:', cleanupError.message);
   }
