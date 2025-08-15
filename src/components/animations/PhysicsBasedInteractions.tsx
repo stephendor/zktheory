@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useTransform, useSpring, animate } from 'framer-motion';
 import { useGesture } from '@use-gesture/react';
 import { animated, useSpringValue } from '@react-spring/web';
 
@@ -41,10 +41,10 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
   // Physics simulation values
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const scale = useSpringValue(1);
-  const rotation = useSpringValue(0);
+  const scale = useSpring(1, { stiffness: 300, damping: 30 });
   const magneticField = useSpringValue(0);
   const harmonicOscillation = useSpringValue(0);
+  const [harmonicsVis, setHarmonicsVis] = useState<number[]>([]);
 
   // Mathematical physics constants
   const physicsConstants = {
@@ -119,7 +119,7 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
         // Apply magnetic attraction
         x.set(x.get() + fx * 0.1);
         y.set(y.get() + fy * 0.1);
-        magneticField.start(field);
+  magneticField.start(field);
         
         // Visual feedback for magnetic field strength
         if (field > 0.7) {
@@ -135,7 +135,7 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
           // Point feels "connected" during drag
           x.set(mx * physicsState.elasticity);
           y.set(my * physicsState.elasticity);
-          scale.start(1.1);
+          scale.set(1.1);
           
           // Magnetic trail effect
           if (Math.abs(vx) > 50 || Math.abs(vy) > 50) {
@@ -145,7 +145,7 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
           // Elastic snap back with mathematical precision
           x.set(0);
           y.set(0);
-          scale.start(1);
+          scale.set(1);
           magneticField.start(0);
         }
       }
@@ -165,7 +165,7 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
     const [deformation, setDeformation] = useState({ x: 0, y: 0 });
 
     const gestures = useGesture({
-      onDrag: ({ movement: [mx, my], velocity: [vx, vy], down, force }) => {
+      onDrag: ({ movement: [mx, my], velocity: [vx, vy], down }) => {
         if (down) {
           // Calculate elastic resistance based on distance
           const distance = Math.sqrt(mx * mx + my * my);
@@ -181,7 +181,7 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
           setDeformation({ x: dampedX, y: dampedY });
           
           // Visual feedback for elastic strain
-          scale.start(1 + resistance * 0.2);
+          scale.set(1 + resistance * 0.2);
           
           // Elastic strain visualization
           if (resistance > 0.8) {
@@ -202,15 +202,15 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
           setTimeout(() => {
             x.set(0);
             y.set(0);
-            scale.start(1);
+            scale.set(1);
             setDeformation({ x: 0, y: 0 });
           }, 200);
         }
       },
 
-      onPinch: ({ offset: [scale], direction: [dx, dy] }) => {
+      onPinch: ({ offset: [pinchScale] }) => {
         // Elastic scaling feels like stretching material
-        const elasticScale = 1 + (scale - 1) * physicsState.elasticity;
+  const elasticScale = 1 + (pinchScale - 1) * physicsState.elasticity;
         setTension(physicsConstants.elastic.tension * elasticScale);
         
         onPhysicsInteraction?.('elastic-scaling', {
@@ -228,7 +228,7 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
     const [flowVelocity, setFlowVelocity] = useState({ vx: 0, vy: 0 });
     const [turbulence, setTurbulence] = useState(0);
 
-    const gestures = useGesture({
+  const gestures = useGesture({
       onDrag: ({ movement: [mx, my], velocity: [vx, vy], down }) => {
         if (down) {
           // Fluid resistance based on velocity
@@ -337,12 +337,12 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
           
           x.set(inertialX);
           y.set(inertialY);
-          scale.start(1 + physicsState.mass * 0.1);
+          scale.set(1 + physicsState.mass * 0.1);
         } else {
           // Return to gravitational equilibrium
           x.set(0);
           y.set(0);
-          scale.start(1);
+          scale.set(1);
         }
       }
     });
@@ -352,8 +352,7 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
 
   // Harmonic mathematical resonance
   const HarmonicPhysics = () => {
-    const [resonancePhase, setResonancePhase] = useState(0);
-    const [harmonics, setHarmonics] = useState<number[]>([]);
+  const [resonancePhase, setResonancePhase] = useState(0);
 
     useEffect(() => {
       // Set up harmonic oscillation
@@ -370,7 +369,7 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
           const newHarmonics = mathContext.relationships.map((_, i) => 
             Math.sin(newPhase * (i + 1)) * (physicsConstants.harmonic.amplitude / (i + 1))
           );
-          setHarmonics(newHarmonics);
+          setHarmonicsVis(newHarmonics);
         }
       }, 50);
 
@@ -386,20 +385,20 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
           
           // Maximum amplitude at resonance
           if (Math.abs(resonanceRatio - 1) < 0.1) {
-            scale.start(1.5);
+            scale.set(1.5);
             onPhysicsInteraction?.('harmonic-resonance', {
               resonanceRatio,
               amplitude: 'maximum'
             });
           } else {
-            scale.start(1 + Math.abs(mx + my) * 0.001);
+            scale.set(1 + Math.abs(mx + my) * 0.001);
           }
           
           x.set(mx * 0.5);
           y.set(my * 0.5);
         } else {
           // Return to natural harmonic motion
-          scale.start(1);
+          scale.set(1);
           x.set(0);
           y.set(0);
         }
@@ -457,7 +456,6 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
         transform: `scale(${1 + physicsState.mass * 0.1})`
       },
       harmonic: {
-        filter: `hue-rotate(${resonancePhase * 180 / Math.PI}deg)`,
         transform: `translateY(${harmonicOscillation.get()}px)`
       }
     };
@@ -469,25 +467,21 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
     <div
       ref={containerRef}
       {...physicsHandlers}
-      style={{
-        position: 'relative',
-        display: 'inline-block',
-        cursor: 'grab',
-        touchAction: 'none'
-      }}
+      className="relative inline-block cursor-grab touch-none"
     >
-      <motion.div
+    <motion.div
         style={{
           x,
           y,
           scale,
-          rotate: rotation,
+          // framer-motion rotate expects a number or MotionValue<number>; use 0 for now
+          rotate: 0,
           ...getPhysicsVisualization()
         }}
         transition={{
           type: 'spring',
-          stiffness: physicsConstants[physicsType]?.tension || 300,
-          damping: physicsConstants[physicsType]?.friction || 30,
+      stiffness: (physicsType === 'elastic' ? physicsConstants.elastic.tension : 300),
+      damping: (physicsType === 'elastic' ? physicsConstants.elastic.friction : 30),
           mass: physicsState.mass
         }}
       >
@@ -514,9 +508,9 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
       )}
 
       {/* Harmonic visualization */}
-      {physicsType === 'harmonic' && harmonics.length > 0 && (
-        <div style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)' }}>
-          {harmonics.map((amplitude, i) => (
+      {physicsType === 'harmonic' && harmonicsVis.length > 0 && (
+        <div className="absolute top-full left-1/2 -translate-x-1/2">
+          {harmonicsVis.map((amplitude, i) => (
             <motion.div
               key={i}
               style={{
@@ -537,16 +531,7 @@ export const PhysicsBasedInteractions: React.FC<PhysicsProps> = ({
 
       {/* Physics state indicator for debugging */}
       {process.env.NODE_ENV === 'development' && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '-30px',
-            left: '0',
-            fontSize: '10px',
-            color: 'rgba(255, 255, 255, 0.7)',
-            pointerEvents: 'none'
-          }}
-        >
+        <div className="absolute -top-8 left-0 text-[10px] text-white/70 pointer-events-none">
           {physicsType}: m={physicsState.mass.toFixed(1)} q={physicsState.charge.toFixed(1)}
         </div>
       )}

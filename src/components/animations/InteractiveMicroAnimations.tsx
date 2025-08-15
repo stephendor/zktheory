@@ -115,14 +115,16 @@ export const InteractiveMicroAnimations: React.FC<MicroAnimationProps> = ({
 
   // Gesture handlers with mathematical physics
   const bind = useGesture({
-    onHover: ({ hovering }) => {
-      setIsHovered(hovering);
+    onHover: ({ hovering = false }) => {
+      setIsHovered(!!hovering);
       
       if (hovering) {
         // Mathematical "breathing" animation for points
         if (animationType === 'point') {
-          springScale.start(interactionStyle.hover.scale);
-          springGlow.start(interactionStyle.hover.glow);
+          const hoverScale = (interactionStyle as any)?.hover?.scale as number | undefined;
+          const hoverGlow = (interactionStyle as any)?.hover?.glow as number | undefined;
+          if (typeof hoverScale === 'number') springScale.start(hoverScale);
+          if (typeof hoverGlow === 'number') springGlow.start(hoverGlow);
           
           // Gentle pulsing that feels alive
           const breathe = () => {

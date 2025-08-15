@@ -1,0 +1,48 @@
+{
+  "root": true,
+  "env": {
+    "es2021": true,
+    "node": true
+  },
+  "extends": ["eslint:recommended"],
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "script"
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/*.test.js",
+        "**/*.test.ts",
+        "tests/**/*.js",
+        "tests/**/*.ts"
+      ],
+      "env": {
+        "jest": true,
+        "node": true,
+        "browser": true
+      },
+      "globals": {
+        "performance": "readonly",
+        "console": "readonly",
+        "jest": "readonly",
+        "describe": "readonly",
+        "test": "readonly",
+        "expect": "readonly",
+        "beforeAll": "readonly",
+        "afterAll": "readonly",
+        "require": "readonly"
+      }
+    },
+    {
+      "files": ["jest.config.js"],
+      "env": { "node": true },
+      "parserOptions": { "sourceType": "script" },
+      "globals": {
+        "require": "readonly",
+        "module": "readonly",
+        "process": "readonly"
+      }
+    }
+  ]
+}

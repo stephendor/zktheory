@@ -10,7 +10,7 @@ import DashboardControls from './DashboardControls';
 const PerformanceDashboard: React.FC = () => {
   const { isEnabled, toggle } = usePerformanceToggle();
   const { summary } = usePerformanceMetrics();
-  const { startTimer } = usePerformanceMonitor('dashboard_test', 'testing');
+  const { startTimer } = usePerformanceMonitor('dashboard_test', 'rendering');
 
   // Test function to generate performance metrics
   const runPerformanceTest = () => {

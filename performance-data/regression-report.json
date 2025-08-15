@@ -1,0 +1,31 @@
+{
+  "timestamp": "2025-08-15T16:25:46.610Z",
+  "environment": "development",
+  "commit": "unknown",
+  "branch": "unknown",
+  "summary": {
+    "totalTests": 17,
+    "warnings": 0,
+    "critical": 0,
+    "improvements": 0
+  },
+  "regressions": [],
+  "improvements": [],
+  "newBaselines": [
+    {
+      "testName": "test-summary.json_summary",
+      "source": "test-summary.json",
+      "baseline": {
+        "totalDuration": 3450,
+        "memoryDelta": {
+          "rss": 4587520,
+          "heapTotal": 3407872,
+          "heapUsed": 675816,
+          "external": 31579,
+          "arrayBuffers": 25915
+        }
+      }
+    }
+  ],
+  "severity": "pass"
+}

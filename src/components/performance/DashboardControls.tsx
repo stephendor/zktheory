@@ -288,12 +288,7 @@ const DashboardControls: React.FC = () => {
                 {performanceMetrics.isBufferFull() ? 'Full' : 'OK'}
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">Active Hooks:</span>
-              <span className="text-white">
-                {performanceMetrics.getActiveHooks().length}
-              </span>
-            </div>
+            {/* Active hooks not tracked in current collector */}
           </div>
         </div>
       </div>

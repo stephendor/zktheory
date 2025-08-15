@@ -226,7 +226,7 @@ test.describe('Advanced Mathematical Workflows', () => {
       // Create curve with large prime modulus
       await page.click('[data-testid="create-custom-curve"]');
       await page.fill('[data-testid="parameter-a-input"]', '1');
-      await page.fill('[data-testid="parameter-b-input']', '1');
+  await page.fill('[data-testid="parameter-b-input"]', '1');
       await page.fill('[data-testid="prime-p-input"]', '2147483647'); // Large Mersenne prime
 
       await page.click('[data-testid="create-curve-button"]');

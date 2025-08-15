@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "tests",
+    "__tests__",
+    "src/__tests__/**",
+    "e2e",
+    "playwright.config.ts",
+  "src/design-system/tests/**"
+  ],
+  "compilerOptions": {
+    "noEmit": true
+  }
+}

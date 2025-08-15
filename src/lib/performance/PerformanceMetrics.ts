@@ -5,10 +5,12 @@ export class PerformanceMetricsCollector {
   private static instance: PerformanceMetricsCollector;
   private buffer: MetricsBuffer;
   private enabled: boolean;
+  private sampleRate: number;
 
   private constructor() {
     this.buffer = new MetricsBuffer();
     this.enabled = true;
+    this.sampleRate = 1.0;
   }
 
   static getInstance(): PerformanceMetricsCollector {
@@ -22,6 +24,10 @@ export class PerformanceMetricsCollector {
     // Ensure timestamp exists
     if (!metric.timestamp) metric.timestamp = Date.now();
     if (this.enabled) {
+      // Apply simple sampling based on configured sampleRate
+      if (this.sampleRate < 1) {
+        if (Math.random() > this.sampleRate) return;
+      }
       this.buffer.addMetric(metric);
     }
   }
@@ -110,6 +116,30 @@ export class PerformanceMetricsCollector {
         end();
       }
     };
+  }
+
+  // Sampling controls
+  setSampleRate(rate: number): void {
+    if (rate >= 0 && rate <= 1) {
+      this.sampleRate = rate;
+    }
+  }
+
+  getSampleRate(): number {
+    return this.sampleRate;
+  }
+
+  // Buffer stats proxies for UI
+  getBufferSize(): number {
+    return this.buffer.getBufferSize();
+  }
+
+  getBufferCapacity(): number {
+    return this.buffer.getBufferCapacity();
+  }
+
+  isBufferFull(): boolean {
+    return this.buffer.isBufferFull();
   }
 }
 

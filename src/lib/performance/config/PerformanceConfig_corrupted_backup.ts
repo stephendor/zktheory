@@ -149,7 +149,9 @@ export class PerformanceConfigManager {
     const envConfig: Partial<PerformanceConfig> = {};
 
     // Monitoring configuration
-    if (getEnvVar('PERFORMANCE_MONITORING_ENABLED') !== undefined) {
+  const getEnvVar = (key: string) => safeGetEnv(key);
+
+  if (getEnvVar('PERFORMANCE_MONITORING_ENABLED') !== undefined) {
       envConfig.monitoring = {
         enabled: getEnvVar('PERFORMANCE_MONITORING_ENABLED') === 'true',
         sampleRate: 1.0, // Default value
@@ -158,7 +160,7 @@ export class PerformanceConfigManager {
       };
     }
 
-    if (getEnvVar('PERFORMANCE_SAMPLE_RATE') !== undefined) {
+  if (getEnvVar('PERFORMANCE_SAMPLE_RATE') !== undefined) {
       const sampleRate = parseFloat(getEnvVar('PERFORMANCE_SAMPLE_RATE') || '1.0');
       if (!isNaN(sampleRate) && sampleRate >= 0 && sampleRate <= 1) {
         if (!envConfig.monitoring) {
@@ -173,7 +175,7 @@ export class PerformanceConfigManager {
       }
     }
 
-    if (getEnvVar('PERFORMANCE_BUFFER_SIZE') !== undefined) {
+  if (getEnvVar('PERFORMANCE_BUFFER_SIZE') !== undefined) {
       const bufferSize = parseInt(getEnvVar('PERFORMANCE_BUFFER_SIZE') || '10000');
       if (!isNaN(bufferSize) && bufferSize > 0) {
         if (!envConfig.monitoring) {
@@ -189,7 +191,7 @@ export class PerformanceConfigManager {
     }
 
     // Alert configuration
-    if (getEnvVar('PERFORMANCE_ALERT_ENABLED') !== undefined) {
+  if (getEnvVar('PERFORMANCE_ALERT_ENABLED') !== undefined) {
       envConfig.alerts = {
         enabled: getEnvVar('PERFORMANCE_ALERT_ENABLED') === 'true',
         anomalyDetection: true, // Default value
@@ -197,7 +199,7 @@ export class PerformanceConfigManager {
       };
     }
 
-    if (getEnvVar('PERFORMANCE_ANOMALY_DETECTION') !== undefined) {
+  if (getEnvVar('PERFORMANCE_ANOMALY_DETECTION') !== undefined) {
       if (!envConfig.alerts) {
         envConfig.alerts = {
           enabled: true,
@@ -209,7 +211,7 @@ export class PerformanceConfigManager {
     }
 
     // Export configuration
-    if (getEnvVar('PERFORMANCE_EXPORT_ENABLED') !== undefined) {
+  if (getEnvVar('PERFORMANCE_EXPORT_ENABLED') !== undefined) {
       envConfig.export = {
         enabled: getEnvVar('PERFORMANCE_EXPORT_ENABLED') === 'true',
         autoExport: false, // Default value
@@ -217,7 +219,7 @@ export class PerformanceConfigManager {
       };
     }
 
-    if (getEnvVar('PERFORMANCE_AUTO_EXPORT') !== undefined) {
+  if (getEnvVar('PERFORMANCE_AUTO_EXPORT') !== undefined) {
       if (!envConfig.export) {
         envConfig.export = {
           enabled: true,
@@ -229,7 +231,7 @@ export class PerformanceConfigManager {
     }
 
     // Optimization configuration
-    if (getEnvVar('PERFORMANCE_AUTO_CLEANUP') !== undefined) {
+  if (getEnvVar('PERFORMANCE_AUTO_CLEANUP') !== undefined) {
       envConfig.optimization = {
         autoCleanup: getEnvVar('PERFORMANCE_AUTO_CLEANUP') === 'true',
         cleanupInterval: 10 * 60 * 1000, // Default value
@@ -237,7 +239,7 @@ export class PerformanceConfigManager {
       };
     }
 
-    if (getEnvVar('PERFORMANCE_MEMORY_THRESHOLD') !== undefined) {
+  if (getEnvVar('PERFORMANCE_MEMORY_THRESHOLD') !== undefined) {
       const memoryThreshold = parseInt(getEnvVar('PERFORMANCE_MEMORY_THRESHOLD') || '100');
       if (!isNaN(memoryThreshold) && memoryThreshold > 0) {
         if (!envConfig.optimization) {

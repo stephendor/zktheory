@@ -1,0 +1,7 @@
+# Ignore build outputs and caches
+.next/
+coverage/
+node_modules/
+public/
+**/*.d.ts
+src/**/*.stories.*

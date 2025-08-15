@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-dom-props */
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import { useSpring, animated, useSpringRef, useChain } from '@react-spring/web';
@@ -165,7 +166,7 @@ export const CelebrationSequences: React.FC<CelebrationProps> = ({
           }, index * 100);
         });
 
-        setTimeout(onComplete, 1500);
+  setTimeout(() => onComplete?.(), 1500);
       }
     }, [trigger]);
 
@@ -254,7 +255,7 @@ export const CelebrationSequences: React.FC<CelebrationProps> = ({
           revealSacredGeometry();
         }, 1600);
 
-        setTimeout(onComplete, 3000);
+  setTimeout(() => onComplete?.(), 3000);
       }
     }, [trigger]);
 
@@ -464,7 +465,7 @@ export const CelebrationSequences: React.FC<CelebrationProps> = ({
           }, 2000);
         }, 500);
 
-        setTimeout(onComplete, 2000);
+  setTimeout(() => onComplete?.(), 2000);
       }
     }, [trigger]);
 
@@ -487,14 +488,9 @@ export const CelebrationSequences: React.FC<CelebrationProps> = ({
           transform: 'translate(-50%, -50%)',
           pointerEvents: 'none'
         }}
-        initial={{ opacity: 0, scale: 0, rotate: -180 }}
-        animate={{ opacity: 1, scale: 1, rotate: 0 }}
-        transition={{ 
-          duration: 1.5, 
-          ease: 'backOut',
-          times: [0, 0.6, 1],
-          scale: [0, 1.3, 1]
-        }}
+  initial={{ opacity: 0, scale: 0, rotate: -180 }}
+  animate={{ opacity: 1, scale: [0, 1.3, 1], rotate: 0 }}
+  transition={{ duration: 1.5, ease: 'backOut' }}
       >
         <div
           style={{

@@ -94,13 +94,13 @@ export const MathematicalCreatures: React.FC<CreatureProps> = ({
 
   // Dot Sprite: Curious point that demonstrates mathematical operations
   const DotSprite = () => {
-    const [isdemonstrating, setIsdemonstrating] = useState(false);
+    const [isDemonstrating, setIsDemonstrating] = useState(false);
     const [trailParticles, setTrailParticles] = useState<Array<{id: string, x: number, y: number, age: number}>>([]);
 
     useEffect(() => {
       // Gentle bounce when idle
       const idleBounce = setInterval(() => {
-        if (!isDemo strating && behavior === 'guide') {
+        if (!isDemonstrating && behavior === 'guide') {
           api.start({
             y: position.y - 3,
             onRest: () => api.start({ y: position.y })
@@ -112,47 +112,47 @@ export const MathematicalCreatures: React.FC<CreatureProps> = ({
     }, []);
 
     const demonstratePointAddition = () => {
-      setIsDemo strating(true);
-      
-      // Create dance partner
-      const partner = { x: position.x + 40, y: position.y };
-      
+      setIsDemonstrating(true);
+      // Dance sequence: approach, attraction, result, return
       // Dance sequence: approach, dance, result
       api.start({
         x: position.x + 20,
         y: position.y - 5,
         scale: 1.2,
         glow: 0.8,
-        config: { duration: 800 }
-      }).then(() => {
-        // Magnetic attraction effect
-        api.start({
-          x: position.x + 30,
-          y: position.y,
-          scale: 1.5,
-          glow: 1,
-          config: { duration: 600 }
-        }).then(() => {
-          // Result celebration
+        config: { duration: 800 },
+        onRest: () => {
+          // Magnetic attraction effect
           api.start({
-            x: position.x + 35,
-            y: position.y - 10,
-            scale: 1.1,
-            glow: 0.6,
-            rotate: 360,
-            config: { duration: 400 }
-          }).then(() => {
-            // Return to position
-            api.start({
-              x: position.x,
-              y: position.y,
-              scale: 1,
-              glow: 0,
-              rotate: 0
-            });
-            setIsDemo strating(false);
+            x: position.x + 30,
+            y: position.y,
+            scale: 1.5,
+            glow: 1,
+            config: { duration: 600 },
+            onRest: () => {
+              // Result celebration
+              api.start({
+                x: position.x + 35,
+                y: position.y - 10,
+                scale: 1.1,
+                glow: 0.6,
+                rotate: 360,
+                config: { duration: 400 },
+                onRest: () => {
+                  // Return to position
+                  api.start({
+                    x: position.x,
+                    y: position.y,
+                    scale: 1,
+                    glow: 0,
+                    rotate: 0
+                  });
+                  setIsDemonstrating(false);
+                }
+              });
+            }
           });
-        });
+        }
       });
 
       onInteraction?.(type, 'point-addition-demo');
@@ -191,73 +191,43 @@ export const MathematicalCreatures: React.FC<CreatureProps> = ({
             width: '4px',
             height: '4px',
             borderRadius: '50%',
-            background: 'rgba(255, 255, 255, 0.9)'
+            background: 'rgba(255, 255, 255, 0.9)',
+            pointerEvents: 'none'
           }}
           animate={{
             scale: [1, 1.2, 1],
-            opacity: [0.8, 1, 0.8]
+            opacity: [0.9, 1, 0.9]
           }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut'
-          }}
+          transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
         />
-
-        {/* Sparkle trail during movement */}
-        {trailParticles.map(particle => (
-          <motion.div
-            key={particle.id}
-            style={{
-              position: 'absolute',
-              width: '3px',
-              height: '3px',
-              borderRadius: '50%',
-              background: personality.colors[2],
-              left: `${particle.x - position.x}px`,
-              top: `${particle.y - position.y}px`,
-              pointerEvents: 'none'
-            }}
-            animate={{
-              opacity: [1, 0],
-              scale: [1, 0.5]
-            }}
-            transition={{
-              duration: 0.8,
-              ease: 'easeOut'
-            }}
-          />
-        ))}
       </animated.div>
     );
   };
 
-  // Curvy: Curve companion that rides along mathematical curves
+  // Curve Companion: Follows along curves with flowing motion
   const CurveCompanion = () => {
     const [isRiding, setIsRiding] = useState(false);
-    const [currentPath, setCurrentPath] = useState('');
 
-    const rideAlongCurve = (curvePath: string) => {
+    const rideAlongCurve = (curveId: string) => {
+      if (isRiding) return;
       setIsRiding(true);
-      setCurrentPath(curvePath);
-      
-      // Follow curve with smooth flowing motion
-      const curveLength = 200; // Approximate curve length
+
       const duration = 3000;
-      
-      for (let i = 0; i <= 20; i++) {
-        const progress = i / 20;
-        const delay = (duration / 20) * i;
-        
+      const steps = 20;
+
+      for (let i = 0; i <= steps; i++) {
+        const progress = i / steps;
+        const delay = (duration / steps) * i;
+
         setTimeout(() => {
           const curveX = position.x + Math.sin(progress * Math.PI * 2) * 50;
           const curveY = position.y + Math.cos(progress * Math.PI) * 20;
-          
+
           api.start({
             x: curveX,
             y: curveY,
             rotate: progress * 360,
-            glow: Math.sin(progress * Math.PI) * 0.8,
+            glow: Math.max(0, Math.sin(progress * Math.PI)) * 0.8,
             config: { tension: 200, friction: 20 }
           });
         }, delay);
@@ -265,15 +235,9 @@ export const MathematicalCreatures: React.FC<CreatureProps> = ({
 
       setTimeout(() => {
         setIsRiding(false);
-        api.start({
-          x: position.x,
-          y: position.y,
-          rotate: 0,
-          glow: 0
-        });
-      }, duration);
-
-      onInteraction?.(type, 'curve-ride-demo');
+        api.start({ x: position.x, y: position.y, rotate: 0, glow: 0 });
+        onInteraction?.(type, 'curve-ride-demo');
+      }, duration + 50);
     };
 
     return (
@@ -303,15 +267,8 @@ export const MathematicalCreatures: React.FC<CreatureProps> = ({
             border: `2px solid ${personality.colors[2]}`,
             opacity: 0.6
           }}
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.6, 0.9, 0.6]
-          }}
-          transition={{
-            duration: 2.5,
-            repeat: Infinity,
-            ease: 'easeInOut'
-          }}
+          animate={{ scale: [1, 1.1, 1], opacity: [0.6, 0.9, 0.6] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         />
 
         {/* Wisdom emanation */}
@@ -327,16 +284,8 @@ export const MathematicalCreatures: React.FC<CreatureProps> = ({
               top: `${20 + i * 10}%`,
               left: `${30 + i * 15}%`
             }}
-            animate={{
-              opacity: [0, 1, 0],
-              y: [0, -10, -20]
-            }}
-            transition={{
-              duration: 1.5,
-              delay: i * 0.3,
-              repeat: Infinity,
-              ease: 'easeOut'
-            }}
+            animate={{ opacity: [0, 1, 0], y: [0, -10, -20] }}
+            transition={{ duration: 1.5, delay: i * 0.3, repeat: Infinity, ease: 'easeOut' }}
           />
         ))}
       </animated.div>
@@ -356,15 +305,12 @@ export const MathematicalCreatures: React.FC<CreatureProps> = ({
         rotate: mathContext.errorState ? -15 : 15,
         scale: 1.1,
         glow: 0.5,
-        config: { duration: 400 }
-      }).then(() => {
-        // Return to normal position
-        api.start({
-          rotate: 0,
-          scale: 1,
-          glow: 0
-        });
-        setIsPointing(false);
+        config: { duration: 400 },
+        onRest: () => {
+          // Return to normal position
+          api.start({ rotate: 0, scale: 1, glow: 0 });
+          setIsPointing(false);
+        }
       });
 
       onInteraction?.(type, 'equation-guidance');
@@ -550,17 +496,17 @@ export const MathematicalCreatures: React.FC<CreatureProps> = ({
         scale: 1.3,
         rotate: 180,
         glow: 1,
-        config: { duration: 600 }
-      }).then(() => {
-        setCurrentShape(nextShape);
-        api.start({
-          scale: 1,
-          rotate: 0,
-          glow: 0.3,
-          config: { duration: 400 }
-        }).then(() => {
-          setIsMorphing(false);
-        });
+        config: { duration: 600 },
+        onRest: () => {
+          setCurrentShape(nextShape);
+          api.start({
+            scale: 1,
+            rotate: 0,
+            glow: 0.3,
+            config: { duration: 400 },
+            onRest: () => setIsMorphing(false)
+          });
+        }
       });
 
       onInteraction?.(type, `morph-to-${nextShape}`);
@@ -672,9 +618,12 @@ export const MathematicalCreatures: React.FC<CreatureProps> = ({
         setCreatureState(prev => ({ ...prev, mood: 'wise' }));
         // Gentle pulsing to draw attention
         api.start({
-          glow: [0, 0.6, 0],
-          scale: [1, 1.05, 1],
-          config: { duration: 1000 }
+          glow: 0.6,
+          scale: 1.05,
+          config: { duration: 500 },
+          onRest: () => {
+            api.start({ glow: 0, scale: 1, config: { duration: 500 } });
+          }
         });
         break;
     }
@@ -704,20 +653,21 @@ export const MathematicalCreatures: React.FC<CreatureProps> = ({
 };
 
 // Creature manager for orchestrating multiple creatures
+type CreatureSpec = {
+  type: 'dot' | 'curvy' | 'professor-hoot' | 'morphie';
+  position: { x: number; y: number };
+  behavior: 'guide' | 'demonstrate' | 'celebrate' | 'encourage' | 'hint';
+};
 export const CreatureManager: React.FC<{
   activeBehavior: string;
   mathContext: any;
   onCreatureInteraction?: (creature: string, action: string) => void;
 }> = ({ activeBehavior, mathContext, onCreatureInteraction }) => {
-  const [activeCreatures, setActiveCreatures] = useState<Array<{
-    type: 'dot' | 'curvy' | 'professor-hoot' | 'morphie';
-    position: { x: number; y: number };
-    behavior: 'guide' | 'demonstrate' | 'celebrate' | 'encourage' | 'hint';
-  }>>([]);
+  const [activeCreatures, setActiveCreatures] = useState<CreatureSpec[]>([]);
 
   useEffect(() => {
-    // Activate appropriate creatures based on math context
-    const newCreatures = [];
+  // Activate appropriate creatures based on math context
+  const newCreatures: CreatureSpec[] = [];
 
     if (mathContext.operation === 'point-addition') {
       newCreatures.push({
