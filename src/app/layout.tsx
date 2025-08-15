@@ -81,6 +81,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <NavigationProvider>
+          {/* Quick link to Perf Live */}
+          <div className="fixed top-2 right-2 z-50">
+            <a
+              href="/test/perf-live"
+              className="inline-block px-2 py-1 bg-gray-800 text-white rounded-md border border-gray-700 text-xs hover:bg-gray-700"
+            >Perf Live</a>
+          </div>
           {children}
         </NavigationProvider>
 

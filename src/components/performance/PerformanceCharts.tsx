@@ -23,6 +23,7 @@ const PerformanceCharts: React.FC = () => {
   const [timeWindowMs, setTimeWindowMs] = useState<number>(5 * 60 * 1000); // default 5m
   const [smoothing, setSmoothing] = useState<number>(1); // moving avg window in buckets
   const [paused, setPaused] = useState<boolean>(false);
+  const [hasMemoryAPI, setHasMemoryAPI] = useState<boolean>(true);
 
   // Load chart libraries only on client after mount
   useEffect(() => {
@@ -43,6 +44,17 @@ const PerformanceCharts: React.FC = () => {
     return () => {
       mounted = false;
     };
+  }, []);
+
+  // Detect memory API availability (Chrome-only)
+  useEffect(() => {
+    try {
+      const anyPerf: any = typeof performance !== 'undefined' ? (performance as any) : undefined;
+      const supported = !!(anyPerf && anyPerf.memory && typeof anyPerf.memory.usedJSHeapSize === 'number');
+      setHasMemoryAPI(supported);
+    } catch {
+      setHasMemoryAPI(false);
+    }
   }, []);
 
   // Moving average smoothing helper
@@ -157,12 +169,9 @@ const PerformanceCharts: React.FC = () => {
       const memoryDataset = {
         label: 'Memory Usage (MB)',
         data: memorySmoothed,
-        backgroundColor: [
-          'rgba(34, 197, 94, 0.8)',
-          'rgba(59, 130, 246, 0.8)',
-          'rgba(245, 158, 11, 0.8)',
-          'rgba(239, 68, 68, 0.8)'
-        ]
+        backgroundColor: ['rgba(59, 130, 246, 0.15)'],
+        borderColor: 'rgb(59, 130, 246)',
+        type: 'line' as const
       };
 
       const performanceDataset = {
@@ -334,7 +343,7 @@ const PerformanceCharts: React.FC = () => {
           <h3 className="text-lg font-medium text-gray-200 mb-4">Memory Usage</h3>
           <div className="h-64">
             {charts && chartData.memory.datasets.length > 0 && chartData.memory.labels.length > 0 ? (
-              <charts.Bar 
+              <charts.Line 
                 data={chartData.memory as any} 
                 options={{
                   ...chartOptions,
@@ -350,6 +359,11 @@ const PerformanceCharts: React.FC = () => {
               </div>
             )}
           </div>
+          {!hasMemoryAPI && (
+            <div className="mt-2 text-xs text-yellow-300">
+              Memory metrics require Chrome (performance.memory).
+            </div>
+          )}
         </div>
 
         {/* Performance Score Chart */}

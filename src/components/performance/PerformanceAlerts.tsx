@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { usePerformanceMetrics } from '../../lib/performance';
 import { Alert } from '../../lib/performance/types';
 
@@ -8,14 +8,47 @@ const PerformanceAlerts: React.FC = () => {
   const { metrics } = usePerformanceMetrics();
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [showResolved, setShowResolved] = useState(false);
+  const [muted, setMuted] = useState(false);
+  const [windowMs, setWindowMs] = useState<number>(5 * 60 * 1000); // default 5m
+  const [maxAlerts, setMaxAlerts] = useState<number>(50);
+  const lastEmittedRef = useRef<Map<string, number>>(new Map());
+  const ANOMALY_COOLDOWN_MS = 45000; // 45 seconds per metric-id
+
+  // Persist controls to localStorage and hydrate on mount
+  useEffect(() => {
+    try {
+      const lsMuted = localStorage.getItem('perfAlerts.muted');
+      const lsWindow = localStorage.getItem('perfAlerts.windowMs');
+      const lsMax = localStorage.getItem('perfAlerts.maxAlerts');
+      if (lsMuted !== null) setMuted(lsMuted === '1');
+      if (lsWindow !== null) {
+        const v = parseInt(lsWindow, 10);
+        if (!Number.isNaN(v)) setWindowMs(v);
+      }
+      if (lsMax !== null) {
+        const v = parseInt(lsMax, 10);
+        if (!Number.isNaN(v)) setMaxAlerts(v);
+      }
+    } catch {}
+  }, []);
 
   useEffect(() => {
-    if (metrics.length === 0) return;
+    try { localStorage.setItem('perfAlerts.muted', muted ? '1' : '0'); } catch {}
+  }, [muted]);
+  useEffect(() => {
+    try { localStorage.setItem('perfAlerts.windowMs', String(windowMs)); } catch {}
+  }, [windowMs]);
+  useEffect(() => {
+    try { localStorage.setItem('perfAlerts.maxAlerts', String(maxAlerts)); } catch {}
+  }, [maxAlerts]);
+
+  useEffect(() => {
+    if (metrics.length === 0 || muted) return;
 
     const generateAlerts = (): Alert[] => {
       const newAlerts: Alert[] = [];
       const now = Date.now();
-      const timeWindow = 5 * 60 * 1000; // 5 minutes
+      const timeWindow = windowMs; // configurable window
       const recentMetrics = metrics.filter(m => now - m.timestamp < timeWindow);
 
       // Check for performance issues
@@ -96,19 +129,24 @@ const PerformanceAlerts: React.FC = () => {
 
         allMetrics.forEach(metric => {
           if (Math.abs(metric.value - mean) > stdDev * 2) { // 2 standard deviations
-            newAlerts.push({
-              id: `anomaly_${metric.id}_${now}`,
-              timestamp: now,
-              type: 'anomaly',
-              priority: 'medium',
-              message: `Performance anomaly detected: ${metric.value.toFixed(2)}ms (expected ~${mean.toFixed(2)}ms)`,
-              metricId: metric.id,
-              metadata: { 
-                actualValue: metric.value, 
-                expectedValue: mean, 
-                category: metric.category 
-              }
-            });
+            const key = `anomaly:${metric.id}`;
+            const last = lastEmittedRef.current.get(key) || 0;
+            if (now - last >= ANOMALY_COOLDOWN_MS) {
+              newAlerts.push({
+                id: `anomaly_${metric.id}_${now}`,
+                timestamp: now,
+                type: 'anomaly',
+                priority: 'medium',
+                message: `Performance anomaly detected: ${metric.value.toFixed(2)}ms (expected ~${mean.toFixed(2)}ms)`,
+                metricId: metric.id,
+                metadata: { 
+                  actualValue: metric.value, 
+                  expectedValue: mean, 
+                  category: metric.category 
+                }
+              });
+              lastEmittedRef.current.set(key, now);
+            }
           }
         });
       }
@@ -118,12 +156,19 @@ const PerformanceAlerts: React.FC = () => {
 
     const newAlerts = generateAlerts();
     setAlerts(prevAlerts => {
+      // Drop expired alerts outside the window unless resolved
+      const cutoff = Date.now() - windowMs;
+      const activeWithinWindow = prevAlerts.filter(a => (a as any).resolved || a.timestamp >= cutoff);
       // Merge new alerts with existing ones, avoiding duplicates
-      const existingIds = new Set(prevAlerts.map(a => a.id));
+      const existingIds = new Set(activeWithinWindow.map(a => a.id));
       const uniqueNewAlerts = newAlerts.filter(a => !existingIds.has(a.id));
-      return [...prevAlerts, ...uniqueNewAlerts];
+      const merged = [...activeWithinWindow, ...uniqueNewAlerts];
+      // Constrain list to maxAlerts (keep most recent)
+      const sorted = merged.sort((a, b) => a.timestamp - b.timestamp);
+      const capped = sorted.slice(Math.max(0, sorted.length - maxAlerts));
+      return capped;
     });
-  }, [metrics]);
+  }, [metrics, muted, windowMs, maxAlerts]);
 
   const resolveAlert = (alertId: string) => {
     setAlerts(prevAlerts => 
@@ -187,7 +232,7 @@ const PerformanceAlerts: React.FC = () => {
 
   return (
     <div className="bg-gray-800 rounded-lg p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-blue-300">Performance Alerts</h2>
         <div className="flex items-center space-x-2">
           {criticalAlerts.length > 0 && (
@@ -202,6 +247,53 @@ const PerformanceAlerts: React.FC = () => {
             {showResolved ? 'Hide Resolved' : 'Show Resolved'}
           </button>
         </div>
+      </div>
+
+      {/* Controls */}
+      <div className="flex flex-wrap items-center gap-3 mb-6 text-sm">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setMuted(m => !m)}
+            className={`px-3 py-1 border border-gray-600 rounded ${muted ? 'bg-yellow-600 text-black' : 'bg-gray-700 text-gray-200'}`}
+          >{muted ? 'Enable Alerts' : 'Mute Alerts'}</button>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-gray-300">Window:</span>
+          <div className="inline-flex rounded-md shadow-sm" role="group">
+            <button
+              className={`px-3 py-1 border border-gray-600 bg-gray-700 text-gray-200 rounded-l ${windowMs===60_000?'bg-indigo-600 text-white':''}`}
+              onClick={() => setWindowMs(60_000)}
+            >1m</button>
+            <button
+              className={`px-3 py-1 border-t border-b border-gray-600 bg-gray-700 text-gray-200 ${windowMs===300_000?'bg-indigo-600 text-white':''}`}
+              onClick={() => setWindowMs(300_000)}
+            >5m</button>
+            <button
+              className={`px-3 py-1 border border-gray-600 bg-gray-700 text-gray-200 rounded-r ${windowMs===900_000?'bg-indigo-600 text-white':''}`}
+              onClick={() => setWindowMs(900_000)}
+            >15m</button>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="maxAlerts" className="text-gray-300">Max:</label>
+          <select
+            id="maxAlerts"
+            value={maxAlerts}
+            onChange={(e) => setMaxAlerts(parseInt(e.target.value, 10))}
+            className="px-2 py-1 bg-gray-700 border border-gray-600 text-gray-200 rounded"
+            aria-label="Maximum alerts to keep"
+          >
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
+        </div>
+        {!muted && (
+          <button
+            onClick={() => setAlerts([])}
+            className="px-3 py-1 border border-gray-600 bg-gray-700 text-gray-200 rounded"
+          >Clear</button>
+        )}
       </div>
 
       <div className="space-y-4">
