@@ -225,3 +225,10 @@ export interface CDNConfig {
   cacheHeaders: Map<string, string>;
   preloading: boolean;
 }
+
+// Export coordination types for external use
+export type { 
+  CacheCoordinatorConfig, 
+  LayerRoutingStrategy, 
+  CacheResponse 
+} from '../coordination/CacheCoordinator';
