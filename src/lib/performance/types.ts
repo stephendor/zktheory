@@ -78,7 +78,11 @@ export interface ChartData {
       label: string;
       data: number[];
       borderColor: string;
-      backgroundColor: string;
+  backgroundColor: string;
+  fill?: boolean | string;
+  tension?: number;
+  type?: 'line' | 'bar';
+  borderDash?: number[];
     }>;
   };
   memory: {
@@ -87,6 +91,9 @@ export interface ChartData {
       label: string;
       data: number[];
       backgroundColor: string[];
+  type?: 'line' | 'bar';
+  borderColor?: string;
+  borderDash?: number[];
     }>;
   };
   performance: {
