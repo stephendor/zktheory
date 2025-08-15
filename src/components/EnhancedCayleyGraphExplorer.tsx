@@ -14,13 +14,16 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
   
   const [selectedGroup, setSelectedGroup] = useState<string>('C1');
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentGraph, setCurrentGraph] = useState<CayleyGraph | null>(null);
   const [selectedGenerators, setSelectedGenerators] = useState<string[]>([]);
   const [selectedSubgroup, setSelectedSubgroup] = useState<string>('full');
   const [showLabels, setShowLabels] = useState<boolean>(true);
   const [showArrows, setShowArrows] = useState<boolean>(true);
   const [visualizationMode, setVisualizationMode] = useState<'2d' | '3d'>('2d');
+  const [layoutAlgorithm, setLayoutAlgorithm] = useState<string>('default');
   const [highlightedElement, setHighlightedElement] = useState<string | undefined>();
+  const [secondaryHighlightedElement, setSecondaryHighlightedElement] = useState<string | undefined>();
   const [layoutInfo, setLayoutInfo] = useState<string>('Initializing...');
   
   // Visualization states
@@ -124,6 +127,7 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
       } else {
         setSelectedGenerators([]);
       }
+      setIsLoading(false);
     }
   }, [selectedGroup]);
 
@@ -132,27 +136,8 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
     if (currentGroup) {
       console.log('📊 SMART LAYOUT ENGINE - Generating Cayley graph for:', currentGroup.name);
       
-      // Determine which group/subgroup to visualize
-      let groupToVisualize = currentGroup;
-      let elementsToShow = currentGroup.elements;
-      
-      if (selectedSubgroup !== 'full' && currentGroup.subgroups) {
-        const subgroupIndex = parseInt(selectedSubgroup);
-        const subgroup = currentGroup.subgroups[subgroupIndex];
-        if (subgroup) {
-          console.log('🎯 Visualizing subgroup:', subgroup.name, 'with elements:', subgroup.elements);
-          elementsToShow = currentGroup.elements.filter(e => subgroup.elements.includes(e.id));
-          
-          // Create a filtered group for the subgroup
-          groupToVisualize = {
-            ...currentGroup,
-            name: subgroup.name,
-            displayName: subgroup.name,
-            order: subgroup.elements.length,
-            elements: elementsToShow
-          };
-        }
-      }
+      // Keep the full group; highlight subgroups visually instead of filtering
+      const groupToVisualize = currentGroup;
       
       // Special case for trivial group C1 which has no generators
       const generatorsToUse = currentGroup.generators.length === 0 ? [] : selectedGenerators;
@@ -160,14 +145,15 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
       const graph = CayleyGraphGenerator.generateGraph(
         groupToVisualize, 
         generatorsToUse, 
-        '2d'
+        '2d',
+        layoutAlgorithm
       );
       
       console.log('✅ Graph generated with', graph.edges.length, 'edges');
-      setLayoutInfo(`Smart Layout: ${groupToVisualize.name} (${graph.edges.length} edges)`);
+      setLayoutInfo(`Layout: ${layoutAlgorithm} • ${groupToVisualize.name} • ${graph.edges.length} edges`);
       setCurrentGraph(graph);
     }
-  }, [currentGroup, selectedGenerators, selectedSubgroup]);
+  }, [currentGroup, selectedGenerators, selectedSubgroup, layoutAlgorithm]);
 
 
 
@@ -183,6 +169,9 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
     setDemoMode('group_operations');
     setDemoStep(0);
     setDemonstrationResult('');
+    const identity = currentGroup.elements.find(e => e.order === 1)?.id;
+    setHighlightedElement(identity);
+    setSecondaryHighlightedElement(undefined);
     
     const step = 'Identity element demonstration';
     setDemonstrationResult(`Step 1: ${step} - Click on elements to explore properties`);
@@ -217,6 +206,22 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
       const nextStep = (demoStep + 1) % steps.length;
       setDemoStep(nextStep);
       setDemonstrationResult(`Step ${nextStep + 1}: ${steps[nextStep]} - Click on elements to explore`);
+      if (currentGroup) {
+        if (nextStep === 0) {
+          const identity = currentGroup.elements.find(e => e.order === 1)?.id;
+          setHighlightedElement(identity);
+          setSecondaryHighlightedElement(undefined);
+        } else if (nextStep === 1) {
+          const base = highlightedElement && highlightedElement !== (currentGroup.elements.find(e => e.order === 1)?.id)
+            ? highlightedElement
+            : currentGroup.generators[0] || currentGroup.elements[1]?.id;
+          const inv = currentGroup.elements.find(e => e.id === base)?.inverse;
+          setHighlightedElement(base);
+          setSecondaryHighlightedElement(inv);
+        } else {
+          setSecondaryHighlightedElement(undefined);
+        }
+      }
     } else if (demoMode === 'subgroup_structure' && currentGroup?.subgroups) {
       const nextStep = (demoStep + 1) % currentGroup.subgroups.length;
       setDemoStep(nextStep);
@@ -225,7 +230,7 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
       setSelectedSubgroup(nextStep.toString());
       setDemonstrationResult(`Subgroup ${nextStep + 1}: ${subgroup.name} (Order ${subgroup.elements.length}) - ${subgroup.isNormal ? 'Normal' : 'Non-normal'}`);
     }
-  }, [demoMode, demoStep, currentGroup]);
+  }, [demoMode, demoStep, currentGroup, highlightedElement]);
 
   const stopDemo = useCallback(() => {
     setDemoMode('off');
@@ -233,6 +238,8 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
     setDemonstrationResult('');
     setHighlightSubgroups(false);
     setSelectedSubgroup('full');
+    setHighlightedElement(undefined);
+    setSecondaryHighlightedElement(undefined);
   }, []);
 
   // Enhanced vertex click handler for demonstrations
@@ -341,7 +348,7 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
     // Draw vertices with enhanced styling
     currentGraph.vertices.forEach(vertex => {
       const isSelected = false; // No point selection in finite group mode
-      const isHighlighted = highlightedElement === vertex.id;
+      const isHighlighted = highlightedElement === vertex.id || secondaryHighlightedElement === vertex.id;
       
       let isInSubgroup = false;
       let subgroupColor = vertex.color;
@@ -399,6 +406,15 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
         ctx.stroke();
         ctx.setLineDash([]);
       }
+      if (secondaryHighlightedElement === vertex.id) {
+        ctx.strokeStyle = '#ff7f0e';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 3]);
+        ctx.beginPath();
+        ctx.arc(vertex.x, vertex.y, radius + 10, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
       
       // Elliptic curve specific highlighting removed
 
@@ -420,7 +436,7 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
       ...prev,
       renderTime
     }));
-  }, [currentGraph, showLabels, showArrows, visualizationMode, highlightedElement, highlightSubgroups, selectedSubgroup]);
+  }, [currentGraph, showLabels, showArrows, visualizationMode, highlightedElement, secondaryHighlightedElement, highlightSubgroups, selectedSubgroup]);
 
   // Canvas click handler
   const handleCanvasClick = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -452,6 +468,11 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
 
   const availableGroups = GroupTheoryLibrary.getAllGroups();
 
+  console.log('Current Group:', currentGroup);
+  if (currentGroup) {
+    console.log('Subgroups:', currentGroup.subgroups);
+  }
+
   return (
     <div className="cayley-explorer">
       <div className="cayley-header">
@@ -460,6 +481,12 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
       </div>
       
       <div className="cayley-content">
+        {isLoading ? (
+          <div className="loading-indicator">
+            <p>Loading Interactive Explorer...</p>
+          </div>
+        ) : (
+          <>
         {/* Left Control Panel - Group Selection & Basic Controls */}
         <div className="cayley-controls">
           <h3>Group Selection & Controls</h3>
@@ -804,6 +831,20 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
                     <option value="3d">3D Interactive (Coming Soon)</option>
                   </select>
                 </div>
+
+                <div className="form-group">
+                  <label htmlFor="layout-algorithm">Layout Algorithm</label>
+                  <select
+                    id="layout-algorithm"
+                    value={layoutAlgorithm}
+                    onChange={(e) => setLayoutAlgorithm(e.target.value)}
+                  >
+                    <option value="default">Default</option>
+                    <option value="circular">Circular</option>
+                    <option value="grid">Grid</option>
+                    <option value="force-directed">Force-Directed (soon)</option>
+                  </select>
+                </div>
               </div>
             )}
           </div>
@@ -943,6 +984,8 @@ const EnhancedCayleyGraphExplorer: React.FC = () => {
             </div>
           </div>
         </div>
+        </>
+        )}
       </div>
     </div>
   );

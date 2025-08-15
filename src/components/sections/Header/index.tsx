@@ -57,6 +57,7 @@ function HeaderVariants(props) {
 
 function HeaderLogoLeftPrimaryLeft(props) {
     const { title, logo, primaryLinks = [], secondaryLinks = [], colors = 'bg-light-fg-dark', enableAnnotations } = props;
+
     return (
         <div className="relative flex items-center">
             {(title || logo?.url) && (
@@ -91,27 +92,23 @@ function HeaderLogoLeftPrimaryLeft(props) {
                     </svg>
                 </button>
             </div>
-            {/* Global Search Container - Client-side only */}
-            {typeof window !== 'undefined' && (
-                <div 
-                    id="global-search" 
-                    className="absolute top-full left-0 right-0 bg-white shadow-lg border-t p-4 z-50"
-                    style={{ display: 'none' }}
-                >
-                    <div className="max-w-7xl mx-auto">
-                        <div 
-                            id="header-search" 
-                            className="w-full max-w-2xl mx-auto relative"
-                            style={{ minHeight: '60px' }}
-                        >
-                            {/* Placeholder content that will be replaced by Algolia */}
-                            <div className="algolia-placeholder p-3 border border-gray-300 rounded-lg text-gray-500">
-                                Search loading...
-                            </div>
+            {/* Global Search Container */}
+            <div
+                id="global-search"
+                className="global-search absolute top-full left-0 right-0 bg-white shadow-lg border-t p-4 z-50"
+            >
+                <div className="max-w-7xl mx-auto">
+                    <div
+                        id="header-search"
+                        className="header-search w-full max-w-2xl mx-auto relative"
+                    >
+                        {/* Placeholder content that will be replaced by Algolia */}
+                        <div className="algolia-placeholder p-3 border border-gray-300 rounded-lg text-gray-500">
+                            Search loading...
                         </div>
                     </div>
                 </div>
-            )}
+            </div>
             {(primaryLinks.length > 0 || secondaryLinks.length > 0) && <MobileMenu {...props} />}
         </div>
     );
@@ -352,7 +349,7 @@ function LinkWithSubnav(props) {
             data-sb-field-path={fieldPath}
         >
             <button
-                aria-expanded={isSubNavOpen ? 'true' : 'false'}
+                aria-expanded={!!isSubNavOpen}
                 onMouseOver={
                     !process.env.stackbitPreview && !inMobileMenu
                         ? () => {

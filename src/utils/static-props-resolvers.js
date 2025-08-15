@@ -12,7 +12,11 @@ import {
 export function resolveStaticProps(urlPath, data) {
     // get root path of paged path: /blog/page/2 => /blog
     const rootUrlPath = getRootPagePath(urlPath);
-    const { __metadata, ...rest } = data.pages.find((page) => page.__metadata.urlPath === rootUrlPath);
+    const page = data.pages.find((page) => page.__metadata.urlPath === rootUrlPath);
+    if (!page) {
+        return null;
+    }
+    const { __metadata, ...rest } = page;
     const props = {
         page: {
             __metadata: {

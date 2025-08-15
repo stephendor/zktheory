@@ -210,13 +210,14 @@ export class CayleyGraphGenerator {
   static generateGraph(
     group: Group, 
     generators: string[],
-    layout: '2d' | '3d' = '2d'
+    layout: '2d' | '3d' = '2d',
+    layoutAlgorithm: string = 'default'
   ): CayleyGraph {
     const vertices: CayleyGraphVertex[] = [];
     const edges: CayleyGraphEdge[] = [];
     
     // Create vertices
-    const positions = this.generateLayout(group, layout);
+    const positions = this.generateLayout(group, layout, layoutAlgorithm);
     for (let i = 0; i < group.elements.length; i++) {
       const element = group.elements[i];
       vertices.push({
@@ -283,14 +284,69 @@ export class CayleyGraphGenerator {
 
   private static generateLayout(
     group: Group, 
-    layout: '2d' | '3d'
+    layout: '2d' | '3d',
+    layoutAlgorithm: string
   ): Array<{x: number, y: number, z?: number}> {
     const positions: Array<{x: number, y: number, z?: number}> = [];
     
-    console.log(`🎯 Generating optimized layout for ${group.name} (${group.elements.length} elements)`);
+    console.log(`🎯 Generating optimized layout for ${group.name} (${group.elements.length} elements) using ${layoutAlgorithm} algorithm`);
     
     const centerX = 400;
     const centerY = 300;
+    const enforceAlgorithm = layoutAlgorithm && layoutAlgorithm !== 'default';
+
+    // Explicit algorithm overrides (user-selected)
+    if (enforceAlgorithm) {
+      if (layoutAlgorithm === 'circular') {
+        const radius = Math.min(250, 100 + group.elements.length * 12);
+        for (let i = 0; i < group.elements.length; i++) {
+          const angle = (2 * Math.PI * i) / group.elements.length;
+          positions.push({
+            x: centerX + radius * Math.cos(angle),
+            y: centerY + radius * Math.sin(angle),
+            z: layout === '3d' ? 0 : undefined
+          });
+        }
+        console.log(`🔄 Applied explicit circular layout`);
+        return positions;
+      }
+      if (layoutAlgorithm === 'grid') {
+        const cols = Math.ceil(Math.sqrt(group.elements.length));
+        const rows = Math.ceil(group.elements.length / cols);
+        const spacingX = 90;
+        const spacingY = 80;
+        for (let i = 0; i < group.elements.length; i++) {
+          const row = Math.floor(i / cols);
+          const col = i % cols;
+          positions.push({
+            x: centerX - (cols - 1) * spacingX / 2 + col * spacingX,
+            y: centerY - (rows - 1) * spacingY / 2 + row * spacingY,
+            z: layout === '3d' ? 0 : undefined
+          });
+        }
+        console.log(`🧱 Applied explicit grid layout (${cols}x${rows})`);
+        return positions;
+      }
+      if (layoutAlgorithm === 'force-directed') {
+        // Simple placeholder: multi-ring radial (until full physics layout is implemented)
+        const elementsPerRing = Math.max(6, Math.ceil(Math.sqrt(group.elements.length)));
+        const ringSpacing = 60;
+        const baseRadius = 80;
+        for (let i = 0; i < group.elements.length; i++) {
+          const ring = Math.floor(i / elementsPerRing);
+          const idx = i % elementsPerRing;
+          const radius = baseRadius + ring * ringSpacing;
+          const angle = (2 * Math.PI * idx) / elementsPerRing + (ring % 2 === 0 ? 0 : Math.PI / elementsPerRing);
+          positions.push({
+            x: centerX + radius * Math.cos(angle),
+            y: centerY + radius * Math.sin(angle),
+            z: layout === '3d' ? 0 : undefined
+          });
+        }
+        console.log(`🧲 Applied placeholder force-directed (radial) layout`);
+        return positions;
+      }
+    }
     
     // Choose layout strategy based on group structure
     if (group.name.includes('xC') || group.name.includes('×') || group.name.startsWith('(C2)') || group.name === 'C2xC2xC2') {
@@ -299,17 +355,13 @@ export class CayleyGraphGenerator {
         // Elementary abelian groups - symmetric layout
         console.log(`⚡ Using elementary abelian layout`);
         if (group.elements.length === 8) {
-          // Cube vertices layout for (C2)^3
-          const cubeSize = 120;
+          // 2D Cube projection for (C2)^3
+          const cubeSize = 150;
           const cubePositions = [
-            { x: -cubeSize/2, y: -cubeSize/2 }, // 000
-            { x: cubeSize/2, y: -cubeSize/2 },  // 001
-            { x: -cubeSize/2, y: cubeSize/2 },  // 010
-            { x: cubeSize/2, y: cubeSize/2 },   // 011
-            { x: -cubeSize/2, y: -cubeSize/4 }, // 100
-            { x: cubeSize/2, y: -cubeSize/4 },  // 101
-            { x: -cubeSize/2, y: cubeSize/4 },  // 110
-            { x: cubeSize/2, y: cubeSize/4 }    // 111
+            { x: -cubeSize, y: -cubeSize }, { x: cubeSize, y: -cubeSize },
+            { x: -cubeSize, y: cubeSize }, { x: cubeSize, y: cubeSize },
+            { x: -cubeSize / 2, y: -cubeSize / 2 }, { x: cubeSize / 2, y: -cubeSize / 2 },
+            { x: -cubeSize / 2, y: cubeSize / 2 }, { x: cubeSize / 2, y: cubeSize / 2 }
           ];
           
           for (let i = 0; i < Math.min(8, group.elements.length); i++) {
@@ -340,22 +392,16 @@ export class CayleyGraphGenerator {
         // Direct product groups - rectangular grid layout
         console.log(`📐 Using direct product grid layout for ${group.name}`);
         
-        // Extract the component orders for better grid arrangement
-        let cols, rows;
-        if (group.name === 'C2xC4') {
-          cols = 2; rows = 4;
-        } else if (group.name === 'C3xC3') {
-          cols = 3; rows = 3;
-        } else if (group.name === 'C2xC6') {
-          cols = 2; rows = 6;
-        } else if (group.name === 'C4xC4') {
-          cols = 4; rows = 4;
-        } else if (group.name === 'C4xC5') {
-          cols = 4; rows = 5;
-        } else if (group.name === 'C2xC10') {
-          cols = 2; rows = 10;
+        // Dynamically parse component orders from the group name
+        const nameParts = group.name.replace(/[()]/g, '').split(/x|×/);
+        let cols = 1;
+        let rows = 1;
+
+        if (nameParts.length === 2) {
+          cols = parseInt(nameParts[0].replace('C', '')) || 1;
+          rows = parseInt(nameParts[1].replace('C', '')) || 1;
         } else {
-          // Default square-ish arrangement
+          // Fallback for more complex products, e.g. (C2)^3
           const sqrtOrder = Math.sqrt(group.elements.length);
           cols = Math.ceil(sqrtOrder);
           rows = Math.ceil(group.elements.length / cols);
@@ -425,19 +471,16 @@ export class CayleyGraphGenerator {
     } else if (group.name.startsWith('D')) {
       // Special layout for dihedral groups - adaptive based on size
       const n = Math.floor(group.elements.length / 2); // D_n has 2n elements
-      let innerRadius, outerRadius;
       
-      if (n <= 6) {
-        // Small dihedral groups - tight dual circle
-        innerRadius = 100;
-        outerRadius = 180;
-        console.log(`🔺 Using small dihedral layout (n=${n}, inner: ${innerRadius}, outer: ${outerRadius})`);
-      } else {
-        // Large dihedral groups - more spacing needed
-        innerRadius = 120;
-        outerRadius = 220;
-        console.log(`🔺 Using large dihedral layout (n=${n}, inner: ${innerRadius}, outer: ${outerRadius})`);
-      }
+      // Dynamically calculate radii based on n
+      const baseInnerRadius = 80;
+      const baseOuterRadius = 160;
+      const radiusIncrement = Math.max(5, Math.floor(n / 2) * 5);
+      
+      const innerRadius = baseInnerRadius + radiusIncrement;
+      const outerRadius = baseOuterRadius + radiusIncrement * 1.5;
+
+      console.log(`🔺 Using adaptive dihedral layout (n=${n}, inner: ${innerRadius}, outer: ${outerRadius})`);
       
       const rotations: number[] = [];
       const reflections: number[] = [];
@@ -540,6 +583,44 @@ export class CayleyGraphGenerator {
         positions.push({
           x: q8_positions[i].x,
           y: q8_positions[i].y,
+          z: layout === '3d' ? 0 : undefined
+        });
+      }
+    } else if (group.name === 'S4') {
+      // Symmetric group S4 - truncated octahedron projection
+      console.log('🔷 Using S4 truncated octahedron layout');
+      const s4_positions = [
+        // Outer layer (12 vertices)
+        { x: centerX + 200, y: centerY + 100 },
+        { x: centerX + 200, y: centerY - 100 },
+        { x: centerX - 200, y: centerY + 100 },
+        { x: centerX - 200, y: centerY - 100 },
+        { x: centerX + 100, y: centerY + 200 },
+        { x: centerX + 100, y: centerY - 200 },
+        { x: centerX - 100, y: centerY + 200 },
+        { x: centerX - 100, y: centerY - 200 },
+        { x: centerX, y: centerY + 250 },
+        { x: centerX, y: centerY - 250 },
+        { x: centerX + 250, y: centerY },
+        { x: centerX - 250, y: centerY },
+        // Inner layer (12 vertices)
+        { x: centerX + 100, y: centerY + 50 },
+        { x: centerX + 100, y: centerY - 50 },
+        { x: centerX - 100, y: centerY + 50 },
+        { x: centerX - 100, y: centerY - 50 },
+        { x: centerX + 50, y: centerY + 100 },
+        { x: centerX + 50, y: centerY - 100 },
+        { x: centerX - 50, y: centerY + 100 },
+        { x: centerX - 50, y: centerY - 100 },
+        { x: centerX, y: centerY + 150 },
+        { x: centerX, y: centerY - 150 },
+        { x: centerX + 150, y: centerY },
+        { x: centerX - 150, y: centerY },
+      ];
+      for (let i = 0; i < group.elements.length; i++) {
+        positions.push({
+          x: s4_positions[i].x,
+          y: s4_positions[i].y,
           z: layout === '3d' ? 0 : undefined
         });
       }

@@ -456,7 +456,7 @@ export class GroupDatabase {
       isAbelian: false,
       center: ['e'],
       conjugacyClasses: [['e'], ['123', '132', '124', '142', '134', '143', '234', '243'], ['12)(34', '13)(24', '14)(23']],
-      subgroups: []
+      subgroups: this.findSubgroups(elements.map(e => e.id), operations)
     };
   }
 
@@ -503,7 +503,7 @@ export class GroupDatabase {
       isAbelian: true,
       center: elements.map(e => e.id),
       conjugacyClasses: elements.map(e => [e.id]),
-      subgroups: []
+      subgroups: this.findSubgroups(elements.map(e => e.id), operations)
     };
   }
 
@@ -551,7 +551,7 @@ export class GroupDatabase {
       isAbelian: true,
       center: elements.map(e => e.id),
       conjugacyClasses: elements.map(e => [e.id]),
-      subgroups: []
+      subgroups: this.findSubgroups(elements.map(e => e.id), operations)
     };
   }
 
@@ -602,7 +602,7 @@ export class GroupDatabase {
       isAbelian: true,
       center: elements.map(e => e.id),
       conjugacyClasses: elements.map(e => [e.id]),
-      subgroups: []
+      subgroups: this.findSubgroups(elements.map(e => e.id), operations)
     };
   }
 
@@ -613,6 +613,99 @@ export class GroupDatabase {
 
   private static lcm(a: number, b: number): number {
     return (a * b) / this.gcd(a, b);
+  }
+
+  private static findSubgroups(
+    elements: string[],
+    operations: Map<string, Map<string, string>>
+  ): { elements: string[]; name: string; isNormal: boolean }[] {
+    const subgroups = new Set<string>();
+    const n = elements.length;
+
+    for (let i = 0; i < (1 << n); i++) {
+      const subset: string[] = [];
+      for (let j = 0; j < n; j++) {
+        if ((i >> j) & 1) {
+          subset.push(elements[j]);
+        }
+      }
+
+      if (this.isSubgroup(subset, operations)) {
+        subgroups.add(JSON.stringify(subset.sort()));
+      }
+    }
+
+    return Array.from(subgroups).map(s => {
+      const elements = JSON.parse(s);
+      return {
+        elements,
+        name: `Subgroup order ${elements.length}`,
+        isNormal: false // Placeholder
+      };
+    });
+  }
+
+  private static isSubgroup(
+    subset: string[],
+    operations: Map<string, Map<string, string>>
+  ): boolean {
+    if (subset.length === 0) return false;
+
+    // Determine identity element from the operation table
+    const universe = Array.from(operations.keys());
+    let identityElement: string | null = null;
+    for (const candidate of universe) {
+      const row = operations.get(candidate);
+      if (!row) continue;
+      let isLeftIdentity = true;
+      for (const x of universe) {
+        if (row.get(x) !== x) {
+          isLeftIdentity = false;
+          break;
+        }
+      }
+      if (!isLeftIdentity) continue;
+      let isRightIdentity = true;
+      for (const x of universe) {
+        const r = operations.get(x);
+        if (!r || r.get(candidate) !== x) {
+          isRightIdentity = false;
+          break;
+        }
+      }
+      if (isLeftIdentity && isRightIdentity) {
+        identityElement = candidate;
+        break;
+      }
+    }
+    if (!identityElement) return false;
+    if (!subset.includes(identityElement)) return false;
+  
+    // Check for closure
+    for (const a of subset) {
+      for (const b of subset) {
+        const result = operations.get(a)?.get(b);
+        if (!result || !subset.includes(result)) {
+          return false;
+        }
+      }
+    }
+
+    // Check for inverses
+    for (const a of subset) {
+      let hasInverse = false;
+      for (const b of subset) {
+        const ab = operations.get(a)?.get(b);
+        const ba = operations.get(b)?.get(a);
+        if (ab === identityElement && ba === identityElement) {
+          hasInverse = true;
+          break;
+        }
+      }
+      if (!hasInverse) return false;
+    }
+  
+    return true;
   }
 
   private static findCyclicSubgroups(n: number): { elements: string[]; name: string; isNormal: boolean }[] {

@@ -151,6 +151,11 @@
         content: '\2713';
     }
 
+    /* Global Search */
+    #global-search {
+        display: none;
+    }
+
     /* Image gallery */
     .sb-image-strip-track {
         min-width: 160rem;
