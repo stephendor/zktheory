@@ -10,6 +10,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import classNames from 'classnames';
 import { PathComponentProps, BusinessPathConfig } from './types';
+import { useProgressiveDisclosure, DisclosureContent } from './ProgressiveDisclosureProvider';
 
 // ==========================================
 // Business-Focused Content
@@ -147,6 +148,12 @@ export const BusinessPath: React.FC<PathComponentProps & { config?: Partial<Busi
   const [showROIResult, setShowROIResult] = useState(false);
 
   // ==========================================
+  // Progressive Disclosure
+  // ==========================================
+  
+  const { trackInteraction, isStageActive } = useProgressiveDisclosure();
+
+  // ==========================================
   // Configuration
   // ==========================================
   
@@ -274,39 +281,91 @@ export const BusinessPath: React.FC<PathComponentProps & { config?: Partial<Busi
   
   const renderOverview = () => (
     <motion.div variants={contentVariants} className="space-y-6">
-      <div className="text-center">
+      {/* Stage 0: Basic Value Proposition */}
+      <DisclosureContent stage={0} complexity="🌱" className="text-center">
         <h3 className="text-2xl font-bold text-blue-900 mb-2">
           Mathematical Excellence for Business Success
         </h3>
         <p className="text-blue-700 leading-relaxed">
           Transform complex mathematical concepts into measurable business outcomes.
-          Our proven frameworks deliver security, performance, and competitive advantages.
         </p>
-      </div>
-      
-      <div className="grid grid-cols-2 gap-4">
-        {VALUE_PROPOSITIONS.map((prop, index) => (
-          <motion.div
-            key={prop.title}
-            variants={contentVariants}
-            className="bg-white/70 backdrop-blur-sm rounded-lg p-4 border border-blue-200"
-          >
-            <div className="text-2xl mb-2">{prop.icon}</div>
-            <h4 className="font-semibold text-blue-900 mb-2">{prop.title}</h4>
-            <p className="text-sm text-blue-700 mb-3">{prop.description}</p>
-            <div className="flex flex-wrap gap-1">
-              {prop.metrics.map((metric) => (
-                <span 
-                  key={metric}
-                  className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
-                >
-                  {metric}
-                </span>
-              ))}
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      </DisclosureContent>
+
+      {/* Stage 1: Trust Signals & Quick Value */}
+      <DisclosureContent stage={1} complexity="🎯" className="space-y-4">
+        <div className="text-center">
+          <p className="text-blue-700 leading-relaxed">
+            Our proven frameworks deliver security, performance, and competitive advantages.
+          </p>
+        </div>
+        
+        {/* Quick trust indicators */}
+        <div className="flex justify-center space-x-4 text-sm">
+          <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full font-medium">
+            ✓ Enterprise Ready
+          </span>
+          <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full font-medium">
+            ✓ SOC 2 Compliant
+          </span>
+          <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full font-medium">
+            ✓ Fortune 500 Proven
+          </span>
+        </div>
+      </DisclosureContent>
+
+      {/* Stage 2: Detailed Value Propositions */}
+      <DisclosureContent stage={2} complexity="🧠">
+        <div className="grid grid-cols-2 gap-4">
+          {VALUE_PROPOSITIONS.slice(0, 2).map((prop, index) => (
+            <motion.div
+              key={prop.title}
+              variants={contentVariants}
+              className="bg-white/70 backdrop-blur-sm rounded-lg p-4 border border-blue-200"
+            >
+              <div className="text-2xl mb-2">{prop.icon}</div>
+              <h4 className="font-semibold text-blue-900 mb-2">{prop.title}</h4>
+              <p className="text-sm text-blue-700 mb-3">{prop.description}</p>
+              <div className="flex flex-wrap gap-1">
+                {prop.metrics.map((metric) => (
+                  <span 
+                    key={metric}
+                    className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                  >
+                    {metric}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </DisclosureContent>
+
+      {/* Stage 3: Full Value Proposition Grid */}
+      <DisclosureContent stage={3} complexity="🎓">
+        <div className="grid grid-cols-2 gap-4">
+          {VALUE_PROPOSITIONS.slice(2).map((prop, index) => (
+            <motion.div
+              key={prop.title}
+              variants={contentVariants}
+              className="bg-white/70 backdrop-blur-sm rounded-lg p-4 border border-blue-200"
+            >
+              <div className="text-2xl mb-2">{prop.icon}</div>
+              <h4 className="font-semibold text-blue-900 mb-2">{prop.title}</h4>
+              <p className="text-sm text-blue-700 mb-3">{prop.description}</p>
+              <div className="flex flex-wrap gap-1">
+                {prop.metrics.map((metric) => (
+                  <span 
+                    key={metric}
+                    className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                  >
+                    {metric}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </DisclosureContent>
     </motion.div>
   );
 
@@ -464,36 +523,57 @@ export const BusinessPath: React.FC<PathComponentProps & { config?: Partial<Busi
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-blue-900">Business Leaders</h2>
-            <p className="text-blue-700">ROI-Focused Solutions</p>
+            
+            {/* Stage 0: Basic description */}
+            <DisclosureContent stage={0} complexity="🌱">
+              <p className="text-blue-700">ROI-Focused Solutions</p>
+            </DisclosureContent>
+
+            {/* Stage 1: Enhanced description with quick metric */}
+            <DisclosureContent stage={1} complexity="🎯">
+              <p className="text-blue-700">
+                ROI-Focused Solutions • <span className="font-semibold text-green-700">35% Faster ROI</span>
+              </p>
+            </DisclosureContent>
           </div>
           <div className="text-4xl">📊</div>
         </div>
-        {/* Tab Navigation */}
-        <div className="flex mt-4 space-x-1">
-          {[
-            { key: 'overview', label: 'Overview' },
-            { key: 'roi', label: 'ROI Calculator' },
-            { key: 'cases', label: 'Case Studies' },
-            { key: 'testimonials', label: 'Testimonials' }
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setActiveTab(tab.key as any);
-              }}
-              className={classNames(
-                'px-3 py-1 rounded-md text-sm font-medium transition-colors',
-                activeTab === tab.key
-                  ? 'bg-blue-600 text-white'
-                  : 'text-blue-700 hover:bg-blue-200'
-              )}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
+
+        {/* Tab Navigation - Progressive disclosure */}
+        <DisclosureContent stage={2} complexity="🧠" className="mt-4">
+          <div className="flex space-x-1">
+            {[
+              { key: 'overview', label: 'Overview', stage: 0 },
+              { key: 'roi', label: 'ROI Calculator', stage: 2 },
+              { key: 'cases', label: 'Case Studies', stage: 3 },
+              { key: 'testimonials', label: 'Testimonials', stage: 3 }
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveTab(tab.key as any);
+                  trackInteraction(`tab_click_${tab.key}`, tab.stage as any);
+                }}
+                disabled={!isStageActive(tab.stage as any)}
+                className={classNames(
+                  'px-3 py-1 rounded-md text-sm font-medium transition-colors',
+                  activeTab === tab.key
+                    ? 'bg-blue-600 text-white'
+                    : isStageActive(tab.stage as any)
+                    ? 'text-blue-700 hover:bg-blue-200'
+                    : 'text-gray-400 cursor-not-allowed'
+                )}
+              >
+                {tab.label}
+                {tab.stage > 0 && !isStageActive(tab.stage as any) && (
+                  <span className="ml-1 text-xs">🔒</span>
+                )}
+              </button>
+            ))}
+          </div>
+        </DisclosureContent>
       </div>
 
       {/* Content */}

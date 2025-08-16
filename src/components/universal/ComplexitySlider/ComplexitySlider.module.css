@@ -1,0 +1,584 @@
+/**
+ * Universal ComplexitySlider Styles
+ * Mathematical precision with golden ratio scaling and accessibility features
+ * CSS custom properties for dynamic mathematical calculations
+ */
+
+/* ==========================================
+   Mathematical Constants as CSS Variables
+   ========================================== */
+
+:root {
+  --golden-ratio: 1.618;
+  --golden-ratio-inverse: 0.618;
+  --golden-ratio-squared: 2.618;
+  --golden-ratio-cubed: 4.236;
+  
+  /* Fibonacci sequence for spacing */
+  --fib-1: 0.0625rem; /* 1px at 16px base */
+  --fib-2: 0.0625rem; /* 1px */
+  --fib-3: 0.125rem;  /* 2px */
+  --fib-4: 0.1875rem; /* 3px */
+  --fib-5: 0.3125rem; /* 5px */
+  --fib-6: 0.5rem;    /* 8px */
+  --fib-7: 0.8125rem; /* 13px */
+  --fib-8: 1.3125rem; /* 21px */
+  --fib-9: 2.125rem;  /* 34px */
+  --fib-10: 3.4375rem; /* 55px */
+  
+  /* Mathematical easing functions */
+  --easing-golden: cubic-bezier(0.618, 0, 0.382, 1);
+  --easing-fibonacci: cubic-bezier(0.236, 0.000, 0.236, 1.000);
+  --easing-exponential: cubic-bezier(0.190, 1.000, 0.220, 1.000);
+  --easing-natural: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+  
+  /* Complexity level colors */
+  --complexity-foundation: #10b981;
+  --complexity-foundation-bg: #d1fae5;
+  --complexity-foundation-text: #065f46;
+  
+  --complexity-conceptual: #059669;
+  --complexity-conceptual-bg: #a7f3d0;
+  --complexity-conceptual-text: #064e3b;
+  
+  --complexity-applied: #047857;
+  --complexity-applied-bg: #6ee7b7;
+  --complexity-applied-text: #022c22;
+  
+  --complexity-research: #065f46;
+  --complexity-research-bg: #34d399;
+  --complexity-research-text: #022c22;
+  
+  /* Performance optimizations */
+  --will-change-auto: auto;
+  --will-change-transform: transform;
+  --will-change-opacity: opacity;
+  --will-change-complex: transform, opacity, box-shadow;
+}
+
+/* ==========================================
+   Base Component Styles
+   ========================================== */
+
+.complexitySlider {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: system-ui, -apple-system, sans-serif;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.complexitySlider:focus-within {
+  outline: 2px solid var(--complexity-foundation);
+  outline-offset: 4px;
+  border-radius: calc(var(--fib-5) * var(--golden-ratio));
+}
+
+/* ==========================================
+   Slider Container
+   ========================================== */
+
+.sliderContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: var(--will-change-auto);
+  border-radius: calc(var(--fib-8) * var(--golden-ratio));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sliderContainer.horizontal {
+  flex-direction: row;
+  min-width: calc(var(--fib-10) * var(--golden-ratio-squared));
+  min-height: var(--fib-8);
+}
+
+.sliderContainer.vertical {
+  flex-direction: column;
+  min-width: var(--fib-8);
+  min-height: calc(var(--fib-10) * var(--golden-ratio-squared));
+}
+
+/* Size variants */
+.sliderContainer.small {
+  --size-multiplier: 0.75;
+}
+
+.sliderContainer.medium {
+  --size-multiplier: 1;
+}
+
+.sliderContainer.large {
+  --size-multiplier: 1.25;
+}
+
+.sliderContainer.extraLarge {
+  --size-multiplier: calc(var(--golden-ratio));
+}
+
+/* ==========================================
+   Track Styles
+   ========================================== */
+
+.track {
+  position: absolute;
+  background: rgba(156, 163, 175, 0.3); /* gray-400 with opacity */
+  border-radius: calc(var(--fib-5) * var(--size-multiplier, 1));
+  transition: all 300ms var(--easing-golden);
+  will-change: var(--will-change-opacity);
+}
+
+.track.horizontal {
+  width: 100%;
+  height: calc(var(--fib-5) * var(--size-multiplier, 1));
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.track.vertical {
+  height: 100%;
+  width: calc(var(--fib-5) * var(--size-multiplier, 1));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.progressTrack {
+  position: absolute;
+  background: linear-gradient(
+    90deg,
+    var(--complexity-foundation),
+    var(--complexity-conceptual),
+    var(--complexity-applied),
+    var(--complexity-research)
+  );
+  border-radius: inherit;
+  transition: all 400ms var(--easing-fibonacci);
+  will-change: var(--will-change-complex);
+  box-shadow: 
+    0 2px 8px rgba(16, 185, 129, 0.2),
+    0 0 0 1px rgba(16, 185, 129, 0.1);
+}
+
+.progressTrack.horizontal {
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.progressTrack.vertical {
+  width: 100%;
+  bottom: 0;
+  left: 0;
+}
+
+/* ==========================================
+   Level Indicators
+   ========================================== */
+
+.levelIndicator {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 300ms var(--easing-golden);
+  will-change: var(--will-change-complex);
+  font-weight: 600;
+  border: 2px solid;
+  background: white;
+  z-index: 10;
+}
+
+/* Size calculations using golden ratio */
+.levelIndicator.small {
+  width: calc(var(--fib-8) * var(--golden-ratio-inverse));
+  height: calc(var(--fib-8) * var(--golden-ratio-inverse));
+  font-size: calc(var(--fib-6) * var(--golden-ratio-inverse));
+}
+
+.levelIndicator.medium {
+  width: var(--fib-8);
+  height: var(--fib-8);
+  font-size: var(--fib-6);
+}
+
+.levelIndicator.large {
+  width: calc(var(--fib-8) * var(--golden-ratio));
+  height: calc(var(--fib-8) * var(--golden-ratio));
+  font-size: calc(var(--fib-6) * var(--golden-ratio));
+}
+
+.levelIndicator.extraLarge {
+  width: calc(var(--fib-8) * var(--golden-ratio-squared));
+  height: calc(var(--fib-8) * var(--golden-ratio-squared));
+  font-size: calc(var(--fib-6) * var(--golden-ratio-squared));
+}
+
+/* Positioning for horizontal layout */
+.levelIndicator.horizontal {
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Positioning for vertical layout */
+.levelIndicator.vertical {
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Level-specific colors */
+.levelIndicator.foundation {
+  border-color: var(--complexity-foundation);
+  color: var(--complexity-foundation);
+}
+
+.levelIndicator.conceptual {
+  border-color: var(--complexity-conceptual);
+  color: var(--complexity-conceptual);
+}
+
+.levelIndicator.applied {
+  border-color: var(--complexity-applied);
+  color: var(--complexity-applied);
+}
+
+.levelIndicator.research {
+  border-color: var(--complexity-research);
+  color: var(--complexity-research);
+}
+
+/* States */
+.levelIndicator:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    0 0 0 3px rgba(255, 255, 255, 0.8),
+    0 0 0 6px currentColor;
+}
+
+.levelIndicator.selected {
+  background: currentColor;
+  color: white;
+  transform: translate(-50%, -50%) scale(1.2);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.15),
+    0 0 0 4px rgba(255, 255, 255, 0.9),
+    0 0 0 8px currentColor;
+  z-index: 20;
+}
+
+.levelIndicator.unlocked {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.levelIndicator.locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(50%);
+}
+
+.levelIndicator:focus {
+  outline: none;
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.8),
+    0 0 0 6px currentColor,
+    0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================
+   Progress Indicators
+   ========================================== */
+
+.progressRing {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: conic-gradient(
+    from 0deg,
+    currentColor var(--progress-angle, 0deg),
+    transparent var(--progress-angle, 0deg)
+  );
+  opacity: 0.7;
+  z-index: 5;
+}
+
+/* ==========================================
+   Labels and Tooltips
+   ========================================== */
+
+.levelLabel {
+  position: absolute;
+  font-size: calc(var(--fib-4) * var(--size-multiplier, 1));
+  font-weight: 500;
+  color: inherit;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: all 200ms var(--easing-golden);
+}
+
+.levelLabel.horizontal {
+  top: calc(100% + var(--fib-5));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.levelLabel.vertical {
+  left: calc(100% + var(--fib-5));
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 50;
+  background: white;
+  border-radius: calc(var(--fib-5) * var(--golden-ratio));
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.1),
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  padding: var(--fib-6);
+  max-width: calc(var(--fib-10) * 3);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tooltip.top {
+  bottom: calc(100% + var(--fib-5));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip.bottom {
+  top: calc(100% + var(--fib-5));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip.left {
+  right: calc(100% + var(--fib-5));
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tooltip.right {
+  left: calc(100% + var(--fib-5));
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* ==========================================
+   Mathematical Visualizations
+   ========================================== */
+
+.mathematicalPattern {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.1;
+  will-change: var(--will-change-transform);
+}
+
+.spiralPattern {
+  animation: rotateSpiral 20s linear infinite;
+}
+
+.fibonacciPattern {
+  animation: pulseFibonacci 3s ease-in-out infinite;
+}
+
+@keyframes rotateSpiral {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulseFibonacci {
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.2; transform: scale(1.05); }
+}
+
+/* ==========================================
+   Accessibility Features
+   ========================================== */
+
+.screenReaderOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.keyboardInstructions {
+  margin-top: var(--fib-6);
+  padding: var(--fib-5);
+  background: rgba(59, 130, 246, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: calc(var(--fib-4) * var(--golden-ratio));
+  font-size: var(--fib-4);
+  color: #1e40af;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .levelIndicator {
+    border-width: 3px;
+  }
+  
+  .track {
+    background: #000;
+  }
+  
+  .progressTrack {
+    background: #0066cc;
+  }
+  
+  .tooltip {
+    background: #fff;
+    border: 2px solid #000;
+    box-shadow: none;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .levelIndicator,
+  .track,
+  .progressTrack,
+  .tooltip {
+    transition: none;
+  }
+  
+  .spiralPattern,
+  .fibonacciPattern {
+    animation: none;
+  }
+}
+
+/* ==========================================
+   Dark Mode Support
+   ========================================== */
+
+.complexitySlider.dark {
+  --complexity-foundation: #34d399;
+  --complexity-foundation-bg: rgba(52, 211, 153, 0.1);
+  --complexity-foundation-text: #d1fae5;
+  
+  --complexity-conceptual: #10b981;
+  --complexity-conceptual-bg: rgba(16, 185, 129, 0.1);
+  --complexity-conceptual-text: #a7f3d0;
+  
+  --complexity-applied: #059669;
+  --complexity-applied-bg: rgba(5, 150, 105, 0.1);
+  --complexity-applied-text: #6ee7b7;
+  
+  --complexity-research: #047857;
+  --complexity-research-bg: rgba(4, 120, 87, 0.1);
+  --complexity-research-text: #34d399;
+}
+
+.complexitySlider.dark .sliderContainer {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.2),
+    rgba(0, 0, 0, 0.1)
+  );
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.complexitySlider.dark .track {
+  background: rgba(75, 85, 99, 0.4); /* gray-600 with opacity */
+}
+
+.complexitySlider.dark .levelIndicator {
+  background: #1f2937; /* gray-800 */
+}
+
+.complexitySlider.dark .levelIndicator.selected {
+  background: currentColor;
+  color: #1f2937;
+}
+
+.complexitySlider.dark .tooltip {
+  background: #1f2937;
+  color: #f9fafb;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ==========================================
+   Print Styles
+   ========================================== */
+
+@media print {
+  .complexitySlider {
+    break-inside: avoid;
+  }
+  
+  .tooltip,
+  .keyboardInstructions {
+    display: none;
+  }
+  
+  .levelIndicator {
+    box-shadow: none;
+    border: 2px solid currentColor;
+  }
+}
+
+/* ==========================================
+   Performance Optimizations
+   ========================================== */
+
+.complexitySlider * {
+  box-sizing: border-box;
+}
+
+.levelIndicator,
+.progressTrack {
+  contain: layout style paint;
+}
+
+/* Optimize for touch devices */
+@media (pointer: coarse) {
+  .levelIndicator {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* ==========================================
+   Mathematical Precision Helpers
+   ========================================== */
+
+.goldenRatioSpacing {
+  margin: calc(var(--fib-5) * var(--golden-ratio));
+}
+
+.fibonacciScale {
+  transform: scale(var(--golden-ratio-inverse));
+}
+
+.mathematicalCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

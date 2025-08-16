@@ -1,0 +1,34 @@
+╭───────────────────────────────────────────────────╮
+│ ✻ Welcome to Claude Code!                         │
+│                                                   │
+│   /help for help, /status for your current setup  │
+│                                                   │
+│   cwd: /home/stephen-dorman/dev/zktheory          │
+╰───────────────────────────────────────────────────╯
+
+
+ What's new:
+  • SDK: Add request cancellation support
+  • SDK: New additionalDirectories option to search custom paths, improved slash
+   command processing
+  • Settings: Validation prevents invalid fields in .claude/settings.json files
+  • MCP: Improve tool name consistency
+  • Bash: Fix crash when Claude tries to automatically read large files
+● Compact summary (ctrl+r to expand)
+  ⎿ Read 
+    src/components/universal/ComplexitySlider/index.tsx
+     (595 lines)
+  ⎿ Read src/components/universal/ComplexitySlider/Comp
+    lexitySlider.module.css (584 lines)
+  ⎿ Read src/components/universal/ComplexitySlider/useC
+    omplexity.ts (488 lines)
+  ⎿ Read src/components/universal/ComplexitySlider/Comp
+    lexityProvider.tsx (615 lines)
+  ⎿ Read 
+    src/components/universal/ComplexitySlider/types.ts 
+    (471 lines)
+  ⎿  Todo list read (10 items)
+
+> /compact 
+  ⎿  Compacted. ctrl+r to see full summary
+

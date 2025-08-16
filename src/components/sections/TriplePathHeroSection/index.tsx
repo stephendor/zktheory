@@ -9,6 +9,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { TriplePathHero } from '../../navigation/TriplePathHero';
+import { ProgressiveTriplePathHero } from '../../navigation/TriplePathHero/enhanced-index';
 
 // ==========================================
 // Section Props Interface
@@ -64,6 +65,16 @@ interface TriplePathHeroSectionProps {
     collaborationEnabled: boolean;
     researchPortalUrl: string;
   }>;
+  
+  // Progressive disclosure configuration
+  enableProgressiveDisclosure?: boolean;
+  progressiveConfig?: {
+    autoAdvance?: boolean;
+    enableUserControl?: boolean;
+    showComplexityIndicators?: boolean;
+    showLoadingStates?: boolean;
+    enableAccessibility?: boolean;
+  };
 }
 
 // ==========================================
@@ -87,7 +98,15 @@ export const TriplePathHeroSection: React.FC<TriplePathHeroSectionProps> = ({
   screenReaderOptimized,
   businessConfig,
   technicalConfig, 
-  academicConfig
+  academicConfig,
+  enableProgressiveDisclosure = true,
+  progressiveConfig = {
+    autoAdvance: true,
+    enableUserControl: true,
+    showComplexityIndicators: true,
+    showLoadingStates: true,
+    enableAccessibility: true
+  }
 }) => {
   // ==========================================
   // Handle Analytics
@@ -187,22 +206,48 @@ export const TriplePathHeroSection: React.FC<TriplePathHeroSectionProps> = ({
       )}
 
       {/* Main Triple Path Hero Component */}
-      <TriplePathHero
-        className="w-full h-full"
-        performanceMode={performanceMode}
-        enableParallax={enableParallax}
-        enableHoverPreview={enableHoverPreview}
-        enablePathTransitions={enablePathTransitions}
-        onPathSelection={handlePathSelection}
-        onSpiralInteraction={handleSpiralInteraction}
-        onPerformanceMetrics={handlePerformanceMetrics}
-        reduceMotion={reduceMotion}
-        highContrast={highContrast}
-        screenReaderOptimized={screenReaderOptimized}
-        businessConfig={businessConfig as any}
-        technicalConfig={technicalConfig as any}
-        academicConfig={academicConfig as any}
-      />
+      {enableProgressiveDisclosure ? (
+        <ProgressiveTriplePathHero
+          className="w-full h-full"
+          performanceMode={performanceMode}
+          enableParallax={enableParallax}
+          enableHoverPreview={enableHoverPreview}
+          enablePathTransitions={enablePathTransitions}
+          onPathSelection={handlePathSelection}
+          onSpiralInteraction={handleSpiralInteraction}
+          onPerformanceMetrics={handlePerformanceMetrics}
+          reduceMotion={reduceMotion}
+          highContrast={highContrast}
+          screenReaderOptimized={screenReaderOptimized}
+          businessConfig={businessConfig as any}
+          technicalConfig={technicalConfig as any}
+          academicConfig={academicConfig as any}
+          progressiveDisclosure={progressiveConfig}
+          onStageChange={(stage, prev) => {
+            console.log(`Progressive disclosure: Stage ${prev} → ${stage}`);
+          }}
+          onProgressiveMetrics={(metrics) => {
+            console.log('Pathway clarity score:', metrics.pathwayClarityScore);
+          }}
+        />
+      ) : (
+        <TriplePathHero
+          className="w-full h-full"
+          performanceMode={performanceMode}
+          enableParallax={enableParallax}
+          enableHoverPreview={enableHoverPreview}
+          enablePathTransitions={enablePathTransitions}
+          onPathSelection={handlePathSelection}
+          onSpiralInteraction={handleSpiralInteraction}
+          onPerformanceMetrics={handlePerformanceMetrics}
+          reduceMotion={reduceMotion}
+          highContrast={highContrast}
+          screenReaderOptimized={screenReaderOptimized}
+          businessConfig={businessConfig as any}
+          technicalConfig={technicalConfig as any}
+          academicConfig={academicConfig as any}
+        />
+      )}
     </section>
   );
 };

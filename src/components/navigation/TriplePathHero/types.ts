@@ -186,3 +186,73 @@ export interface AudienceColorSchemes {
   academic: ColorSchemeDefinition;
   mathematical: ColorSchemeDefinition;
 }
+
+// ==========================================
+// Progressive Disclosure Types
+// ==========================================
+
+export type DisclosureStage = 0 | 1 | 2 | 3;
+export type ComplexityLevel = '🌱' | '🎯' | '🧠' | '🎓';
+
+export interface DisclosureState {
+  currentStage: DisclosureStage;
+  timeInStage: number;
+  totalTime: number;
+  isUserControlled: boolean;
+  isPaused: boolean;
+  hasInteracted: boolean;
+}
+
+export interface ProgressiveDisclosureConfig {
+  autoAdvance?: boolean;
+  enableUserControl?: boolean;
+  showComplexityIndicators?: boolean;
+  showLoadingStates?: boolean;
+  enableAccessibility?: boolean;
+}
+
+export interface StageContent {
+  stage: DisclosureStage;
+  complexity: ComplexityLevel;
+  title: string;
+  description: string;
+  features: string[];
+  estimatedTime: string;
+  userBenefit: string;
+}
+
+export interface ProgressiveTriplePathHeroProps extends TriplePathHeroProps {
+  // Progressive Disclosure Configuration
+  progressiveDisclosure?: ProgressiveDisclosureConfig;
+  
+  // Stage-specific configurations
+  stageConfigurations?: {
+    [K in DisclosureStage]?: {
+      businessConfig?: Partial<BusinessPathConfig>;
+      technicalConfig?: Partial<TechnicalPathConfig>;
+      academicConfig?: Partial<AcademicPathConfig>;
+    };
+  };
+  
+  // Progressive disclosure callbacks
+  onStageChange?: (stage: DisclosureStage, previousStage: DisclosureStage) => void;
+  onComplexityChange?: (complexity: ComplexityLevel) => void;
+  onDisclosureInteraction?: (action: string, stage: DisclosureStage, timestamp: number) => void;
+  onProgressiveMetrics?: (metrics: ProgressiveMetrics) => void;
+}
+
+export interface ProgressiveMetrics extends PerformanceMetrics {
+  // Progressive disclosure specific metrics
+  stageTransitionTime: number;
+  userEngagementLevel: number;
+  complexityPreference: ComplexityLevel;
+  autoAdvancementOptOut: boolean;
+  manualControlUsage: number;
+  pathwayClarityScore: number; // Target: 90%+
+  
+  // UX improvement metrics
+  timeToPathSelection: number;
+  stageBounceRate: number;
+  fullDisclosureReachRate: number;
+  interactionDepthScore: number;
+}
