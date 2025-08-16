@@ -4,6 +4,9 @@
  * Maintains backward compatibility while providing advanced UX features
  */
 
+// Import for local usage
+import { ProgressiveTriplePathHero } from './ProgressiveTriplePathHero';
+
 // Original component (backward compatible)
 export { TriplePathHero } from './index';
 
@@ -60,8 +63,8 @@ export type {
 // Default export is the progressive version for new implementations
 export { ProgressiveTriplePathHero as default } from './ProgressiveTriplePathHero';
 
-// Easy migration path
-export const EnhancedTriplePathHero = ProgressiveTriplePathHero;
+// Easy migration path - re-export with alias
+export { ProgressiveTriplePathHero as EnhancedTriplePathHero } from './ProgressiveTriplePathHero';
 
 // Version information
 export const VERSION = {
