@@ -12,6 +12,8 @@
  * - Educational pathways and learning progression visualization
  */
 
+'use client';
+
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import * as d3 from 'd3';
 import { 

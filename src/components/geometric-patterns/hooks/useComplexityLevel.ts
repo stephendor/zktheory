@@ -258,7 +258,7 @@ export const useComplexityLevel = (
     return config.examples;
   }, [currentLevel]);
 
-  const getPerformanceImpact = useCallback((level?: ComplexityLevel): string => {
+  const getPerformanceImpact = useCallback((level?: ComplexityLevel): 'low' | 'medium' | 'high' | 'very-high' => {
     const targetLevel = level || currentLevel;
     const config = getComplexityConfig(targetLevel);
     return config.performanceImpact;

@@ -93,8 +93,8 @@ export const usePatternAnimation = (
   const [currentKeyframe, setCurrentKeyframe] = useState(0);
   
   // Refs for animation control
-  const animationRef = useRef<number>();
-  const startTimeRef = useRef<number>();
+  const animationRef = useRef<number>(0);
+  const startTimeRef = useRef<number | undefined>(undefined);
   const pausedTimeRef = useRef<number>(0);
   const directionRef = useRef<1 | -1>(1);
   const cycleCountRef = useRef<number>(0);
@@ -107,7 +107,7 @@ export const usePatternAnimation = (
     if (isAnimating) return;
     
     setIsAnimating(true);
-    startTimeRef.current = performance.now() - pausedTimeRef.current;
+    startTimeRef.current = globalThis.performance.now() - pausedTimeRef.current;
     
     const animate = (currentTime: number) => {
       if (!startTimeRef.current) return;
@@ -175,12 +175,12 @@ export const usePatternAnimation = (
     
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
-      animationRef.current = undefined;
+      animationRef.current = 0;
     }
     
     // Store paused time for resuming
     if (startTimeRef.current) {
-      pausedTimeRef.current = performance.now() - startTimeRef.current;
+      pausedTimeRef.current = globalThis.performance.now() - startTimeRef.current;
     }
   }, [isAnimating]);
 
@@ -191,7 +191,7 @@ export const usePatternAnimation = (
     
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
-      animationRef.current = undefined;
+      animationRef.current = 0;
     }
     
     startTimeRef.current = undefined;
@@ -215,7 +215,7 @@ export const usePatternAnimation = (
     // Update internal timing to match the new progress
     if (startTimeRef.current) {
       const targetElapsed = clampedProgress * duration;
-      startTimeRef.current = performance.now() - targetElapsed - delay;
+      startTimeRef.current = globalThis.performance.now() - targetElapsed - delay;
       pausedTimeRef.current = 0;
     }
   }, [duration, delay]);

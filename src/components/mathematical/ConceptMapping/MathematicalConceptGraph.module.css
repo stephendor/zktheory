@@ -91,7 +91,7 @@
 }
 
 /* Tooltip styles (global since we append to body) */
-:global(.concept-tooltip) {
+.graph :global(.concept-tooltip) {
   position: absolute;
   background: rgba(0, 0, 0, 0.9);
   color: white;
@@ -105,21 +105,21 @@
   z-index: 1000;
 }
 
-:global(.concept-tooltip .title) {
+.graph :global(.concept-tooltip .title) {
   font-weight: bold;
   margin-bottom: 8px;
 }
 
-:global(.concept-tooltip .field) {
+.graph :global(.concept-tooltip .field) {
   margin-bottom: 4px;
 }
 
-:global(.concept-tooltip .definition) {
+.graph :global(.concept-tooltip .definition) {
   margin-bottom: 8px;
   max-width: 300px;
 }
 
-:global(.concept-tooltip .help) {
+.graph :global(.concept-tooltip .help) {
   font-size: 10px;
   color: #ccc;
 }

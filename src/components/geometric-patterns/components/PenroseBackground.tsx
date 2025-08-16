@@ -41,7 +41,7 @@ export const PenroseBackground: React.FC<PenrosePatternProps> = ({
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number>(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
@@ -152,7 +152,7 @@ export const PenroseBackground: React.FC<PenrosePatternProps> = ({
       performance
     );
 
-    const startTime = performance.now();
+    const startTime = globalThis.performance.now();
 
     try {
       // Generate Penrose tiling
@@ -189,7 +189,7 @@ export const PenroseBackground: React.FC<PenrosePatternProps> = ({
 
       ctx.restore();
 
-      const endTime = performance.now();
+      const endTime = globalThis.performance.now();
       const renderTime = endTime - startTime;
 
       // Update performance metrics
@@ -348,7 +348,7 @@ export const PenroseBackground: React.FC<PenrosePatternProps> = ({
     setIsAnimating(false);
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
-      animationRef.current = undefined;
+      animationRef.current = 0;
     }
   }, []);
 

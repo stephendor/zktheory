@@ -41,7 +41,7 @@ export const VoronoiDivider: React.FC<VoronoiPatternProps> = ({
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number>(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [cells, setCells] = useState<VoronoiCell[]>([]);
@@ -151,7 +151,7 @@ export const VoronoiDivider: React.FC<VoronoiPatternProps> = ({
 
     ctx.scale(dpr, dpr);
 
-    const startTime = performance.now();
+    const startTime = globalThis.performance.now();
 
     try {
       // Generate Voronoi diagram
@@ -184,7 +184,7 @@ export const VoronoiDivider: React.FC<VoronoiPatternProps> = ({
         interactive
       });
 
-      const endTime = performance.now();
+      const endTime = globalThis.performance.now();
       const renderTime = endTime - startTime;
 
       // Update performance metrics
@@ -414,7 +414,7 @@ export const VoronoiDivider: React.FC<VoronoiPatternProps> = ({
     setIsAnimating(false);
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
-      animationRef.current = undefined;
+      animationRef.current = 0;
     }
   }, []);
 

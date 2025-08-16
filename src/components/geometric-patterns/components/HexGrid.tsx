@@ -41,7 +41,7 @@ export const HexGrid: React.FC<HexGridPatternProps> = ({
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number>(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [hexagons, setHexagons] = useState<HexagonTile[]>([]);
@@ -159,7 +159,7 @@ export const HexGrid: React.FC<HexGridPatternProps> = ({
 
     ctx.scale(dpr, dpr);
 
-    const startTime = performance.now();
+    const startTime = globalThis.performance.now();
 
     try {
       // Generate hexagonal grid
@@ -170,10 +170,13 @@ export const HexGrid: React.FC<HexGridPatternProps> = ({
         height: displayHeight
       };
 
+      // Map pattern to supported generator patterns
+      const generatorPattern = pattern === 'mathematical' ? 'honeycomb' : pattern;
+      
       const generatedHexagons = HexGridGenerator.generateGrid(
         bounds,
         adjustedHexSize,
-        pattern,
+        generatorPattern,
         complexity
       );
 
@@ -195,7 +198,7 @@ export const HexGrid: React.FC<HexGridPatternProps> = ({
         isAnimating
       });
 
-      const endTime = performance.now();
+      const endTime = globalThis.performance.now();
       const renderTime = endTime - startTime;
 
       // Update performance metrics
@@ -522,7 +525,7 @@ export const HexGrid: React.FC<HexGridPatternProps> = ({
     setIsAnimating(false);
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
-      animationRef.current = undefined;
+      animationRef.current = 0;
     }
   }, []);
 

@@ -293,6 +293,22 @@ export interface UseComplexityLevelReturn {
   decreaseLevel: () => void;
   getLevelIcon: (level?: ComplexityLevel) => string;
   getLevelDescription: (level?: ComplexityLevel) => string;
+  
+  // Extended functionality
+  getLevelShortDescription: (level?: ComplexityLevel) => string;
+  getLevelFeatures: (level?: ComplexityLevel) => string[];
+  getLevelExamples: (level?: ComplexityLevel) => string[];
+  getPerformanceImpact: (level?: ComplexityLevel) => 'low' | 'medium' | 'high' | 'very-high';
+  getTechnicalDetails: (level?: ComplexityLevel) => any;
+  getOptimalLevel: (deviceCapability: 'low' | 'medium' | 'high', userExperience: 'beginner' | 'intermediate' | 'expert', performancePreference: 'battery' | 'balanced' | 'performance') => ComplexityLevel;
+  getComplexityTransition: (fromLevel: ComplexityLevel, toLevel: ComplexityLevel, progress: number) => any;
+  getAllLevels: () => { level: ComplexityLevel; icon: string; shortDescription: string; performanceImpact: 'low' | 'medium' | 'high' | 'very-high'; }[];
+  getExpectedPerformance: (level?: ComplexityLevel) => any;
+  
+  // Current level information
+  currentConfig: any;
+  currentIndex: number;
+  totalLevels: number;
 }
 
 // ==========================================

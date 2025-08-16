@@ -479,7 +479,7 @@ export const AlgebraicCurve: React.FC<AlgebraicCurveProps> = ({
     setIsAnimating(false);
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
-      animationRef.current = undefined;
+      animationRef.current = 0;
     }
   }, []);
 

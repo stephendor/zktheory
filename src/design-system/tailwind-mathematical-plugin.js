@@ -270,6 +270,9 @@ const mathematicalPlugin = plugin(function({ addBase, addComponents, addUtilitie
       transition: 'all 300ms var(--ease-harmonic)',
     },
     
+    // Mathematical muted text colors
+    '.text-math-muted': { color: 'rgb(148 163 184)' },
+    
     // Mathematical grid utilities
     '.grid-golden': {
       display: 'grid',
@@ -347,6 +350,7 @@ const mathematicalPlugin = plugin(function({ addBase, addComponents, addUtilitie
       },
       animation: {
         'golden': `pulse 2s ${mathematicalTokens.mathematical.animation.easing.golden} infinite`,
+        'golden-reverse': `pulse 2s ${mathematicalTokens.mathematical.animation.easing.golden} infinite reverse`,
         'fibonacci': `bounce 1s ${mathematicalTokens.mathematical.animation.easing.fibonacci} infinite`,
       },
       screens: {

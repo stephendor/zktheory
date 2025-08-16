@@ -5,6 +5,8 @@
  * Demonstrates the educational mathematical bridge visualization
  */
 
+'use client';
+
 import React, { useState } from 'react';
 import MathematicalConceptGraph from './MathematicalConceptGraph';
 import { MathematicalConcept, ConceptCategory, DifficultyLevel } from './types';

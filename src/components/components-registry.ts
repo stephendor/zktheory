@@ -58,6 +58,7 @@ const components = {
     SelectFormControl: dynamic(() => import('./blocks/FormBlock/SelectFormControl')),
     TextareaFormControl: dynamic(() => import('./blocks/FormBlock/TextareaFormControl')),
     TextFormControl: dynamic(() => import('./blocks/FormBlock/TextFormControl')),
+    TriplePathHeroSection: dynamic(() => import('./sections/TriplePathHeroSection')),
     VideoBlock: dynamic(() => import('./blocks/VideoBlock')),
     PageLayout: dynamic(() => import('./layouts/PageLayout')),
     PostLayout: dynamic(() => import('./layouts/PostLayout')),

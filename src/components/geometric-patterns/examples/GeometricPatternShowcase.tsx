@@ -190,6 +190,8 @@ export const GeometricPatternShowcase: React.FC<GeometricPatternShowcaseProps> =
       
       return () => clearInterval(interval);
     }
+    
+    return () => {}; // Empty cleanup for when condition is not met
   }, [autoRotate, availablePatterns.length, rotationAnimation]);
 
   // ==========================================

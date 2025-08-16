@@ -2,47 +2,44 @@
 title: Home
 slug: /
 sections:
-  - type: GenericSection
+  - type: TriplePathHeroSection
     title:
-      text: ''
-      color: text-dark
+      text: 'Mathematical Excellence Meets Practical Innovation'
+      color: text-math-primary
       type: TitleBlock
-    subtitle: 'From zero to finite fields'
+    subtitle: 'Zero-Knowledge Proofs • Topological Data Analysis • Advanced Cryptography'
     text: >
-      A journey into cybersecurity and cryptography
-    actions:
-      - label: Get started
-        altText: ''
-        url: /blog
-        showIcon: false
-        icon: arrowRight
-        iconPosition: right
-        style: secondary
-        elementId: ''
-        type: Button
-    media:
-      url: /images/amirhadi-manavi-0hUcJZZnYM4-unsplash.jpg
-      altText: ''
-      elementId: ''
-      type: ImageBlock
+      Transforming complex mathematical concepts into practical solutions for business, technical, and academic applications. Choose your pathway to mathematical mastery.
     badge:
-      label: ZK Theory
-      color: text-primary
+      label: ZKTheory
+      color: bg-math-primary text-white
       type: Badge
-      styles:
-        self:
-          textAlign: left
-    elementId: ''
-    colors: bg-light-fg-dark
+    elementId: 'triple-path-hero'
+    colors: bg-gradient-mathematical
     styles:
       self:
+        height: screen
         alignItems: center
-        flexDirection: row
-        padding:
-          - pt-16
-          - pl-16
-          - pb-16
-          - pr-16
+        flexDirection: col
+        justifyContent: center
+        padding: []
+    performanceMode: balanced
+    enableParallax: true
+    enableHoverPreview: true
+    enablePathTransitions: true
+    screenReaderOptimized: true
+    businessConfig:
+      roiCalculatorEnabled: true
+      trustIndicators:
+        - 'Enterprise Security Standards'
+        - 'Compliance Ready Architecture'
+        - 'Fortune 500 Deployment Experience'
+    technicalConfig:
+      playgroundEnabled: true
+      githubRepoUrl: 'https://github.com/zktheory/zktheory-core'
+    academicConfig:
+      collaborationEnabled: true
+      researchPortalUrl: '/research'
   - posts: []
     showThumbnail: true
     showDate: true
@@ -158,7 +155,37 @@ sections:
               - pr-8
             borderRadius: x-large
             flexDirection: col
-    variant: two-col-grid
+      - type: FeaturedItem
+        title: Concept Mapping
+        tagline: Knowledge Graph
+        subtitle: Interactive Mathematical Connections
+        text: |
+          Navigate the interconnected landscape of mathematics through force-directed graph visualization. Discover relationships between concepts with interactive filtering and guided learning pathways.
+        image:
+          type: ImageBlock
+          url: /images/concept-mapping-preview.svg
+          altText: Mathematical Concept Mapping Interface
+          styles:
+            self:
+              borderRadius: x-large
+        actions:
+          - type: Button
+            label: Explore Graph
+            url: /projects/concept-mapping
+            icon: play
+            iconPosition: right
+            style: secondary
+        colors: bg-light-fg-dark
+        styles:
+          self:
+            padding:
+              - pt-8
+              - pl-8
+              - pb-8
+              - pr-8
+            borderRadius: x-large
+            flexDirection: col
+    variant: three-col-grid
     colors: bg-neutral-fg-dark
     styles:
       self:
