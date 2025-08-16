@@ -201,14 +201,14 @@
 }
 
 .sideBySide .bridgeContainer {
-  /* Make bridge narrower (1 part) */
-  flex: 1;
+  /* Make bridge wider (3 parts) */
+  flex: 3;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sideBySide .conceptContainer {
-  /* Make concept mapping wider (3 parts) */
-  flex: 3;
+  /* Make concept mapping narrower (1 part) */
+  flex: 1;
   border-right: none;
 }
 

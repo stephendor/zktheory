@@ -399,6 +399,19 @@ export const UnifiedBridgeOrchestrator: React.FC<UnifiedBridgeOrchestratorProps>
     }
   }, [onTransformationChange]);
 
+  // Memoized transformation step handlers to avoid creating new function refs on each render
+  const handleEllipticStep = useCallback((step: number, data: any) => {
+    console.log('Elliptic to Algebra step:', step, data);
+  }, []);
+
+  const handleAlgebraStep = useCallback((step: number, data: any) => {
+    console.log('Algebra to Topology step:', step, data);
+  }, []);
+
+  const handleTopologyStep = useCallback((step: number, data: any) => {
+    console.log('Topology to Elliptic step:', step, data);
+  }, []);
+
   return (
     <div 
       ref={containerRef}
@@ -455,9 +468,7 @@ export const UnifiedBridgeOrchestrator: React.FC<UnifiedBridgeOrchestratorProps>
             width={800}
             height={600}
             animationDuration={3600}
-            onTransformationStep={(step, data) => {
-              console.log('Elliptic to Algebra step:', step, data);
-            }}
+            onTransformationStep={handleEllipticStep}
           />
         )}
         
@@ -467,9 +478,7 @@ export const UnifiedBridgeOrchestrator: React.FC<UnifiedBridgeOrchestratorProps>
             width={800}
             height={600}
             animationDuration={4000}
-            onTransformationStep={(step, data) => {
-              console.log('Algebra to Topology step:', step, data);
-            }}
+            onTransformationStep={handleAlgebraStep}
           />
         )}
         
@@ -479,9 +488,7 @@ export const UnifiedBridgeOrchestrator: React.FC<UnifiedBridgeOrchestratorProps>
             width={800}
             height={600}
             animationDuration={4200}
-            onTransformationStep={(step, data) => {
-              console.log('Topology to Elliptic step:', step, data);
-            }}
+            onTransformationStep={handleTopologyStep}
           />
         )}
         

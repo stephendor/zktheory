@@ -88,10 +88,10 @@ const IntegratedMathematicalBridgeContent: React.FC<IntegratedMathematicalBridge
   const getComponentDimensions = () => {
     switch (layout) {
       case 'side-by-side':
-        // Bridge:Concept ≈ 1:3 (bridge narrower)
+        // Bridge:Concept ≈ 3:1 (bridge wider)
         return {
-          bridge: { width: width * 0.25 - 20, height: height - 100 },
-          concept: { width: width * 0.75 - 20, height: height - 100 }
+          bridge: { width: width * 0.75 - 20, height: height - 100 },
+          concept: { width: width * 0.25 - 20, height: height - 100 }
         };
       case 'stacked':
         return {
