@@ -335,7 +335,6 @@ Zero-knowledge property: ✓`,
       y: 0,
       transition: { 
         duration: 0.5, 
-        
         delay: animationDelay
       }
     },
@@ -671,7 +670,6 @@ Zero-knowledge property: ✓`,
           </div>
           <div className="text-4xl">💻</div>
         </div>
-        
         {/* Tab Navigation */}
         <div className="flex mt-4 space-x-1">
           {[

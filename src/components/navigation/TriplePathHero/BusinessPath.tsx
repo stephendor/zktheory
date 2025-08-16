@@ -216,7 +216,6 @@ export const BusinessPath: React.FC<PathComponentProps & { config?: Partial<Busi
       y: 0,
       transition: { 
         duration: 0.5, 
-        
         delay: animationDelay
       }
     },
@@ -469,7 +468,6 @@ export const BusinessPath: React.FC<PathComponentProps & { config?: Partial<Busi
           </div>
           <div className="text-4xl">📊</div>
         </div>
-        
         {/* Tab Navigation */}
         <div className="flex mt-4 space-x-1">
           {[

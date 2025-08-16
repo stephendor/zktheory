@@ -1,0 +1,351 @@
+/* IntegratedMathematicalBridge.module.css */
+
+.integratedBridge {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Styles */
+.integrationHeader {
+  background: rgba(15, 23, 42, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.headerTitle h2 {
+  color: #e2e8f0;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.subtitle {
+  color: #94a3b8;
+  font-size: 14px;
+  margin-top: 4px;
+  display: block;
+}
+
+.integrationControls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.controlGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.controlGroup label {
+  color: #cbd5e1;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.select {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #e2e8f0;
+  padding: 6px 12px;
+  font-size: 14px;
+  min-width: 120px;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Tab Controls */
+.tabControls {
+  display: flex;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.tab {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab:hover {
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tab.active {
+  color: #ffffff;
+  background: #3b82f6;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+/* Checkbox Styles */
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.checkboxLabel:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.checkboxLabel input[type="checkbox"] {
+  accent-color: #3b82f6;
+}
+
+/* Action Buttons */
+.actionButton {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.actionButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.actionButton:active {
+  transform: translateY(0);
+}
+
+/* Debug Panel */
+.debugPanel {
+  background: rgba(15, 23, 42, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 24px;
+}
+
+.debugPanel h4 {
+  color: #f59e0b;
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.debugInfo {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.debugInfo span {
+  color: #94a3b8;
+  font-size: 12px;
+  background: rgba(30, 41, 59, 0.6);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Content Area Layouts */
+.contentArea {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.contentArea.sideBySide {
+  flex-direction: row;
+}
+
+.contentArea.stacked {
+  flex-direction: column;
+}
+
+.contentArea.tabbed {
+  flex-direction: column;
+}
+
+/* Component Containers */
+.bridgeContainer,
+.conceptContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: rgba(30, 41, 59, 0.3);
+}
+
+.sideBySide .bridgeContainer,
+.sideBySide .conceptContainer {
+  flex: 1;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sideBySide .conceptContainer {
+  border-right: none;
+}
+
+.stacked .bridgeContainer,
+.stacked .conceptContainer {
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stacked .conceptContainer {
+  border-bottom: none;
+}
+
+.tabbed .bridgeContainer,
+.tabbed .conceptContainer {
+  flex: 1;
+}
+
+/* Component Headers */
+.componentHeader {
+  background: rgba(15, 23, 42, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 20px;
+}
+
+.componentHeader h3 {
+  color: #e2e8f0;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.componentSubtitle {
+  color: #94a3b8;
+  font-size: 12px;
+  margin-top: 2px;
+  display: block;
+}
+
+/* Component Styling */
+.bridgeComponent {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Status Bar */
+.statusBar {
+  background: rgba(15, 23, 42, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.statusIndicators {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.indicator.active {
+  color: #10b981;
+}
+
+.indicator.inactive {
+  color: #6b7280;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse 2s infinite;
+}
+
+.currentDomain {
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+.currentDomain strong {
+  color: #e2e8f0;
+  text-transform: capitalize;
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .integrationHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .integrationControls {
+    justify-content: center;
+  }
+  
+  .contentArea.sideBySide {
+    flex-direction: column;
+  }
+  
+  .statusBar {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .integrationControls {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .controlGroup {
+    justify-content: center;
+  }
+  
+  .statusIndicators {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

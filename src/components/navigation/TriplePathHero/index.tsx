@@ -290,7 +290,6 @@ export const TriplePathHero: React.FC<TriplePathHeroProps> = ({
       opacity: 1,
       transition: {
         duration: animationConfig.duration / 1000,
-        ease: animationConfig.easing,
         when: 'beforeChildren',
         staggerChildren: animationConfig.stagger / 1000
       }
@@ -309,7 +308,6 @@ export const TriplePathHero: React.FC<TriplePathHeroProps> = ({
       scale: 1,
       transition: {
         duration: animationConfig.duration / 1000,
-        ease: animationConfig.easing,
         delay: (animationConfig.delay + index * animationConfig.stagger) / 1000
       }
     })

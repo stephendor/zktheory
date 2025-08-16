@@ -159,7 +159,6 @@ const MathVisualization: React.FC<{
         // Draw a simple persistence diagram
         ctx.strokeStyle = '#6366f1';
         ctx.lineWidth = 2;
-        
         // Axes
         ctx.beginPath();
         ctx.moveTo(30, height - 30);
@@ -167,19 +166,16 @@ const MathVisualization: React.FC<{
         ctx.moveTo(30, height - 30);
         ctx.lineTo(30, 30);
         ctx.stroke();
-        
         // Points representing persistence pairs
         const points = [
           [50, 120], [80, 100], [120, 90], [160, 110], [100, 70]
         ];
-        
         ctx.fillStyle = '#6366f1';
         points.forEach(([x, y]) => {
           ctx.beginPath();
           ctx.arc(x, y, 3, 0, 2 * Math.PI);
           ctx.fill();
         });
-        
         // Diagonal line
         ctx.strokeStyle = '#e2e8f0';
         ctx.setLineDash([5, 5]);
@@ -194,7 +190,6 @@ const MathVisualization: React.FC<{
         // Draw elliptic curve
         ctx.strokeStyle = '#7c3aed';
         ctx.lineWidth = 2;
-        
         ctx.beginPath();
         for (let x = -2; x <= 2; x += 0.1) {
           const y1 = Math.sqrt(Math.abs(x * x * x - x + 1));
@@ -211,7 +206,6 @@ const MathVisualization: React.FC<{
           }
         }
         ctx.stroke();
-        
         ctx.beginPath();
         for (let x = -2; x <= 2; x += 0.1) {
           const y2 = -Math.sqrt(Math.abs(x * x * x - x + 1));
@@ -232,16 +226,13 @@ const MathVisualization: React.FC<{
         // Draw geometric construction
         ctx.strokeStyle = '#059669';
         ctx.lineWidth = 2;
-        
         const centerX = width / 2;
         const centerY = height / 2;
         const radius = 40;
-        
         // Circle
         ctx.beginPath();
         ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
         ctx.stroke();
-        
         // Pentagon inscribed
         ctx.beginPath();
         for (let i = 0; i < 5; i++) {
@@ -263,7 +254,6 @@ const MathVisualization: React.FC<{
         // Draw function plot
         ctx.strokeStyle = '#dc2626';
         ctx.lineWidth = 2;
-        
         ctx.beginPath();
         for (let x = 0; x < width; x++) {
           const t = (x / width) * 4 * Math.PI;
@@ -374,7 +364,6 @@ export const AcademicPath: React.FC<PathComponentProps & { config?: Partial<Acad
       y: 0,
       transition: { 
         duration: 0.5, 
-        
         delay: animationDelay
       }
     },
@@ -698,7 +687,6 @@ export const AcademicPath: React.FC<PathComponentProps & { config?: Partial<Acad
           </div>
           <div className="text-4xl">🎓</div>
         </div>
-        
         {/* Tab Navigation */}
         <div className="flex mt-4 space-x-1">
           {[

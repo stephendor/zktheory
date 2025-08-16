@@ -78,8 +78,8 @@ const TriplePathHeroSection: React.FC<TriplePathHeroSectionProps> = ({
   // ==========================================
   
   const handlePathSelection = React.useCallback((path: 'business' | 'technical' | 'academic') => {
-    if (trackingEnabled && typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', analyticsConfig.action || 'path_selection', {
+    if (trackingEnabled && typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', analyticsConfig.action || 'path_selection', {
         event_category: analyticsConfig.category || 'navigation',
         event_label: `${path}_pathway`,
         custom_parameter_1: analyticsConfig.label || 'triple_path_hero'
@@ -91,8 +91,8 @@ const TriplePathHeroSection: React.FC<TriplePathHeroSectionProps> = ({
   }, [trackingEnabled, analyticsConfig]);
 
   const handleSpiralInteraction = React.useCallback((type: string, data: any) => {
-    if (trackingEnabled && typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'spiral_interaction', {
+    if (trackingEnabled && typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'spiral_interaction', {
         event_category: 'engagement',
         interaction_type: type,
         spiral_phase: data.phase,
@@ -120,8 +120,8 @@ const TriplePathHeroSection: React.FC<TriplePathHeroSectionProps> = ({
     }
     
     // Send to analytics in production (if enabled)
-    if (trackingEnabled && typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'performance_metrics', {
+    if (trackingEnabled && typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'performance_metrics', {
         event_category: 'performance',
         render_time: metrics.renderTime,
         frame_rate: metrics.animationFrameRate,

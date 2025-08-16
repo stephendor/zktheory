@@ -147,9 +147,7 @@ describe('TriplePathHero', () => {
       viewports.forEach(({ width, height }) => {
         Object.defineProperty(window, 'innerWidth', { value: width, writable: true });
         Object.defineProperty(window, 'innerHeight', { value: height, writable: true });
-        
         rerender(<TriplePathHero />);
-        
         // Canvas should adapt to container size
         const canvas = document.querySelector('canvas');
         expect(canvas).toBeInTheDocument();
@@ -167,7 +165,6 @@ describe('TriplePathHero', () => {
       
       if (businessPath) {
         fireEvent.click(businessPath);
-        
         await waitFor(() => {
           expect(onPathSelection).toHaveBeenCalledWith('business');
         });
@@ -181,7 +178,6 @@ describe('TriplePathHero', () => {
       
       if (businessSection) {
         fireEvent.mouseEnter(businessSection);
-        
         await waitFor(() => {
           // Should apply hover classes or effects
           expect(businessSection).toHaveClass(/hover|active|hovered/);
@@ -196,7 +192,6 @@ describe('TriplePathHero', () => {
       const canvas = document.querySelector('canvas');
       if (canvas) {
         fireEvent.click(canvas);
-        
         await waitFor(() => {
           expect(onSpiralInteraction).toHaveBeenCalled();
         });

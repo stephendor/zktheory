@@ -107,7 +107,7 @@ export interface TriplePathHeroProps {
   // Analytics
   onPathSelection?: (path: 'business' | 'technical' | 'academic') => void;
   onSpiralInteraction?: (event: string, data: any) => void;
-  onPerformanceMetrics?: (metrics: PathwayMetrics) => void;
+  onPerformanceMetrics?: (metrics: PerformanceMetrics) => void;
   
   // Accessibility
   reduceMotion?: boolean;

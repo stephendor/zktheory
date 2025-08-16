@@ -111,7 +111,7 @@ export const CentralSpiral: React.FC<CentralSpiralProps> = ({
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number>(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentTransform, setCurrentTransform] = useState(0);
   const [spiralPoints, setSpiralPoints] = useState<Array<{x: number, y: number, t: number}>>([]);
@@ -161,7 +161,7 @@ export const CentralSpiral: React.FC<CentralSpiralProps> = ({
   // ==========================================
   
   const generateSpiralPoints = useCallback(() => {
-    const points = [];
+    const points: Array<{x: number, y: number, t: number}> = [];
     const stepSize = (adjustedConfig.maxRotations * TWO_PI) / adjustedConfig.segments;
     
     for (let i = 0; i <= adjustedConfig.segments; i++) {
@@ -244,10 +244,8 @@ export const CentralSpiral: React.FC<CentralSpiralProps> = ({
       for (let i = 1; i < scaledPoints.length; i++) {
         const point = scaledPoints[i];
         const alpha = 1 - (i / scaledPoints.length) * 0.7; // Fade out towards center
-        
         ctx.globalAlpha = alpha;
         ctx.lineTo(point.x, point.y);
-        
         // Add golden ratio markers at key points
         if (i % Math.floor(adjustedConfig.segments / 5) === 0) {
           ctx.save();

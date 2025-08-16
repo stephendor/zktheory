@@ -39,6 +39,28 @@ export type {
   MathToolbarProps 
 } from './MathWorkspace';
 
+// ==========================================
+// Mathematical Bridge and Concept Systems
+// ==========================================
+
+// Bridge Transformations (Task 7.1)
+export { 
+  EllipticCurveToAlgebraTransform,
+  AlgebraToTopologyTransform,
+  TopologyToEllipticTransform,
+  UnifiedBridgeOrchestrator
+} from './BridgeTransformations';
+
+// Concept Mapping Interface (Task 7.2)
+export {
+  MathematicalConceptGraph,
+  ConceptMappingExample,
+  ConceptForceSimulation
+} from './ConceptMapping';
+
+// Cross-Task Integration (Task 7.3)
+export { IntegratedMathematicalBridge } from './Integration/IntegratedMathematicalBridge';
+
 // Mathematical Visualization Components
 export {
   MathVisualization,
