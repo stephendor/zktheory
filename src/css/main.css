@@ -28,6 +28,18 @@
 }
 
 @layer components {
+    /* Radial overlay to improve contrast on patterned backgrounds */
+    .radial-contrast-overlay {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(1200px 600px at 50% 40%, rgba(255,255,255,0.9), rgba(255,255,255,0.75) 40%, rgba(255,255,255,0.6) 60%, rgba(255,255,255,0.4) 80%, transparent 100%);
+    }
+
+    /* Golden transition timing utility */
+    .transition-golden {
+        transition-timing-function: cubic-bezier(0.618, 0, 0.382, 1);
+    }
     .sb-markdown {
         @apply leading-relaxed;
         a {

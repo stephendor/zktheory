@@ -10,33 +10,22 @@ interface PageProps {
   params: Promise<{ slug?: string[] }>;
 }
 
-// Generate static parameters for all pages
-export async function generateStaticParams(): Promise<{ slug?: string[] }[]> {
+// Generate static parameters for all pages (exclude root, handled by src/app/page.tsx)
+export async function generateStaticParams(): Promise<{ slug: string[] }[]> {
   const data = allContent();
   const paths = resolveStaticPaths(data);
-  
+
   return paths
     .filter((path: string) => {
-      // Filter out static assets and API routes
-      return !path.match(/\.(woff|woff2|ttf|eot|svg|png|jpg|jpeg|gif|ico|css|js|map)$/i) &&
-             !path.startsWith('/api/') &&
-             !path.startsWith('/_next/') &&
-             !path.startsWith('/fonts/');
+      // Exclude assets/API and root path
+      const isAsset = path.match(/\.(woff|woff2|ttf|eot|svg|png|jpg|jpeg|gif|ico|css|js|map)$/i);
+      const isSystem = path.startsWith('/api/') || path.startsWith('/_next/') || path.startsWith('/fonts/');
+      const isRoot = path === '/' || path === '';
+      return !isAsset && !isSystem && !isRoot;
     })
     .map((path: string) => {
-      // Remove leading slash and split into segments
-      const slugSegments = path.startsWith('/') ? path.slice(1).split('/') : path.split('/');
-      // Filter out empty segments
-      const filteredSegments = slugSegments.filter(segment => segment.length > 0);
-      
-      // Handle root path case
-      if (filteredSegments.length === 0) {
-        return {}; // No slug for root path
-      }
-      
-      return {
-        slug: filteredSegments
-      };
+      const slugSegments = (path.startsWith('/') ? path.slice(1) : path).split('/').filter(Boolean);
+      return { slug: slugSegments };
     });
 }
 
@@ -46,10 +35,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const resolvedParams = await params;
     const data = allContent();
     const urlPath = '/' + (resolvedParams.slug || []).join('/');
-    
-    // Skip static assets and API routes
-    if (urlPath.match(/\.(woff|woff2|ttf|eot|svg|png|jpg|jpeg|gif|ico|css|js|map)$/i) || 
-        urlPath.startsWith('/api/') || 
+
+    // Skip static assets and system routes
+    if (urlPath.match(/\.(woff|woff2|ttf|eot|svg|png|jpg|jpeg|gif|ico|css|js|map)$/i) ||
+        urlPath.startsWith('/api/') ||
         urlPath.startsWith('/_next/') ||
         urlPath.startsWith('/fonts/')) {
       return {
@@ -57,35 +46,25 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         description: 'Mathematics, cryptography, and visualization tools',
       };
     }
-    
+
     const props = await resolveStaticProps(urlPath, data);
-    
-    // Check if props is null or undefined
     if (!props) {
-      console.warn('No props returned for path:', urlPath);
       return {
         title: 'ZKTheory',
         description: 'Mathematics, cryptography, and visualization tools',
       };
     }
-    
+
     const { page, site } = props;
-    
     const title = seoGenerateTitle(page, site);
     const description = seoGenerateMetaDescription(page, site);
     const metaTags = seoGenerateMetaTags(page, site);
-    
-    // Build metadata object
-    const metadata: Metadata = {
-      title,
-      description,
-    };
-    
-    // Add OpenGraph and other meta tags
+
+    const metadata: Metadata = { title, description };
     const openGraph: any = {};
     const twitter: any = {};
     const other: any = {};
-    
+
     metaTags.forEach((metaTag: any) => {
       if (metaTag.property?.startsWith('og:')) {
         const key = metaTag.property.replace('og:', '');
@@ -97,26 +76,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         other[metaTag.property] = metaTag.content;
       }
     });
-    
+
     if (Object.keys(openGraph).length > 0) {
-      metadata.openGraph = openGraph;
+      (metadata as any).openGraph = openGraph;
     }
-    
     if (Object.keys(twitter).length > 0) {
-      metadata.twitter = twitter;
+      (metadata as any).twitter = twitter;
     }
-    
     if (Object.keys(other).length > 0) {
-      metadata.other = other;
+      (metadata as any).other = other;
     }
-    
-    // Add favicon if available
     if (site.favicon) {
-      metadata.icons = {
-        icon: site.favicon,
-      };
+      (metadata as any).icons = { icon: site.favicon };
     }
-    
+
     return metadata;
   } catch (error) {
     const resolvedParams = await params;
@@ -134,10 +107,10 @@ export default async function Page({ params }: PageProps) {
     const resolvedParams = await params;
     const data = allContent();
     const urlPath = '/' + (resolvedParams.slug || []).join('/');
-    
-    // Skip static assets and API routes
-    if (urlPath.match(/\.(woff|woff2|ttf|eot|svg|png|jpg|jpeg|gif|ico|css|js|map)$/i) || 
-        urlPath.startsWith('/api/') || 
+
+    // Skip static assets and system routes
+    if (urlPath.match(/\.(woff|woff2|ttf|eot|svg|png|jpg|jpeg|gif|ico|css|js|map)$/i) ||
+        urlPath.startsWith('/api/') ||
         urlPath.startsWith('/_next/') ||
         urlPath.startsWith('/fonts/')) {
       return (
@@ -154,12 +127,9 @@ export default async function Page({ params }: PageProps) {
         </div>
       );
     }
-    
+
     const props = await resolveStaticProps(urlPath, data);
-    
-    // Check if props is null or undefined
     if (!props) {
-      console.warn('No props returned for path:', urlPath);
       return (
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
@@ -174,27 +144,22 @@ export default async function Page({ params }: PageProps) {
         </div>
       );
     }
-    
+
     const { page, site } = props;
-    
     const { modelName } = page.__metadata;
-    
     if (!modelName) {
       throw new Error(`Page has no type, page '${urlPath}'`);
     }
-    
+
     const PageLayout = getComponent(modelName) as React.ComponentType<{ page: any; site: any }>;
-    
     if (!PageLayout) {
       throw new Error(`No page layout matching the page model: ${modelName}`);
     }
-    
+
     return <PageLayout page={page} site={site} />;
   } catch (error) {
     const resolvedParams = await params;
     console.error('Error rendering page:', '/' + (resolvedParams.slug || []).join('/'), error);
-    
-    // Return a basic error page
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
