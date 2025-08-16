@@ -59,6 +59,13 @@ export {
 } from './ConceptMapping';
 
 // Cross-Task Integration (Task 7.3)
+// Re-export Integration pieces so consumers can import from '@/components/mathematical'
+export {
+  MathematicalBridgeProvider,
+  useMathematicalBridge,
+} from './Integration';
+
+// Main integrated component (kept as a direct path for clarity)
 export { IntegratedMathematicalBridge } from './Integration/IntegratedMathematicalBridge';
 
 // Mathematical Visualization Components

@@ -12,9 +12,10 @@
  * - Educational pathways and learning progression visualization
  */
 
-'use client';
+ 'use client';
 
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
+import styles from './MathematicalConceptGraph.module.css';
 import * as d3 from 'd3';
 import { 
   ConceptForceSimulation, 
@@ -141,13 +142,15 @@ export const MathematicalConceptGraph: React.FC<MathematicalConceptGraphProps> =
     return { concepts: filteredConcepts, relationships: filteredRelationships };
   }, [concepts, relationships, filterState]);
 
-  // Utility function for difficulty ordering
-  const getDifficultyOrder = () => [
-    DifficultyLevel.INTRODUCTORY,
-    DifficultyLevel.INTERMEDIATE,
-    DifficultyLevel.ADVANCED,
-    DifficultyLevel.RESEARCH
-  ];
+  // Utility function for difficulty ordering (hoisted)
+  function getDifficultyOrder() {
+    return [
+      DifficultyLevel.INTRODUCTORY,
+      DifficultyLevel.INTERMEDIATE,
+      DifficultyLevel.ADVANCED,
+      DifficultyLevel.RESEARCH
+    ];
+  }
 
   // Initialize simulation
   useEffect(() => {
@@ -497,48 +500,28 @@ export const MathematicalConceptGraph: React.FC<MathematicalConceptGraphProps> =
   return (
     <div 
       ref={containerRef}
-      className="mathematical-concept-graph"
-      style={{ 
-        width: '100%', 
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        fontFamily: 'system-ui, -apple-system, sans-serif'
-      }}
+      className={`${styles.container} mathematical-concept-graph`}
     >
       {/* Control Panel */}
-      {showControls && (
-        <div style={{
-          padding: '16px',
-          backgroundColor: '#f8fafc',
-          borderBottom: '1px solid #e2e8f0',
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '16px',
-          alignItems: 'center'
-        }}>
+  {showControls && (
+        <div className={styles.controlPanel}>
           {/* Search */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label style={{ fontSize: '14px', fontWeight: 'bold' }}>Search:</label>
+          <div className={styles.search}>
+            <label className={styles.searchLabel}>Search:</label>
             <input
               type="text"
               value={filterState.searchText}
               onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="Search concepts..."
-              style={{
-                padding: '6px 12px',
-                border: '1px solid #d1d5db',
-                borderRadius: '4px',
-                fontSize: '14px'
-              }}
+              className={styles.searchInput}
             />
           </div>
 
           {/* Category Filters */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label style={{ fontSize: '14px', fontWeight: 'bold' }}>Categories:</label>
+          <div className={styles.categoryFilters}>
+            <label className={styles.categoryLabel}>Categories:</label>
             {Object.values(ConceptCategory).map(category => (
-              <label key={category} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+              <label key={category} className={styles.categoryItem}>
                 <input
                   type="checkbox"
                   checked={filterState.categories.has(category)}
@@ -550,17 +533,13 @@ export const MathematicalConceptGraph: React.FC<MathematicalConceptGraphProps> =
           </div>
 
           {/* Difficulty Filter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label style={{ fontSize: '14px', fontWeight: 'bold' }}>Max Difficulty:</label>
+          <div className={styles.difficultyFilter}>
+            <label className={styles.difficultyLabel}>Max Difficulty:</label>
             <select
+              title="Max difficulty"
               value={filterState.maxDifficulty}
               onChange={(e) => handleDifficultyChange(e.target.value as DifficultyLevel)}
-              style={{
-                padding: '6px 12px',
-                border: '1px solid #d1d5db',
-                borderRadius: '4px',
-                fontSize: '14px'
-              }}
+              className={styles.difficultySelect}
             >
               {getDifficultyOrder().map(difficulty => (
                 <option key={difficulty} value={difficulty}>
@@ -571,8 +550,8 @@ export const MathematicalConceptGraph: React.FC<MathematicalConceptGraphProps> =
           </div>
 
           {/* View Controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+          <div className={styles.viewControls}>
+            <label className={styles.viewControlLabel}>
               <input
                 type="checkbox"
                 checked={viewState.showNodeLabels}
@@ -580,7 +559,7 @@ export const MathematicalConceptGraph: React.FC<MathematicalConceptGraphProps> =
               />
               Node Labels
             </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+            <label className={styles.viewControlLabel}>
               <input
                 type="checkbox"
                 checked={viewState.showRelationshipLabels}
@@ -593,28 +572,18 @@ export const MathematicalConceptGraph: React.FC<MathematicalConceptGraphProps> =
       )}
 
       {/* Main Visualization */}
-      <div style={{ flex: 1, position: 'relative' }}>
+      <div className={styles.mainVisualization}>
         <svg
           ref={svgRef}
           width={width}
           height={height}
-          style={{ display: 'block' }}
+          className={styles.svgBlock}
         />
 
         {/* Statistics Panel */}
         {showStatistics && (
-          <div style={{
-            position: 'absolute',
-            top: '16px',
-            left: '16px',
-            backgroundColor: 'rgba(255,255,255,0.95)',
-            padding: '16px',
-            borderRadius: '8px',
-            border: '1px solid #e2e8f0',
-            fontSize: '12px',
-            minWidth: '200px'
-          }}>
-            <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>Network Statistics</div>
+          <div className={styles.statisticsPanel}>
+            <div className={styles.statsHeader}>Network Statistics</div>
             <div>Concepts: {filteredData.concepts.length}</div>
             <div>Relationships: {filteredData.relationships.length}</div>
             <div>Zoom Level: {zoomLevel.toFixed(1)}x</div>
@@ -624,25 +593,14 @@ export const MathematicalConceptGraph: React.FC<MathematicalConceptGraphProps> =
 
         {/* Legend */}
         {showLegend && (
-          <div style={{
-            position: 'absolute',
-            bottom: '16px',
-            left: '16px',
-            backgroundColor: 'rgba(255,255,255,0.95)',
-            padding: '16px',
-            borderRadius: '8px',
-            border: '1px solid #e2e8f0',
-            fontSize: '12px'
-          }}>
-            <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>Legend</div>
-            <div style={{ marginBottom: '4px' }}>🔵 Elliptic Curves</div>
-            <div style={{ marginBottom: '4px' }}>🟢 Topology</div>
-            <div style={{ marginBottom: '4px' }}>🟡 Number Theory</div>
-            <div style={{ marginBottom: '4px' }}>🟠 Abstract Algebra</div>
-            <div style={{ marginBottom: '4px' }}>🔴 Algebraic Geometry</div>
-            <div style={{ marginTop: '8px', fontSize: '10px', color: '#666' }}>
-              Drag nodes • Scroll to zoom • Click to select
-            </div>
+          <div className={styles.legend}>
+            <div className={styles.legendHeader}>Legend</div>
+            <div className={styles.legendItem}>🔵 Elliptic Curves</div>
+            <div className={styles.legendItem}>🟢 Topology</div>
+            <div className={styles.legendItem}>🟡 Number Theory</div>
+            <div className={styles.legendItem}>🟠 Abstract Algebra</div>
+            <div className={styles.legendItem}>🔴 Algebraic Geometry</div>
+            <div className={styles.legendNote}>Drag nodes • Scroll to zoom • Click to select</div>
           </div>
         )}
       </div>

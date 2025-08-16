@@ -17,7 +17,8 @@
 import React from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
-import { IntegratedMathematicalBridge, MathematicalBridgeProvider } from '@/components/mathematical';
+import IntegratedMathematicalBridge from '@/components/mathematical/Integration/IntegratedMathematicalBridge';
+import { MathematicalBridgeProvider } from '@/components/mathematical/Integration/MathematicalBridgeContext';
 import styles from './integrated-bridge.module.css';
 
 const IntegratedBridgePage: NextPage = () => {
