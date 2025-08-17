@@ -335,6 +335,12 @@ export interface UseComplexityReturn extends ComplexityContextValue {
     getStaggerDelay: (index: number) => number;
     getEasingFunction: (complexity: number) => string;
   };
+  
+  /** Additional utility methods */
+  generatePattern: (type?: GeometricPattern['type']) => GeometricPattern;
+  getViewportPositions: (containerWidth: number, containerHeight: number, orientation?: 'horizontal' | 'vertical') => Record<ComplexityLevelId, { x: number; y: number }>;
+  validateLevelAccess: (levelId: ComplexityLevelId) => { isValid: boolean; missingPrerequisites: ComplexityLevelId[]; reason: string };
+  getLearningAnalytics: () => { efficiency: number; optimalPath: boolean; suggestions: string[] };
 }
 
 // ==========================================
@@ -450,22 +456,4 @@ export interface MigrationScript {
 // Export All Types
 // ==========================================
 
-export type {
-  ComplexityLevel,
-  ComplexityState,
-  ComplexityPreferences,
-  ComplexityInteraction,
-  ComplexitySliderProps,
-  ComplexityIndicatorProps,
-  ComplexityTooltipProps,
-  ComplexityContextValue,
-  ComplexityProviderProps,
-  UseComplexityReturn,
-  MathematicalPosition,
-  GeometricPattern,
-  PerformanceMetrics,
-  PerformanceThresholds,
-  ErrorBoundaryState,
-  StorageData,
-  MigrationScript
-} from './types';
+// All types are already exported above

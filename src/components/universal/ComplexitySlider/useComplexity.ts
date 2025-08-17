@@ -12,9 +12,7 @@ import type {
   ComplexityLevelId,
   ComplexityValue,
   MathematicalPosition,
-  GeometricPattern,
-  GOLDEN_RATIO,
-  FIBONACCI_SEQUENCE
+  GeometricPattern
 } from './types';
 
 // ==========================================
@@ -407,7 +405,7 @@ export const useComplexityMath = () => {
     
     // Mathematical functions
     calculateSpiral: (segments: number) => {
-      const points = [];
+      const points: Array<{ x: number; y: number; angle: number }> = [];
       for (let i = 0; i < segments; i++) {
         const angle = (i / segments) * Math.PI * 2 * state.currentLevel.mathComplexity;
         const radius = state.currentLevel.mathComplexity * (i / segments);

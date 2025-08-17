@@ -1,13 +1,13 @@
 {
-  "timestamp": "2025-08-15T16:24:22.848Z",
+  "timestamp": "2025-08-17T00:49:43.005Z",
   "environment": "test",
-  "totalDuration": 3450,
+  "totalDuration": 1518,
   "memoryDelta": {
-    "rss": 4587520,
-    "heapTotal": 3407872,
-    "heapUsed": 675816,
-    "external": 31579,
-    "arrayBuffers": 25915
+    "rss": 17694720,
+    "heapTotal": 9699328,
+    "heapUsed": 19691784,
+    "external": 98278,
+    "arrayBuffers": 98238
   },
   "thresholds": {
     "performanceMs": 100,

@@ -266,7 +266,6 @@ export const ProgressiveDisclosureHero: React.FC<ProgressiveDisclosureProps> = (
     hidden: (custom: any) => ({
       opacity: 0,
       scale: 0.8,
-      y: 30,
       ...spiralReveal(custom.index || 0, custom.total || 1)
     }),
     visible: (custom: any) => ({
@@ -278,7 +277,7 @@ export const ProgressiveDisclosureHero: React.FC<ProgressiveDisclosureProps> = (
       transition: {
         duration: 0.8,
         delay: custom.delay || 0,
-        ease: [0.618, 0, 0.382, 1] // Golden ratio easing
+        ease: "easeOut" as const
       }
     })
   };

@@ -336,6 +336,7 @@ export const ComplexitySlider = forwardRef<HTMLDivElement, ComplexitySliderProps
       
       onInteraction?.({
         type: 'level_change',
+        timestamp: Date.now(),
         fromLevel: previousLevelRef.current.id,
         toLevel: state.currentLevel.id
       });
@@ -371,6 +372,7 @@ export const ComplexitySlider = forwardRef<HTMLDivElement, ComplexitySliderProps
         onPrerequisiteCheck?.(level, validation);
         onInteraction?.({
           type: 'prerequisite_check',
+          timestamp: Date.now(),
           toLevel: level.id,
           context: { missingPrerequisites: validation }
         });
@@ -398,6 +400,7 @@ export const ComplexitySlider = forwardRef<HTMLDivElement, ComplexitySliderProps
       setHoveredLevel(level);
       onInteraction?.({
         type: 'preview',
+        timestamp: Date.now(),
         toLevel: level.id
       });
     }

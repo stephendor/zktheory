@@ -12,7 +12,7 @@ import {
   HandRaisedIcon, 
   CursorArrowRaysIcon, 
   DevicePhoneMobileIcon,
-  TouchIcon 
+  HandThumbUpIcon
 } from '@heroicons/react/24/outline';
 
 // ==========================================

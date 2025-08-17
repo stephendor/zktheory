@@ -287,7 +287,7 @@ const useKeyboardNavigation = (
 const MathematicalContent: React.FC<{
   content: MathematicalContentProps;
   settings: AccessibilitySettings;
-  colors: typeof ACCESSIBLE_COLORS.normal;
+  colors: typeof ACCESSIBLE_COLORS[keyof typeof ACCESSIBLE_COLORS];
 }> = ({ content, settings, colors }) => {
   const { speakMath, stopSpeaking, isSpeaking } = useMathSpeech(settings.mathSpeech);
   const { handleKeyDown } = useKeyboardNavigation(content, (action) => {
@@ -435,7 +435,7 @@ const MathematicalContent: React.FC<{
 const AccessibilityPanel: React.FC<{
   settings: AccessibilitySettings;
   onSettingChange: <K extends keyof AccessibilitySettings>(key: K, value: AccessibilitySettings[K]) => void;
-  colors: typeof ACCESSIBLE_COLORS.normal;
+  colors: typeof ACCESSIBLE_COLORS[keyof typeof ACCESSIBLE_COLORS];
 }> = ({ settings, onSettingChange, colors }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 

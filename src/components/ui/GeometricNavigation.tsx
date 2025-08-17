@@ -40,7 +40,7 @@ const GEOMETRIC_PATTERNS = {
     angles: [120, 240, 360],
     symmetry: 6,
     generator: (size: number) => {
-      const points = [];
+      const points: Array<{ x: number; y: number }> = [];
       for (let i = 0; i < 6; i++) {
         const angle = (i / 6) * 2 * Math.PI;
         points.push({
@@ -58,7 +58,7 @@ const GEOMETRIC_PATTERNS = {
     angles: [60, 120, 180, 240, 300, 360],
     symmetry: 6,
     generator: (size: number) => {
-      const points = [];
+      const points: Array<{ x: number; y: number }> = [];
       for (let i = 0; i < 6; i++) {
         const angle = (i / 6) * 2 * Math.PI;
         points.push({
@@ -76,7 +76,7 @@ const GEOMETRIC_PATTERNS = {
     angles: [0, 45, 90, 135, 180, 225, 270, 315],
     symmetry: 8,
     generator: (size: number) => {
-      const points = [];
+      const points: Array<{ x: number; y: number }> = [];
       for (let t = 0; t < 2 * Math.PI; t += Math.PI / 16) {
         points.push({
           x: Math.cos(t) * size * (1 + 0.3 * Math.cos(3 * t)),

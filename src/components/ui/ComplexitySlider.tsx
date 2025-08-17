@@ -67,7 +67,7 @@ const COMPLEXITY_LEVELS = [
     estimatedTime: '60+ minutes',
     fibonacciIndex: 3
   }
-] as const;
+];
 
 // ==========================================
 // Types

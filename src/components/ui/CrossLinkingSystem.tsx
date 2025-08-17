@@ -475,8 +475,8 @@ export const CrossLinkingSystem: React.FC<CrossLinkProps> = ({
   // ==========================================
   
   const audienceRelevantSections = useMemo(() => {
-    return connectedSections.filter(({ section }) => 
-      section?.audience.includes(targetAudience)
+    return connectedSections.filter((item): item is NonNullable<typeof item> => 
+      item !== null && item.section?.audience.includes(targetAudience)
     );
   }, [connectedSections, targetAudience]);
 
@@ -491,8 +491,8 @@ export const CrossLinkingSystem: React.FC<CrossLinkProps> = ({
   const handleConnectionHover = useCallback((connectionId: string, isHovered: boolean) => {
     setHoveredConnection(isHovered ? connectionId : null);
     
-    const connectionData = connectedSections.find(({ connection }) => 
-      connection.targetId === connectionId
+    const connectionData = connectedSections.find((item) => 
+      item?.connection.targetId === connectionId
     );
     
     if (connectionData) {
