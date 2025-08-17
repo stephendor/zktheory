@@ -66,7 +66,7 @@ const SpiralLoader: React.FC<{ stage: DisclosureStage; isActive: boolean }> = ({
   }, [isActive]);
   
   const spiralPoints = useMemo(() => {
-    const points = [];
+    const points: string[] = [];
     const segments = FIBONACCI_SEQUENCE[stage + 4] || 21; // Use Fibonacci number based on stage
     
     for (let i = 0; i < segments; i++) {
@@ -95,7 +95,7 @@ const SpiralLoader: React.FC<{ stage: DisclosureStage; isActive: boolean }> = ({
           rotate: rotation
         }}
         transition={{
-          pathLength: { duration: 2, ease: GOLDEN_EASING },
+          pathLength: { duration: 2, ease: "easeOut" },
           opacity: { duration: 0.5 },
           rotate: { duration: 0.05, ease: 'linear' }
         }}
@@ -142,7 +142,7 @@ const FibonacciLoader: React.FC<{ stage: DisclosureStage; isActive: boolean }> =
           transition={{
             duration: 1 + box.delay,
             delay: box.delay,
-            ease: GOLDEN_EASING,
+            ease: "easeOut",
             repeat: isActive ? Infinity : 0,
             repeatDelay: FIBONACCI_SEQUENCE[stage] * 0.1
           }}
@@ -217,13 +217,13 @@ const GeometricLoader: React.FC<{ stage: DisclosureStage; isActive: boolean }> =
       } : {}}
       transition={{
         rotate: { duration: 2, ease: 'linear', repeat: Infinity },
-        scale: { duration: 1, ease: GOLDEN_EASING, repeat: Infinity }
+                    scale: { duration: 1, ease: "easeOut", repeat: Infinity }
       }}
     >
       <motion.g
         initial={{ pathLength: 0, opacity: 0 }}
         animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1.5, ease: GOLDEN_EASING }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
       >
         {renderShape()}
       </motion.g>
@@ -247,7 +247,7 @@ const MinimalLoader: React.FC<{ stage: DisclosureStage; isActive: boolean }> = (
           transition={{
             duration: 0.8,
             delay: index * 0.2,
-            ease: GOLDEN_EASING,
+            ease: "easeOut",
             repeat: Infinity
           }}
         />
@@ -311,7 +311,7 @@ export const MathematicalLoadingStates: React.FC<MathematicalLoadingStatesProps>
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ duration: 0.4, ease: GOLDEN_EASING }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
         >
           <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 border border-gray-200 shadow-xl">
             {/* Mathematical Equation */}
@@ -354,7 +354,7 @@ export const MathematicalLoadingStates: React.FC<MathematicalLoadingStatesProps>
                     className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${((currentStage + 1) / 4) * 100}%` }}
-                    transition={{ duration: 0.8, ease: GOLDEN_EASING }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
                   />
                 </div>
                 
@@ -401,6 +401,7 @@ export const StageLoadingIndicator: React.FC<LoadingStateProps> = ({
       const timer = setTimeout(onComplete, duration);
       return () => clearTimeout(timer);
     }
+    return undefined; // Explicit return for when condition is not met
   }, [isVisible, duration, onComplete]);
   
   return (
@@ -417,7 +418,7 @@ export const StageLoadingIndicator: React.FC<LoadingStateProps> = ({
             initial={{ scale: 0.8, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.8, y: 20 }}
-            transition={{ duration: 0.4, ease: GOLDEN_EASING }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
           >
             {showEquation && (
               <div className="text-center mb-6">

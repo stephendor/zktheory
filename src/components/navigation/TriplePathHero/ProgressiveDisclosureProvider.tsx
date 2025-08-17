@@ -53,7 +53,7 @@ export interface DisclosureState {
 export interface DisclosureContent {
   stage: DisclosureStage;
   complexity: ComplexityLevel;
-  content: React.ReactNode;
+  content?: React.ReactNode; // Made optional since component uses children
   duration?: number;
   staggerDelay?: number;
 }
@@ -393,7 +393,7 @@ export const DisclosureContent: React.FC<DisclosureContentProps> = ({
           transition={{
             duration: duration / 1000,
             delay: (staggerDelay + fibonacciDelay) / 1000,
-            ease: GOLDEN_EASING
+            ease: "easeOut"
           }}
           className={className}
           data-disclosure-stage={stage}

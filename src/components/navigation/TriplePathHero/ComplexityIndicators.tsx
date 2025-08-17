@@ -159,7 +159,7 @@ export const ComplexityIndicators: React.FC<ComplexityIndicatorsProps> = ({
       scale: 1,
       transition: { 
         duration: 0.4,
-        ease: GOLDEN_EASING,
+        ease: "easeOut" as const,
         staggerChildren: 0.1
       }
     }
@@ -170,19 +170,19 @@ export const ComplexityIndicators: React.FC<ComplexityIndicatorsProps> = ({
       scale: 1, 
       opacity: 0.6,
       y: 0,
-      transition: { duration: 0.3, ease: GOLDEN_EASING }
+      transition: { duration: 0.3, ease: "easeOut" as const }
     },
     active: { 
       scale: 1.1, 
       opacity: 1,
       y: -2,
-      transition: { duration: 0.3, ease: GOLDEN_EASING }
+      transition: { duration: 0.3, ease: "easeOut" as const }
     },
     completed: { 
       scale: 1, 
       opacity: 0.8,
       y: 0,
-      transition: { duration: 0.3, ease: GOLDEN_EASING }
+      transition: { duration: 0.3, ease: "easeOut" as const }
     }
   };
 
@@ -396,7 +396,7 @@ export const ComplexityIndicators: React.FC<ComplexityIndicatorsProps> = ({
         )}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.4, ease: GOLDEN_EASING }}
+        transition={{ delay: 0.3, duration: 0.4, ease: "easeOut" }}
       >
         <div className="text-sm font-medium text-gray-900 mb-1">
           Current: {COMPLEXITY_DEFINITIONS[disclosureState.currentStage].title}
@@ -417,7 +417,7 @@ export const ComplexityIndicators: React.FC<ComplexityIndicatorsProps> = ({
               animate={{ 
                 width: `${(disclosureState.currentStage + 1) / COMPLEXITY_DEFINITIONS.length * 100}%` 
               }}
-              transition={{ duration: 0.5, ease: GOLDEN_EASING }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
             />
           </div>
         )}

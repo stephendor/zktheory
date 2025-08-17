@@ -248,16 +248,37 @@ export const ProgressiveTriplePathHero: React.FC<ProgressiveTriplePathHeroProps>
   
   const enhancedProps = useMemo(() => ({
     ...baseProps,
-    // Merge stage-specific configurations
+    // Merge stage-specific configurations with defaults
     businessConfig: {
+      roiCalculatorEnabled: true,
+      trustIndicators: [],
+      caseStudyPreviews: [],
+      testimonials: [],
       ...baseProps.businessConfig,
       ...currentStageConfig.businessConfig
     },
     technicalConfig: {
+      codeExamples: [],
+      apiDocLinks: [],
+      playgroundPreview: {
+        enabled: true,
+        defaultExample: 'basic'
+      },
+      githubIntegration: {
+        repoUrl: 'https://github.com/zktheory/zktheory',
+        starCount: 0,
+        forkCount: 0
+      },
       ...baseProps.technicalConfig,
       ...currentStageConfig.technicalConfig
     },
     academicConfig: {
+      researchPapers: [],
+      mathematicalVisualizations: [],
+      collaborationTools: {
+        enabled: true,
+        platforms: []
+      },
       ...baseProps.academicConfig,
       ...currentStageConfig.academicConfig
     },

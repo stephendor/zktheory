@@ -13,7 +13,7 @@ import {
   SpeakerXMarkIcon,
   AdjustmentsHorizontalIcon,
   EyeSlashIcon,
-  KeyboardIcon,
+  ComputerDesktopIcon,
   InformationCircleIcon
 } from '@heroicons/react/24/outline';
 
@@ -634,7 +634,7 @@ export const AccessibleMathUI: React.FC<AccessibleMathUIProps> = ({
           }}
         >
           <div className="flex items-center space-x-2 mb-2">
-            <KeyboardIcon className="w-4 h-4" style={{ color: colors.primary }} />
+                            <ComputerDesktopIcon className="w-4 h-4" style={{ color: colors.primary }} />
             <span className="text-sm font-medium" style={{ color: colors.text }}>
               Keyboard Help
             </span>

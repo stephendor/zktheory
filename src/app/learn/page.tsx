@@ -22,14 +22,13 @@ export default function LearnPage() {
       <div className="absolute inset-0 -z-10">
         <PenroseBackground
           animate
-          complexity="progressive"
-          audience="educational"
+          complexity="intermediate"
+          audience="academic"
           performance="balanced"
           density="medium"
           goldenRatio
           interactiveZoom={true}
           className="opacity-30"
-          patternVariant="learning"
         />
       </div>
 
